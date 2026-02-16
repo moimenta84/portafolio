@@ -85,8 +85,8 @@ const Newsletter = () => {
   };
 
   const featured = articles[0];
-  const gridArticles = articles.slice(1, 4);
-  const sidebarArticles = articles.slice(4, 10);
+  const gridArticles = articles.slice(1, 3);
+  const sidebarArticles = articles.slice(3, 10);
 
   return (
       <section className="relative h-full overflow-hidden flex flex-col">
