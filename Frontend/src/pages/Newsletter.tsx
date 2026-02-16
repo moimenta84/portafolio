@@ -347,10 +347,10 @@ function ArticleCard({
           <img
             src={article.image}
             alt={article.title}
-            className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-36 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
+          <div className="w-full h-48 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
             <BookOpen size={24} className="text-white/20" />
           </div>
         )}
