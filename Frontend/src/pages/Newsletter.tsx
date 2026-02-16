@@ -178,14 +178,14 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:items-stretch">
             {/* CONTENIDO PRINCIPAL */}
             <div className="lg:col-span-2 flex flex-col gap-3">
               {/* ARTÍCULO DESTACADO */}
               {featured && <FeaturedCard article={featured} formatDate={formatDate} />}
 
               {/* GRID DE ARTÍCULOS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
                 {gridArticles.map((article) => (
                   <ArticleCard
                     key={article.id}
@@ -340,19 +340,21 @@ function ArticleCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden hover:border-orange-400/30 transition-all"
+      className="group flex flex-col bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden hover:border-orange-400/30 transition-all"
     >
-      {article.image ? (
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-      ) : (
-        <div className="w-full h-36 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
-          <BookOpen size={24} className="text-white/20" />
-        </div>
-      )}
+      <div className="overflow-hidden flex-1">
+        {article.image ? (
+          <img
+            src={article.image}
+            alt={article.title}
+            className="w-full h-full min-h-36 object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full min-h-36 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
+            <BookOpen size={24} className="text-white/20" />
+          </div>
+        )}
+      </div>
 
       <div className="p-2.5">
         <div className="flex items-center gap-1 mb-1">
