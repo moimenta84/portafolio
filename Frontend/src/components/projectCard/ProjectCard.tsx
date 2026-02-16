@@ -17,8 +17,8 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
   return (
     <article className="bg-white/10 backdrop-blur-md rounded-lg overflow-hidden shadow-lg border border-white/20 flex flex-col h-full">
       {/* Imagen arriba */}
-      <div className="w-full h-40 bg-gray-200">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+      <div className="w-full h-44 bg-black/30 overflow-hidden">
+        <img src={image} alt={title} className="w-full h-full object-cover object-center" />
       </div>
 
       {/* Contenido abajo */}
