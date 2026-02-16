@@ -152,26 +152,27 @@ const ReviewSection = () => {
         </form>
       </div>
 
-      {/* Lista de reviews horizontal */}
+      {/* Lista de reviews en columna */}
       {reviews.length > 0 && (
-        <div className="flex gap-3 mt-2 overflow-x-auto pb-1">
+        <div className="flex flex-col gap-2 mt-2">
           {reviews.slice(0, 4).map((review) => (
             <div
               key={review.id}
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 min-w-[200px] max-w-[250px] shrink-0"
+              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2.5"
             >
+              {/* Cabecera: nombre a la izquierda, estrellas a la derecha */}
               <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
-                    <User size={10} className="text-white" />
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
+                    <User size={12} className="text-white" />
                   </div>
-                  <span className="font-medium text-white text-xs">{review.name}</span>
+                  <span className="font-medium text-white text-sm">{review.name}</span>
                 </div>
-                <div className="flex">
+                <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      size={10}
+                      size={12}
                       className={
                         star <= review.rating
                           ? "fill-yellow-400 text-yellow-400"
@@ -181,7 +182,8 @@ const ReviewSection = () => {
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-white/70 line-clamp-2">{review.comment}</p>
+              {/* Comentario debajo */}
+              <p className="text-xs text-white/70">{review.comment}</p>
               <p className="text-[10px] text-white/30 mt-1">{formatDate(review.created_at)}</p>
             </div>
           ))}

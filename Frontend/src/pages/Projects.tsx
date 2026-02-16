@@ -63,13 +63,14 @@ const Projects = () => {
           <div className="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 max-w-5xl mx-auto items-start">
+        <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
           {projects.slice(0, 4).map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onToggleLike={handleToggleLike}
-            />
+            <div key={project.id} className="w-full sm:w-[calc(50%-0.5rem)]">
+              <ProjectCard
+                project={project}
+                onToggleLike={handleToggleLike}
+              />
+            </div>
           ))}
         </div>
       )}

@@ -26,12 +26,12 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
         <h3 className="text-xs font-semibold text-white mb-0.5">{title}</h3>
         <p className="text-[10px] text-gray-200 line-clamp-2 mb-1">{description}</p>
 
-        {/* Tech tags */}
-        <div className="flex flex-wrap gap-0.5 mb-1">
+        {/* Tech tags con Flexbox horizontal */}
+        <div className="flex flex-wrap items-center gap-1 mb-1.5">
           {tech.map((t) => (
             <span
               key={t}
-              className="px-1 py-0.5 text-[8px] bg-purple-600/50 text-purple-200 rounded-full"
+              className="px-1.5 py-0.5 text-[9px] bg-purple-600/50 text-purple-200 rounded-full"
             >
               {t}
             </span>
