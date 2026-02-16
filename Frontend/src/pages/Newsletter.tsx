@@ -185,7 +185,7 @@ const Newsletter = () => {
               {featured && <FeaturedCard article={featured} formatDate={formatDate} />}
 
               {/* GRID DE ARTÍCULOS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 auto-rows-[1fr]">
                 {gridArticles.map((article) => (
                   <ArticleCard
                     key={article.id}
@@ -340,21 +340,23 @@ function ArticleCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden hover:border-orange-400/30 transition-all"
+      className="group flex flex-col h-full bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden hover:border-orange-400/30 transition-all"
     >
-      {article.image ? (
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-full flex-1 object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-      ) : (
-        <div className="w-full flex-1 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
-          <BookOpen size={24} className="text-white/20" />
-        </div>
-      )}
+      <div className="flex-1 overflow-hidden min-h-0">
+        {article.image ? (
+          <img
+            src={article.image}
+            alt={article.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
+            <BookOpen size={24} className="text-white/20" />
+          </div>
+        )}
+      </div>
 
-      <div className="p-2.5">
+      <div className="p-2.5 shrink-0">
         <div className="flex items-center gap-1 mb-1">
           <span className="text-[10px] text-orange-300/70 font-medium uppercase tracking-wide">
             {article.source}
