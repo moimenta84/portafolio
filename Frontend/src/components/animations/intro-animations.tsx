@@ -19,11 +19,11 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
 
   // Temporizadores para avanzar entre fases automáticamente
   useEffect(() => {
-    const lampTimer = setTimeout(() => setStage("light"), 1500);
+    const lampTimer = setTimeout(() => setStage("light"), 1000);
     const lightTimer = setTimeout(() => {
       setStage("complete");
       onComplete();
-    }, 2500);
+    }, 1800);
 
     return () => {
       clearTimeout(lampTimer);
@@ -70,8 +70,8 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
                 opacity: stage === "lamp" ? [0, 1, 0.8, 1] : 0,
                 scale: stage === "lamp" ? [0.5, 1.5, 1.2, 1.5] : 0.5,
               }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute inset-0 bg-orange-400 rounded-full blur-3xl"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="absolute inset-0 bg-orange-400 rounded-full blur-xl"
             />
             
             <div className="relative bg-orange-400/20 backdrop-blur-sm rounded-full p-6 md:p-10">
@@ -89,22 +89,22 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
           <>
             <motion.div
               initial={{ scale: 0, opacity: 1 }}
-              animate={{ scale: 30, opacity: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="absolute w-96 h-96 bg-orange-400 rounded-full blur-3xl"
+              animate={{ scale: 15, opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute w-64 h-64 bg-orange-400 rounded-full blur-xl"
             />
 
             <motion.div
               initial={{ scale: 0, opacity: 0.9 }}
-              animate={{ scale: 35, opacity: 0 }}
-              transition={{ duration: 1.4, ease: "easeOut", delay: 0.1 }}
-              className="absolute w-96 h-96 bg-white rounded-full blur-2xl"
+              animate={{ scale: 18, opacity: 0 }}
+              transition={{ duration: 0.9, ease: "easeOut", delay: 0.05 }}
+              className="absolute w-64 h-64 bg-white rounded-full blur-lg"
             />
-            
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 1, times: [0, 0.4, 1] }}
+              transition={{ duration: 0.7, times: [0, 0.4, 1] }}
               className="absolute inset-0 bg-white"
             />
           </>

@@ -280,48 +280,48 @@ function FeaturedCard({
         <img
           src={article.image}
           alt={article.title}
-          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-48 md:h-56 object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
-        <div className="w-full h-40 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-          <Newspaper size={30} className="text-white/10" />
+        <div className="w-full h-48 md:h-56 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+          <Newspaper size={40} className="text-white/10" />
         </div>
       )}
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-      <div className="absolute bottom-0 left-0 right-0 p-2.5">
-        <div className="flex items-center gap-1 mb-1">
-          <span className="px-1 py-0.5 text-[8px] bg-orange-400/30 text-orange-200 rounded-full">
+      <div className="absolute bottom-0 left-0 right-0 p-3">
+        <div className="flex items-center gap-1.5 mb-1">
+          <span className="px-2 py-0.5 text-[10px] bg-orange-400/30 text-orange-200 rounded-full">
             {article.source}
           </span>
-          <span className="px-1 py-0.5 text-[8px] bg-white/10 text-white/60 rounded-full capitalize">
+          <span className="px-2 py-0.5 text-[10px] bg-white/10 text-white/60 rounded-full capitalize">
             {article.category}
           </span>
         </div>
 
-        <h2 className="text-sm md:text-base font-bold text-white mb-0.5 group-hover:text-orange-300 transition line-clamp-1">
+        <h2 className="text-base md:text-lg font-bold text-white mb-1 group-hover:text-orange-300 transition line-clamp-2">
           {article.title}
         </h2>
-        <p className="text-white/60 text-[10px] line-clamp-1 mb-1">
+        <p className="text-white/60 text-xs line-clamp-2 mb-1.5">
           {article.description}
         </p>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-[9px] text-white/40">
-            <Clock size={8} />
+          <div className="flex items-center gap-1 text-[11px] text-white/40">
+            <Clock size={10} />
             <span>{formatDate(article.published_at)}</span>
           </div>
-          <span className="flex items-center gap-1 text-[9px] text-white/40">
-            <ExternalLink size={8} />
+          <span className="flex items-center gap-1 text-[11px] text-white/40">
+            <ExternalLink size={10} />
             {new URL(article.url).hostname.replace("www.", "")}
           </span>
         </div>
       </div>
 
-      <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition">
-        <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-orange-400 text-white text-[9px] font-medium rounded-full">
-          Leer <ChevronRight size={8} />
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition">
+        <span className="flex items-center gap-0.5 px-2 py-1 bg-orange-400 text-white text-[10px] font-medium rounded-full">
+          Leer <ChevronRight size={10} />
         </span>
       </div>
     </a>
@@ -346,32 +346,32 @@ function ArticleCard({
         <img
           src={article.image}
           alt={article.title}
-          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
-        <div className="w-full h-40 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
-          <BookOpen size={14} className="text-white/20" />
+        <div className="w-full h-44 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
+          <BookOpen size={24} className="text-white/20" />
         </div>
       )}
 
-      <div className="p-1.5">
-        <div className="flex items-center gap-1 mb-0.5">
-          <span className="text-[8px] text-orange-300/70 font-medium uppercase tracking-wide">
+      <div className="p-2.5">
+        <div className="flex items-center gap-1 mb-1">
+          <span className="text-[10px] text-orange-300/70 font-medium uppercase tracking-wide">
             {article.source}
           </span>
         </div>
 
-        <h3 className="text-[10px] font-semibold text-white group-hover:text-orange-400 transition line-clamp-2 leading-snug mb-0.5">
+        <h3 className="text-sm font-semibold text-white group-hover:text-orange-400 transition line-clamp-2 leading-snug mb-1">
           {article.title}
         </h3>
 
-        <div className="flex items-center justify-between text-[8px] text-white/30">
+        <div className="flex items-center justify-between text-[10px] text-white/30">
           <span className="flex items-center gap-0.5">
-            <Clock size={7} />
+            <Clock size={10} />
             {formatDate(article.published_at)}
           </span>
           <span className="flex items-center gap-0.5">
-            <ExternalLink size={7} />
+            <ExternalLink size={10} />
             Leer
           </span>
         </div>
