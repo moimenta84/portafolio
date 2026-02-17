@@ -14,9 +14,9 @@ const Introduction = () => {
           Si puedes pensarlo, <br />
           <TypeAnimation
             sequence={[
-              "puedes programarlo",
+              "puedes imaginarlo",
               1000,
-              "puedes optimizarlo",
+              "puedes programarlo",
               1000,
               "puedes implementarlo",
               1000,
@@ -29,11 +29,7 @@ const Introduction = () => {
           />
         </h1>
 
-        <p className="mx-auto mb-2 text-xl md:mx-0 md:mb-8 text-white/80">
-          Como desarrollador frontend y creador de contenido, me dedico a
-          combinar diseno y funcionalidad para crear experiencias digitales
-          impactantes y accesibles.
-        </p>
+        <p className="mx-auto mb-2 text-xl md:mx-0 md:mb-8 text-white/80">.</p>
 
         <div className="flex items-center justify-center md:justify-start gap-3 md:gap-6 flex-wrap">
           <Link
@@ -51,7 +47,6 @@ const Introduction = () => {
             Contacta conmigo
           </Link>
         </div>
-
       </div>
     </div>
   );
