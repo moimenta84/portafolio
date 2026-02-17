@@ -23,7 +23,7 @@ export const CoverParticles = () => {
 
   return (
     init && (
-      <div className="fixed inset-0 -z-10 pointer-events-none">
+      <div className="absolute inset-0 z-0">
       <Particles
   id="tsparticles"
   style={{ backgroundColor: "transparent" }}
@@ -43,9 +43,9 @@ export const CoverParticles = () => {
       },
     },
     particles: {
-      color: { value: "#ffffff" },
+      color: { value: "#22d3ee" },
       links: {
-        color: "#ffffff",
+        color: "#22d3ee",
         distance: 150,
         enable: true,
         opacity: 0.5,

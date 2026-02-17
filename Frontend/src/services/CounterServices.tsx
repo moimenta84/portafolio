@@ -1,27 +1,22 @@
-// CounterServices.tsx — Contadores animados de la página About.
-// Muestra estadísticas que arrancan desde 0 y suben hasta su valor real
-// usando la librería react-countup para el efecto de conteo.
-// Los datos (nº de proyectos, seguidores y visitas) se obtienen
-// de la API en paralelo con Promise.all().
-
 import { useState, useEffect } from "react";
 import CountUp from "react-countup";
+import { Calendar, FolderGit2, Users, Eye } from "lucide-react";
 import { getProjects, getFollowers, getVisitCount } from "./api";
+
+const icons = [Calendar, FolderGit2, Users, Eye];
 
 interface CounterEntry {
   id: number;
   endCounter: number;
   text: string;
-  lineRight?: boolean;
-  lineRightMobile?: boolean;
 }
 
 const CounterServices = () => {
   const [counters, setCounters] = useState<CounterEntry[]>([
-    { id: 1, endCounter: 4, text: "años de experiencia", lineRight: true, lineRightMobile: true },
-    { id: 2, endCounter: 0, text: "proyectos reales", lineRight: true, lineRightMobile: false },
-    { id: 3, endCounter: 0, text: "seguidores", lineRight: true, lineRightMobile: true },
-    { id: 4, endCounter: 0, text: "visitas únicas", lineRight: false, lineRightMobile: false },
+    { id: 1, endCounter: 4, text: "Años exp." },
+    { id: 2, endCounter: 0, text: "Proyectos" },
+    { id: 3, endCounter: 0, text: "Seguidores" },
+    { id: 4, endCounter: 0, text: "Visitas" },
   ]);
 
   useEffect(() => {
@@ -40,23 +35,28 @@ const CounterServices = () => {
   }, []);
 
   return (
-    <div className="grid justify-between max-w-3xl grid-cols-2 gap-2 mx-auto my-3 md:flex md:grid-cols-4 md:gap-4">
-      {counters.map(({ id, endCounter, text, lineRight, lineRightMobile }) => (
-        <div key={id} className={lineRight ? "ltr" : ""}>
+    <>
+      {counters.map(({ id, endCounter, text }, i) => {
+        const Icon = icons[i];
+        return (
           <div
-            className={`
-              ${lineRight ? "px-3 border-2 border-transparent md:border-e-gray-100" : ""}
-              ${lineRightMobile ? "border-e-gray-100" : ""}
-            `}
+            key={id}
+            className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3"
           >
-            <p className="flex mb-1 text-xl font-extrabold md:text-2xl text-secondary">
-              + <CountUp end={endCounter} start={0} duration={5} />
-            </p>
-            <p className="text-xs uppercase max-w-[100px]">{text}</p>
+            <div className="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center shrink-0">
+              <Icon size={14} className="text-cyan-400" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-white leading-none">
+                <CountUp end={endCounter} start={0} duration={4} />
+                <span className="text-cyan-400">+</span>
+              </p>
+              <p className="text-[10px] text-white/40 uppercase tracking-wider">{text}</p>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        );
+      })}
+    </>
   );
 };
 

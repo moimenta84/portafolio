@@ -49,21 +49,19 @@ function App() {
       {/* Animación de intro (bombilla que se enciende) — solo la primera vez */}
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
 
-      <div className="min-h-screen">
-        <BrowserRouter>
-          <VisitTracker />
-          {/* Todas las rutas comparten el Layout (Header + Navbar + contenido) */}
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/newsletter" element={<Newsletter />} />
-              <Route path="/contact" element={<Contact />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <VisitTracker />
+        {/* Todas las rutas comparten el Layout (Header + Navbar + contenido) */}
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

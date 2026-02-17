@@ -38,7 +38,7 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[100] bg-gradient-to-br from-[#6410be] to-[#1b1026] flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[100] bg-gradient-to-br from-[#0f172a] to-[#030712] flex items-center justify-center overflow-hidden"
     >
       <CoverParticles />
 
@@ -71,13 +71,13 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
                 scale: stage === "lamp" ? [0.5, 1.5, 1.2, 1.5] : 0.5,
               }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="absolute inset-0 bg-orange-400 rounded-full blur-xl"
+              className="absolute inset-0 bg-cyan-400 rounded-full blur-xl"
             />
             
-            <div className="relative bg-orange-400/20 backdrop-blur-sm rounded-full p-6 md:p-10">
+            <div className="relative bg-cyan-400/20 backdrop-blur-sm rounded-full p-6 md:p-10">
               <Lightbulb 
                 size={100} 
-                className="text-orange-400"
+                className="text-cyan-400"
                 strokeWidth={2}
               />
             </div>
@@ -91,7 +91,7 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
               initial={{ scale: 0, opacity: 1 }}
               animate={{ scale: 15, opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute w-64 h-64 bg-orange-400 rounded-full blur-xl"
+              className="absolute w-64 h-64 bg-cyan-400 rounded-full blur-xl"
             />
 
             <motion.div

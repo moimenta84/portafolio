@@ -73,7 +73,7 @@ const ContactForm = () => {
               onChange={handleChange}
               placeholder="Tu nombre"
               required
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-orange-400 transition text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-cyan-400 transition text-sm"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ const ContactForm = () => {
               onChange={handleChange}
               placeholder="tu@email.com"
               required
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-orange-400 transition text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-cyan-400 transition text-sm"
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ const ContactForm = () => {
             onChange={handleChange}
             placeholder="¿De qué quieres hablar?"
             required
-            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-orange-400 transition text-sm"
+            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-cyan-400 transition text-sm"
           />
         </div>
 
@@ -114,7 +114,7 @@ const ContactForm = () => {
             placeholder="Cuéntame sobre tu proyecto..."
             required
             rows={3}
-            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-orange-400 transition resize-none text-sm"
+            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-cyan-400 transition resize-none text-sm"
           />
         </div>
 
@@ -122,7 +122,7 @@ const ContactForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-4 py-2 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="w-full px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
         >
           {loading ? (
             <>Enviando...</>

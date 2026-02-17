@@ -66,7 +66,7 @@ const ReviewSection = () => {
       <div className="grid md:grid-cols-[auto_1fr] gap-4 items-start">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-400/20 text-orange-300 rounded-full text-xs font-medium">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/20 text-cyan-300 rounded-full text-xs font-medium">
             <MessageSquare size={12} />
             Opiniones
           </div>
@@ -143,7 +143,7 @@ const ReviewSection = () => {
             <button
               type="submit"
               disabled={submitting || !name.trim() || !comment.trim() || rating === 0}
-              className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-400 to-pink-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all text-xs shrink-0"
+              className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-cyan-500 to-teal-400 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all text-xs shrink-0"
             >
               <Send size={10} />
               Enviar
@@ -155,7 +155,7 @@ const ReviewSection = () => {
       {/* Lista de reviews en columna */}
       {reviews.length > 0 && (
         <div className="flex flex-col gap-2 mt-2">
-          {reviews.slice(0, 4).map((review) => (
+          {reviews.map((review) => (
             <div
               key={review.id}
               className="bg-white/5 border border-white/10 rounded-lg px-4 py-2.5"
@@ -163,7 +163,7 @@ const ReviewSection = () => {
               {/* Cabecera: nombre a la izquierda, estrellas a la derecha */}
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-teal-400 flex items-center justify-center">
                     <User size={12} className="text-white" />
                   </div>
                   <span className="font-medium text-white text-sm">{review.name}</span>

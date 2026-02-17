@@ -128,7 +128,7 @@ const VideoSlider = () => {
                     </div>
 
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-20 h-20 bg-orange-400 rounded-full flex items-center justify-center">
+                      <div className="w-20 h-20 bg-cyan-500 rounded-full flex items-center justify-center">
                         <svg
                           className="w-8 h-8 text-white ml-1"
                           fill="currentColor"
@@ -168,7 +168,7 @@ const VideoSlider = () => {
               onClick={() => goToSlide(index)}
               className={`w-2 h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-orange-400 w-8"
+                  ? "bg-cyan-500 w-8"
                   : "bg-white/30 hover:bg-white/50"
               }`}
               aria-label={`Go to video ${index + 1}`}

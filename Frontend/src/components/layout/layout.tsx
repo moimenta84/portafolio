@@ -1,29 +1,32 @@
-// Layout.tsx — Estructura visual principal que envuelve todas las páginas.
-// Usa flexbox vertical: Header arriba, contenido scrollable en medio, Navbar abajo.
-// El fondo degradado púrpura se aplica aquí para toda la app.
-// <Outlet /> es donde React Router renderiza la página activa (Home, About, etc.).
+// Layout.tsx
 
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const Layout = () => {
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-purple-800 via-violet-900 to-purple-900 overflow-hidden">
-      {/* Header fijo con logo, botón de seguir y redes sociales */}
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-gray-950 to-slate-900 overflow-hidden">
+      
+      {/* Header */}
       <header className="shrink-0 relative z-10">
         <Header />
       </header>
 
-      {/* Área de contenido principal — aquí se renderiza cada página */}
-      <main className="flex-1 min-h-0 overflow-y-auto">
+      {/* Contenido scrollable */}
+      <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col">
         <Outlet />
       </main>
 
-      {/* Navbar fija en la parte inferior con iconos de navegación */}
+      {/* Footer + Navbar fijos abajo */}
+      <footer className="shrink-0">
+        <Footer />
+      </footer>
       <nav className="shrink-0 relative z-10">
         <NavBar />
       </nav>
+
     </div>
   );
 };

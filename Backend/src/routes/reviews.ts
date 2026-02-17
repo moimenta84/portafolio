@@ -3,10 +3,19 @@ import db from "../db/database.js";
 
 const router = Router();
 
-// GET /api/reviews - List all reviews
+// GET /api/reviews - Top 3 reviews by rating (public)
 router.get("/", (_req, res) => {
   const reviews = db
-    .prepare("SELECT id, name, comment, rating, created_at FROM reviews ORDER BY created_at DESC")
+    .prepare("SELECT id, name, comment, rating, created_at FROM reviews ORDER BY rating DESC, created_at DESC LIMIT 3")
+    .all();
+
+  res.json(reviews);
+});
+
+// GET /api/reviews/all - All reviews (admin)
+router.get("/all", (_req, res) => {
+  const reviews = db
+    .prepare("SELECT id, name, comment, rating, ip, created_at FROM reviews ORDER BY created_at DESC")
     .all();
 
   res.json(reviews);
@@ -35,6 +44,20 @@ router.post("/", (req, res) => {
   const review = db.prepare("SELECT id, name, comment, rating, created_at FROM reviews WHERE id = ?").get(result.lastInsertRowid);
 
   res.status(201).json(review);
+});
+
+// DELETE /api/reviews/:id - Delete a review (admin)
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  const existing = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id);
+  if (!existing) {
+    res.status(404).json({ error: "Review no encontrada" });
+    return;
+  }
+
+  db.prepare("DELETE FROM reviews WHERE id = ?").run(id);
+  res.json({ message: "Review eliminada" });
 });
 
 export default router;

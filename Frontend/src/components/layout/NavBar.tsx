@@ -1,6 +1,6 @@
 // NavBar.tsx — Barra de navegación inferior con iconos.
 // Recorre el array itemsNavbar para pintar cada icono como enlace.
-// La ruta activa se resalta con fondo naranja (bg-secondary).
+// La ruta activa se resalta con fondo naranja (bg-cyan-500).
 // Usa MotionTransition para animarse al aparecer.
 
 import { Link, useLocation } from "react-router-dom";
@@ -23,8 +23,8 @@ const Navbar = () => {
               key={item.id}
               className={`
                 px-3 py-2 rounded-full cursor-pointer transition duration-150
-                hover:bg-secondary
-                ${pathname === item.link ? "bg-secondary" : ""}
+                hover:bg-cyan-500
+                ${pathname === item.link ? "bg-cyan-500" : ""}
               `}
             >
               <Link to={item.link}>{item.icon}</Link>

@@ -1,9 +1,3 @@
-// Newsletter.tsx — Agregador de noticias tech.
-// Consume la API de noticias y las muestra en un layout tipo periódico digital:
-// artículo destacado grande, grid de noticias secundarias y sidebar de tendencias.
-// Permite filtrar por fuente de noticias y suscribirse por email.
-// Incluye un skeleton de carga animado mientras se obtienen los datos.
-
 import { useState, useEffect, useCallback } from "react";
 import {
   RefreshCw,
@@ -47,7 +41,6 @@ const Newsletter = () => {
       const endpoint = sourceId === "all" ? "/api/news" : `/api/news/${sourceId}`;
       const res = await fetch(endpoint);
       const data = await res.json();
-
       setArticles(data.articles || []);
       if (data.sources) setSources(data.sources);
     } catch {
@@ -61,9 +54,7 @@ const Newsletter = () => {
     fetchNews(activeSource);
   }, [activeSource, fetchNews]);
 
-  const handleSourceChange = (id: string) => {
-    setActiveSource(id);
-  };
+  const handleSourceChange = (id: string) => setActiveSource(id);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,30 +76,26 @@ const Newsletter = () => {
   };
 
   const featured = articles[0];
-  const gridArticles = articles.slice(1, 3);
-  const sidebarArticles = articles.slice(3, 10);
+  const secondaryArticles = articles.slice(1, 5);
+  const trendingArticles = articles.slice(5, 12);
 
   return (
-      <section className="relative min-h-full flex flex-col">
-      <div className="max-w-7xl mx-auto text-white px-4 flex-1 flex flex-col min-h-0 py-2">
-        {/* CABECERA + SUSCRIPCIÓN */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-2">
-          <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-400/20 text-orange-300 rounded-full text-xs font-medium">
+    <section className="relative flex-1 flex flex-col overflow-x-hidden">
+      <div className="max-w-6xl mx-auto text-white px-4 flex-1 flex flex-col min-h-0 py-3 w-full">
+
+        {/* HEADER */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
               <Newspaper size={12} />
-              Noticias Dev
+              Feed
             </div>
-            <h1 className="text-lg sm:text-xl font-bold">
-              Noticias de{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500">
-                tecnología
-              </span>
-            </h1>
+            <div className="hidden sm:block flex-1 h-px bg-gradient-to-r from-white/10 to-transparent w-16" />
           </div>
 
           <form
             onSubmit={handleSubscribe}
-            className="flex gap-1.5 bg-white/5 border border-white/10 rounded-xl p-1"
+            className="flex gap-1 bg-white/5 border border-white/10 rounded-lg p-0.5"
           >
             <input
               type="email"
@@ -116,26 +103,26 @@ const Newsletter = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-1 min-w-0 px-3 py-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none text-xs"
+              className="min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/30 focus:outline-none text-xs"
             />
             <button
               type="submit"
-              className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-400 to-pink-500 text-white font-semibold rounded-lg transition-all text-xs shrink-0"
+              className="flex items-center gap-1 px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-md transition text-xs shrink-0"
             >
               <Send size={10} />
-              {subscribed ? "¡Suscrito!" : "Suscribirse"}
+              {subscribed ? "Listo" : "Suscribir"}
             </button>
           </form>
         </div>
 
-        {/* PESTAÑAS DE FUENTES */}
-        <div className="flex items-center gap-1.5 mb-2 overflow-x-auto pb-1 scrollbar-hide">
+        {/* TABS */}
+        <div className="flex items-center gap-1 mb-3 overflow-x-auto pb-1 scrollbar-hide">
           <button
             onClick={() => handleSourceChange("all")}
-            className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+            className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
               activeSource === "all"
-                ? "bg-orange-400 text-white shadow-lg shadow-orange-400/25"
-                : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+                ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25"
+                : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"
             }`}
           >
             Todas
@@ -144,113 +131,82 @@ const Newsletter = () => {
             <button
               key={src.id}
               onClick={() => handleSourceChange(src.id)}
-              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+              className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
                 activeSource === src.id
-                  ? "bg-orange-400 text-white shadow-lg shadow-orange-400/25"
-                  : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+                  ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25"
+                  : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"
               }`}
             >
               {src.name}
             </button>
           ))}
-
           <button
             onClick={() => fetchNews(activeSource)}
             disabled={loading}
-            className="ml-auto p-1 text-white/40 hover:text-orange-400 transition"
-            title="Actualizar"
+            className="ml-auto p-1 text-white/30 hover:text-cyan-400 transition"
           >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
 
+        {/* CONTENT */}
         {loading ? (
           <LoadingSkeleton />
         ) : articles.length === 0 ? (
-          <div className="text-center py-10">
-            <BookOpen size={36} className="mx-auto text-white/20 mb-3" />
-            <p className="text-white/40 text-sm">No se pudieron cargar las noticias</p>
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <BookOpen size={32} className="text-white/15 mb-2" />
+            <p className="text-white/30 text-xs mb-2">No se pudieron cargar las noticias</p>
             <button
               onClick={() => fetchNews(activeSource)}
-              className="mt-2 px-3 py-1.5 bg-orange-400 rounded-lg text-xs"
+              className="px-3 py-1 bg-cyan-500 rounded-lg text-xs"
             >
               Reintentar
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:items-stretch">
-            {/* CONTENIDO PRINCIPAL */}
-            <div className="lg:col-span-2 flex flex-col gap-3">
-              {/* ARTÍCULO DESTACADO */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 flex-1 min-h-0">
+
+            {/* MAIN CONTENT */}
+            <div className="flex flex-col gap-3 min-h-0">
+              {/* Featured */}
               {featured && <FeaturedCard article={featured} formatDate={formatDate} />}
 
-              {/* GRID DE ARTÍCULOS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
-                {gridArticles.map((article) => (
-                  <ArticleCard
-                    key={article.id}
-                    article={article}
-                    formatDate={formatDate}
-                  />
+              {/* Secondary articles - compact horizontal cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {secondaryArticles.map((article) => (
+                  <CompactCard key={article.id} article={article} formatDate={formatDate} />
                 ))}
               </div>
             </div>
 
-            {/* BARRA LATERAL */}
-            <div className="space-y-3 min-h-0">
-              {/* TENDENCIAS */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-3">
-                <h3 className="flex items-center gap-1.5 text-sm font-bold mb-2">
-                  <TrendingUp size={14} className="text-orange-400" />
-                  Más recientes
-                </h3>
-                <div className="space-y-2">
-                  {sidebarArticles.map((article, i) => (
-                    <a
-                      key={article.id}
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex gap-2 group"
-                    >
-                      <span className="text-lg font-black text-white/10 group-hover:text-orange-400/30 transition w-6 shrink-0">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-white/80 group-hover:text-orange-400 transition line-clamp-1 leading-snug">
-                          {article.title}
-                        </p>
-                        <div className="flex items-center gap-1.5 text-[10px] text-white/40">
-                          <span>{article.source}</span>
-                          <span>·</span>
-                          <span>{formatDate(article.published_at)}</span>
-                        </div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* FUENTES */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-3">
-                <h3 className="text-sm font-bold mb-2">Nuestras fuentes</h3>
-                <div className="space-y-1.5">
-                  {sources.map((src) => (
-                    <button
-                      key={src.id}
-                      onClick={() => handleSourceChange(src.id)}
-                      className="flex items-center justify-between w-full px-2 py-1 rounded-lg bg-white/5 hover:bg-orange-400/10 transition group"
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <Newspaper size={10} className="text-orange-400/60" />
-                        <span className="text-xs text-white/70 group-hover:text-orange-300 transition">
-                          {src.name}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-white/30 capitalize">{src.category}</span>
-                    </button>
-                  ))}
-                </div>
+            {/* SIDEBAR */}
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 min-h-0">
+              <h3 className="flex items-center gap-1.5 text-xs font-bold mb-3 text-white/70">
+                <TrendingUp size={12} className="text-cyan-400" />
+                Tendencias
+              </h3>
+              <div className="space-y-2.5">
+                {trendingArticles.map((article, i) => (
+                  <a
+                    key={article.id}
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex gap-2 group"
+                  >
+                    <span className="text-sm font-black text-white/[0.06] group-hover:text-cyan-400/20 transition w-5 shrink-0 leading-tight">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-medium text-white/60 group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+                        {article.title}
+                      </p>
+                      <p className="text-[10px] text-white/25 mt-0.5">
+                        {article.source} · {formatDate(article.published_at)}
+                      </p>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
@@ -274,53 +230,49 @@ function FeaturedCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block relative overflow-hidden rounded-xl bg-white/5 border border-white/10 shrink-0"
+      className="group block relative overflow-hidden rounded-xl border border-white/10 hover:border-cyan-400/20 transition-all shrink-0"
     >
       {article.image ? (
         <img
           src={article.image}
           alt={article.title}
-          className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-36 sm:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
-        <div className="w-full h-40 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-          <Newspaper size={40} className="text-white/10" />
+        <div className="w-full h-36 sm:h-44 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center">
+          <Newspaper size={32} className="text-white/10" />
         </div>
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-center gap-1.5 mb-1">
-          <span className="px-2 py-0.5 text-[10px] bg-orange-400/30 text-orange-200 rounded-full">
+          <span className="px-2 py-0.5 text-[10px] bg-cyan-400/20 text-cyan-200 rounded-full font-medium">
             {article.source}
           </span>
-          <span className="px-2 py-0.5 text-[10px] bg-white/10 text-white/60 rounded-full capitalize">
+          <span className="px-2 py-0.5 text-[10px] bg-white/10 text-white/50 rounded-full capitalize">
             {article.category}
           </span>
         </div>
-
-        <h2 className="text-base md:text-lg font-bold text-white mb-1 group-hover:text-orange-300 transition line-clamp-2">
+        <h2 className="text-sm sm:text-base font-bold text-white group-hover:text-cyan-300 transition line-clamp-2 leading-snug mb-1">
           {article.title}
         </h2>
-        <p className="text-white/60 text-xs line-clamp-2 mb-1.5">
-          {article.description}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-[11px] text-white/40">
-            <Clock size={10} />
-            <span>{formatDate(article.published_at)}</span>
-          </div>
-          <span className="flex items-center gap-1 text-[11px] text-white/40">
-            <ExternalLink size={10} />
-            {new URL(article.url).hostname.replace("www.", "")}
+        <p className="text-white/50 text-[11px] line-clamp-1 mb-1">{article.description}</p>
+        <div className="flex items-center gap-3 text-[10px] text-white/30">
+          <span className="flex items-center gap-1">
+            <Clock size={9} />
+            {formatDate(article.published_at)}
+          </span>
+          <span className="flex items-center gap-1 truncate">
+            <ExternalLink size={9} />
+            <span className="truncate">{new URL(article.url).hostname.replace("www.", "")}</span>
           </span>
         </div>
       </div>
 
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition">
-        <span className="flex items-center gap-0.5 px-2 py-1 bg-orange-400 text-white text-[10px] font-medium rounded-full">
+        <span className="flex items-center gap-0.5 px-2 py-0.5 bg-cyan-500 text-white text-[10px] font-medium rounded-full">
           Leer <ChevronRight size={10} />
         </span>
       </div>
@@ -328,7 +280,7 @@ function FeaturedCard({
   );
 }
 
-function ArticleCard({
+function CompactCard({
   article,
   formatDate,
 }: {
@@ -340,43 +292,37 @@ function ArticleCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 overflow-hidden hover:border-orange-400/30 transition-all"
+      className="group flex gap-2.5 bg-white/[0.03] border border-white/10 rounded-lg p-2 hover:border-cyan-400/20 transition-all"
     >
-      <div className="overflow-hidden">
+      {/* Thumbnail */}
+      <div className="w-20 h-16 rounded-md overflow-hidden shrink-0">
         {article.image ? (
           <img
             src={article.image}
             alt={article.title}
-            className="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-60 bg-gradient-to-br from-purple-700/50 to-pink-700/50 flex items-center justify-center">
-            <BookOpen size={24} className="text-white/20" />
+          <div className="w-full h-full bg-slate-700/50 flex items-center justify-center">
+            <BookOpen size={14} className="text-white/15" />
           </div>
         )}
       </div>
 
-      <div className="p-2.5 flex-1 flex flex-col">
-        <div className="flex items-center gap-1 mb-1">
-          <span className="text-[10px] text-orange-300/70 font-medium uppercase tracking-wide">
+      {/* Text */}
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <div>
+          <p className="text-[10px] text-cyan-400/60 font-medium uppercase tracking-wider mb-0.5">
             {article.source}
-          </span>
+          </p>
+          <h3 className="text-xs font-semibold text-white/80 group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+            {article.title}
+          </h3>
         </div>
-
-        <h3 className="text-sm font-semibold text-white group-hover:text-orange-400 transition line-clamp-2 leading-snug mb-1">
-          {article.title}
-        </h3>
-
-        <div className="mt-auto flex items-center justify-between text-[10px] text-white/30">
-          <span className="flex items-center gap-0.5">
-            <Clock size={10} />
-            {formatDate(article.published_at)}
-          </span>
-          <span className="flex items-center gap-0.5">
-            <ExternalLink size={10} />
-            Leer
-          </span>
-        </div>
+        <span className="flex items-center gap-1 text-[10px] text-white/25 mt-1">
+          <Clock size={9} />
+          {formatDate(article.published_at)}
+        </span>
       </div>
     </a>
   );
@@ -384,25 +330,23 @@ function ArticleCard({
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 flex-1">
-      <div className="lg:col-span-2 space-y-3">
-        <div className="h-32 bg-white/5 rounded-xl animate-pulse" />
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 flex-1">
+      <div className="space-y-3">
+        <div className="h-36 bg-white/5 rounded-xl animate-pulse" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white/5 rounded-lg animate-pulse">
-              <div className="h-14 bg-white/10 rounded-t-lg" />
-              <div className="p-2 space-y-1">
+            <div key={i} className="flex gap-2 bg-white/5 rounded-lg p-2 animate-pulse">
+              <div className="w-20 h-16 bg-white/10 rounded-md shrink-0" />
+              <div className="flex-1 space-y-1.5 py-1">
                 <div className="h-2 bg-white/10 rounded w-1/3" />
-                <div className="h-3 bg-white/10 rounded w-full" />
+                <div className="h-2.5 bg-white/10 rounded w-full" />
+                <div className="h-2.5 bg-white/10 rounded w-2/3" />
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="space-y-3">
-        <div className="h-48 bg-white/5 rounded-xl animate-pulse" />
-        <div className="h-32 bg-white/5 rounded-xl animate-pulse" />
-      </div>
+      <div className="bg-white/5 rounded-xl animate-pulse" />
     </div>
   );
 }

@@ -44,7 +44,7 @@ const DownloadCV = () => {
         onClick={handleDownload}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className="relative w-full overflow-hidden flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-400 to-pink-500 text-white font-semibold rounded-xl cursor-pointer text-sm"
+        className="relative w-full overflow-hidden flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-teal-400 text-white font-semibold rounded-xl cursor-pointer text-sm"
       >
         {/* Shimmer effect */}
         <motion.span

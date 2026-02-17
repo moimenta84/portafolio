@@ -1,9 +1,5 @@
-// Projects.tsx — Página de proyectos.
-// Carga los proyectos desde la API; si falla, usa datos locales de respaldo.
-// Cada proyecto se muestra en una tarjeta (ProjectCard) con sistema de likes.
-// Al final incluye ReviewSection para que los usuarios dejen opiniones con estrellas.
-
 import { useState, useEffect } from "react";
+import { FolderGit2 } from "lucide-react";
 import ProjectCard from "../components/projectCard/ProjectCard";
 import ReviewSection from "../components/reviews/ReviewSection";
 import { getProjects, toggleLike } from "../services/api";
@@ -14,7 +10,6 @@ const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Cargamos proyectos de la API; si hay error, usamos los datos locales
   useEffect(() => {
     getProjects()
       .then((apiProjects) =>
@@ -33,7 +28,6 @@ const Projects = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Alterna el like de un proyecto y actualiza el estado local
   const handleToggleLike = async (id: number) => {
     try {
       const result = await toggleLike(id);
@@ -50,32 +44,38 @@ const Projects = () => {
   };
 
   return (
-      <section className="relative min-h-full flex flex-col px-3 md:px-4 pb-4">
+    <section className="relative flex-1 flex flex-col px-4 md:px-6 py-4">
+      <div className="max-w-5xl mx-auto w-full flex flex-col flex-1">
 
-      <div className="text-center mb-3 pt-2">
-        <h1 className="text-2xl font-bold text-white tracking-wide">
-          Mis Proyectos
-        </h1>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center">
-          <div className="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin" />
+        {/* HEADER */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
+            <FolderGit2 size={12} />
+            Proyectos
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
         </div>
-      ) : (
-        <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
-          {projects.slice(0, 4).map((project) => (
-            <div key={project.id} className="w-full sm:w-[calc(50%-0.5rem)]">
+
+        {/* PROJECTS GRID */}
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {projects.slice(0, 4).map((project) => (
               <ProjectCard
+                key={project.id}
                 project={project}
                 onToggleLike={handleToggleLike}
               />
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      <ReviewSection />
+        {/* REVIEWS */}
+        <ReviewSection />
+      </div>
     </section>
   );
 };

@@ -15,14 +15,14 @@ const ContactInfo = () => {
         <div className="space-y-3">
           {/* Email */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Mail className="text-orange-400" size={16} />
+            <div className="w-8 h-8 bg-cyan-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Mail className="text-cyan-400" size={16} />
             </div>
             <div>
               <h3 className="font-semibold text-sm">Email</h3>
               <a
                 href="mailto:ikerastra@hotmail.com"
-                className="text-white/80 hover:text-orange-400 transition text-xs"
+                className="text-white/80 hover:text-cyan-400 transition text-xs"
               >
                 ikerastra@hotmail.com
               </a>
@@ -31,14 +31,14 @@ const ContactInfo = () => {
 
           {/* Teléfono */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Phone className="text-orange-400" size={16} />
+            <div className="w-8 h-8 bg-cyan-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Phone className="text-cyan-400" size={16} />
             </div>
             <div>
               <h3 className="font-semibold text-sm">Teléfono</h3>
               <a
                 href="tel:+34660655985"
-                className="text-white/80 hover:text-orange-400 transition text-xs"
+                className="text-white/80 hover:text-cyan-400 transition text-xs"
               >
                 660 655 985
               </a>
@@ -47,8 +47,8 @@ const ContactInfo = () => {
 
           {/* Ubicación */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MapPin className="text-orange-400" size={16} />
+            <div className="w-8 h-8 bg-cyan-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <MapPin className="text-cyan-400" size={16} />
             </div>
             <div>
               <h3 className="font-semibold text-sm">Ubicación</h3>
@@ -69,7 +69,7 @@ const ContactInfo = () => {
                 href={network.src}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 bg-white/10 hover:bg-orange-400 rounded-lg flex items-center justify-center transition"
+                className="w-9 h-9 bg-white/10 hover:bg-cyan-500 rounded-lg flex items-center justify-center transition"
               >
                 {network.logo}
               </a>
@@ -89,7 +89,7 @@ const ContactInfo = () => {
               <span className="text-white font-semibold">Bajo petición</span>
             </div>
           </div>
-          <p className="text-orange-400 font-semibold text-xs mt-2">
+          <p className="text-cyan-400 font-semibold text-xs mt-2">
             Respuesta: 24-48h
           </p>
         </div>

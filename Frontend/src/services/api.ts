@@ -54,5 +54,8 @@ export const getVisitCount = () => fetchJson<VisitsData>("/visits/count");
 
 // Reviews
 export const getReviews = () => fetchJson<Review[]>("/reviews");
+export const getAllReviews = () => fetchJson<Review[]>("/reviews/all");
 export const createReview = (data: { name: string; comment: string; rating: number }) =>
   fetchJson<Review>("/reviews", { method: "POST", body: JSON.stringify(data) });
+export const deleteReview = (id: number) =>
+  fetchJson<{ message: string }>(`/reviews/${id}`, { method: "DELETE" });

@@ -1,38 +1,54 @@
-// TimeLine.tsx — Línea temporal visual de la trayectoria profesional.
-// Recorre dataAboutPage y muestra cada etapa (2022-2025) con un punto
-// en la línea vertical, fecha en badge verde, título y descripción.
-// Los pseudo-elementos CSS (before/after) crean la línea y los puntos.
-
+import { Code2, Layers, Server, Rocket } from "lucide-react";
 import { dataAboutPage } from "../../data/dataAboutPage";
 
+const icons = [Code2, Layers, Server, Rocket];
+
 const TimeLine = () => {
-    return (
-        <div className="flex flex-col justify-center divide-y divide-slate-200">
-            <div className="w-full max-w-3xl mx-auto">
-                <div className="-my-3">
-                    {dataAboutPage.map((data) => (
-                        <div key={data.id} className="relative py-3 pl-8 sm:pl-32 group">
-                            <h3 className="mb-0.5 text-lg font-bold sm:mb-0">{data.title}</h3>
-                            <div className="flex flex-col sm:flex-row items-start mb-0.5
-                                        group-last:before:hidden before:absolute
-                                        before:left-2 sm:before:left-0 before:h-full
-                                        before:px-px before:bg-slate-300 sm:before:ml-[6.5rem]
-                                        before:self-start before:-translate-x-1/2
-                                        before:translate-y-3 after:absolute after:left-2
-                                        sm:after:left-0 after:w-2 after:h-2 after:bg-indigo-600
-                                        after:border-4 after:box-content after:border-slate-50
-                                        after:rounded-full sm:after:ml-[6.5rem] after:-translate-x-1/2
-                                        after:translate-y-1.5">
-                                <time className="sm:absolute left-0 translate-y-0.5 inline-flex items-center justify-center text-xs font-semibold uppercase w-20 h-6 mb-1 sm:mb-0 text-emerald-600 bg-emerald-100 rounded-full">{data.date}</time>
-                                <div className="text-base font-bold text-gray-400">{data.subtitle}</div>
-                            </div>
-                            <div className="text-sm text-slate-400">{data.description}</div>
-                        </div>
-                    ))}
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {dataAboutPage.map((data, i) => {
+        const Icon = icons[i] || Code2;
+        return (
+          <div
+            key={data.id}
+            className="group relative bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400/30 transition-all duration-300"
+          >
+            {/* Gradient accent top */}
+            <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+            <div className="flex items-start gap-3">
+              {/* Icon */}
+              <div className="w-9 h-9 rounded-lg bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center shrink-0 group-hover:bg-cyan-400/20 transition-colors">
+                <Icon size={16} className="text-cyan-400" />
+              </div>
+
+              <div className="min-w-0">
+                {/* Year + Title */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-bold text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full">
+                    {data.date}
+                  </span>
+                  <h3 className="text-sm font-bold text-white truncate">
+                    {data.title}
+                  </h3>
                 </div>
+
+                {/* Subtitle as tag */}
+                <p className="text-xs font-medium text-white/50 mb-1.5">
+                  {data.subtitle}
+                </p>
+
+                {/* Description */}
+                <p className="text-xs text-white/40 leading-relaxed">
+                  {data.description}
+                </p>
+              </div>
             </div>
-        </div>
-    );
-}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default TimeLine;
