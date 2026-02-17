@@ -3,18 +3,21 @@ import CounterServices from "../services/CounterServices";
 
 const About = () => {
   return (
-    <section className="relative flex-1 flex flex-col justify-center py-4">
-      <div className="max-w-5xl mx-auto px-4 md:px-6 text-white w-full space-y-4">
+    <section className="relative flex-1 flex flex-col justify-center py-6">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 text-white w-full space-y-6">
 
         {/* HEADER */}
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold">
-            Mi <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400">trayectoria</span>
+        <header>
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
+            Mi{" "}
+            <span className="text-white">
+              trayectoria
+            </span>
           </h2>
-          <p className="text-xs text-white/40 mt-1">
-            Del primer <code className="text-cyan-400/60 bg-white/5 px-1 rounded">console.log</code> al deploy en producción
+          <p className="text-sm text-white mt-2 max-w-xl leading-relaxed">
+            Desarrollador en formación continua, con 4 años de práctica autodidacta en frontend con React y backend con Spring Boot, orientado a integrarse en equipos de desarrollo profesional.
           </p>
-        </div>
+        </header>
 
         {/* STATS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">

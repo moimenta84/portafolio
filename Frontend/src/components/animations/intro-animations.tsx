@@ -6,7 +6,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CoverParticles } from "../ui/CoverParticles";
 import { Lightbulb } from "lucide-react";
 
 interface IntroAnimationProps {
@@ -40,8 +39,6 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
       transition={{ duration: 0.5 }}
       className="fixed inset-0 z-[100] bg-gradient-to-br from-[#0f172a] to-[#030712] flex items-center justify-center overflow-hidden"
     >
-      <CoverParticles />
-
       <div className="relative z-10 flex items-center justify-center w-full h-full">
 
         {/* Lámpara */}

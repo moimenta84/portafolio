@@ -37,7 +37,7 @@ const Header = () => {
       position="bottom"
       className="w-full"
     >
-      <header className="w-full relative z-10 border-b border-white/10" style={{ backgroundColor: "#0f172a" }}>
+      <header className="w-full relative z-10 border-b border-white/10 bg-darkBg/60 backdrop-blur-md">
         <div className="flex items-center justify-between h-16 max-w-6xl mx-auto px-4 relative z-10">
           <Link to="/" className="group">
             <h1 className="text-xl sm:text-2xl font-mono text-white">

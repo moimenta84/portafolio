@@ -2,7 +2,7 @@ import { socialNetworks } from "../../data/social";
 
 const Footer = () => {
   return (
-    <footer className="w-full border-t border-white/10 py-3 px-4" style={{ backgroundColor: "#0f172a" }}>
+    <footer className="w-full border-t border-white/10 py-3 px-4 bg-darkBg/60 backdrop-blur-md">
       <div className="flex items-center justify-between max-w-6xl mx-auto">
         <p className="text-white/40 text-xs">
           © {new Date().getFullYear()} iker.martinez

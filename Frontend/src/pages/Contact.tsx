@@ -14,10 +14,10 @@ const Contact = () => {
         {/* TÍTULO */}
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">
-            Contacto
+            Hablemos de tu proyecto
           </h1>
           <p className="text-sm opacity-80">
-            ¿Tienes algún proyecto en mente? ¡Hablemos!
+            Cuéntame tu idea y te envío un presupuesto sin compromiso.
           </p>
         </div>
 

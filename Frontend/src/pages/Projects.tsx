@@ -48,12 +48,17 @@ const Projects = () => {
       <div className="max-w-5xl mx-auto w-full flex flex-col flex-1">
 
         {/* HEADER */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
-            <FolderGit2 size={12} />
-            Proyectos
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
+              <FolderGit2 size={12} />
+              Proyectos
+            </div>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
           </div>
-          <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+          <p className="text-sm text-white/50 leading-relaxed max-w-2xl">
+            Proyectos personales orientados a entornos reales de empresa. Apps full stack y APIs REST para practicar arquitectura, buenas prácticas y flujos de trabajo de consultoría.
+          </p>
         </div>
 
         {/* PROJECTS GRID */}
