@@ -35,17 +35,17 @@ const Introduction = () => {
           impactantes y accesibles.
         </p>
 
-        <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+        <div className="flex items-center justify-center md:justify-start gap-3 md:gap-6 flex-wrap">
           <Link
             to="/projects"
-            className="px-6 py-3 rounded-full bg-secondary text-white font-semibold
+            className="px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-secondary text-white font-semibold text-sm md:text-base
                        hover:bg-orange-500 transition-colors shadow-lg shadow-secondary/25"
           >
             Ver proyectos
           </Link>
           <Link
             to="/contact"
-            className="px-6 py-3 rounded-full border-2 border-white/30 text-white font-semibold
+            className="px-5 py-2.5 md:px-6 md:py-3 rounded-full border-2 border-white/30 text-white font-semibold text-sm md:text-base
                        hover:border-secondary hover:text-secondary transition-colors"
           >
             Contacta conmigo

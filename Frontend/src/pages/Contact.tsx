@@ -9,8 +9,8 @@ import DownloadCV from "../components/contact/DownloadCV";
 
 const Contact = () => {
   return (
-     <section className="relative h-full overflow-hidden flex items-center justify-center">
-      <div className="max-w-6xl mx-auto text-white px-6 py-3">
+     <section className="relative min-h-full py-4">
+      <div className="max-w-6xl mx-auto text-white px-4 md:px-6">
         {/* TÍTULO */}
         <div className="text-center mb-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">

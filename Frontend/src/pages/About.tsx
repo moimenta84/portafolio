@@ -7,8 +7,8 @@ import CounterServices from "../services/CounterServices";
 
 const About = () => {
   return (
-    <section className="relative h-full overflow-hidden flex items-center justify-center">
-     <div className="max-w-7xl mx-auto px-6 text-white py-4">
+    <section className="relative min-h-full py-4">
+     <div className="max-w-7xl mx-auto px-4 md:px-6 text-white">
 
         {/* TÍTULO */}
         <h2 className="text-xl leading-tight text-center md:text-left md:text-3xl">
