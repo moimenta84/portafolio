@@ -4,11 +4,11 @@ const Footer = () => {
   return (
     <footer className="w-full border-t border-white/10 py-3 px-4 bg-darkBg/60 backdrop-blur-md">
       <div className="flex items-center justify-between max-w-6xl mx-auto">
-        <p className="text-white text-xs">
+        <p className="text-slate-300 text-xs">
           © {new Date().getFullYear()} iker.martinez
         </p>
 
-        <div className="flex items-center gap-3 text-white">
+        <div className="flex items-center gap-3 text-slate-300">
           {socialNetworks.map(({ id, src, logo }) => (
             <a
               key={id}
