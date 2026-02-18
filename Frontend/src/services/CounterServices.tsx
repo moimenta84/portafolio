@@ -1,33 +1,39 @@
 import { useEffect, useState, useRef } from "react";
 import { dataCounter } from "../data/dataCounter";
-import { getFollowers } from "./api";
 
-const CounterServices = () => {
-  const [followersCount, setFollowersCount] = useState<number | null>(null);
+interface CounterServicesProps {
+  followersCount: number | null;
+}
 
-  useEffect(() => {
-    getFollowers()
-      .then((data) => setFollowersCount(data.followers_count))
-      .catch(() => setFollowersCount(0));
-  }, []);
+const CounterServices = ({ followersCount }: CounterServicesProps) => {
+  const allItems = [
+    ...dataCounter.map((item) => ({
+      id: String(item.id),
+      value: item.endCounter,
+      label: item.text,
+      lineRight: item.lineRight ?? false,
+      animated: true,
+    })),
+    {
+      id: "followers",
+      value: followersCount,
+      label: "seguidores",
+      lineRight: false,
+      animated: false,
+    },
+  ];
 
   return (
     <>
-      {dataCounter.map((item) => (
+      {allItems.map((item) => (
         <CounterCard
           key={item.id}
-          value={item.endCounter}
-          label={item.text}
+          value={item.value}
+          label={item.label}
           lineRight={item.lineRight}
-          animated
+          animated={item.animated}
         />
       ))}
-      <CounterCard
-        value={followersCount}
-        label="seguidores"
-        lineRight={false}
-        animated={false}
-      />
     </>
   );
 };
@@ -35,7 +41,7 @@ const CounterServices = () => {
 interface CounterCardProps {
   value: number | null;
   label: string;
-  lineRight?: boolean;
+  lineRight: boolean;
   animated: boolean;
 }
 
@@ -46,7 +52,6 @@ function CounterCard({ value, label, lineRight, animated }: CounterCardProps) {
 
   useEffect(() => {
     if (!animated || value === null) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
