@@ -4,7 +4,7 @@
 // press shrink, y transición animada "Descargar CV" → "Descargado".
 
 import { useState } from "react";
-import { Download, FileText, CheckCircle } from "lucide-react";
+import { Download, Briefcase, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CV_PATH = "/Pdf/curriculumIkerMartinez.pdf";
@@ -31,12 +31,12 @@ const DownloadCV = () => {
       className="bg-white/10 backdrop-blur-sm rounded-2xl p-4"
     >
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-          <FileText className="text-red-400" size={16} />
+        <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Briefcase className="text-cyan-400" size={16} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-white font-medium text-sm">Curriculum Vitae</p>
-          <p className="text-white/40 text-xs">{CV_FILENAME} - PDF</p>
+          <p className="text-white/50 text-xs">Disponible en PDF</p>
         </div>
       </div>
 

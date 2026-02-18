@@ -27,7 +27,7 @@ export const CoverParticles = () => {
   return (
     <Particles
       id="tsparticles"
-      className="!fixed inset-0 pointer-events-auto"
+      className="!fixed inset-0 pointer-events-none"
       style={{ zIndex: 1 }}
       options={{
         fullScreen: false,
@@ -35,8 +35,8 @@ export const CoverParticles = () => {
         fpsLimit: mobile ? 30 : 60,
         interactivity: {
           events: {
-            onClick: { enable: true, mode: "push" },
-            onHover: { enable: !mobile, mode: "repulse" },
+            onClick: { enable: false },
+            onHover: { enable: false },
           },
           modes: {
             push: { quantity: 2 },

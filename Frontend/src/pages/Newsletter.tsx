@@ -103,14 +103,14 @@ const Newsletter = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/30 focus:outline-none text-xs"
+              className="flex-1 min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none text-xs"
             />
             <button
               type="submit"
               className="flex items-center gap-1 px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-md transition text-xs shrink-0"
             >
               <Send size={10} />
-              {subscribed ? "Listo" : "Suscribir"}
+              {subscribed ? "¡Listo!" : "Suscribir"}
             </button>
           </form>
         </div>
@@ -122,7 +122,7 @@ const Newsletter = () => {
             className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
               activeSource === "all"
                 ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25"
-                : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"
+                : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
             }`}
           >
             Todas
@@ -134,7 +134,7 @@ const Newsletter = () => {
               className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${
                 activeSource === src.id
                   ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25"
-                  : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"
+                  : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
               }`}
             >
               {src.name}
@@ -143,7 +143,7 @@ const Newsletter = () => {
           <button
             onClick={() => fetchNews(activeSource)}
             disabled={loading}
-            className="ml-auto p-1 text-white/30 hover:text-cyan-400 transition"
+            className="ml-auto p-1 text-white/50 hover:text-cyan-400 transition"
           >
             <RefreshCw size={13} className={loading ? "animate-spin" : ""} />
           </button>
@@ -154,11 +154,11 @@ const Newsletter = () => {
           <LoadingSkeleton />
         ) : articles.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center">
-            <BookOpen size={32} className="text-white/15 mb-2" />
-            <p className="text-white/30 text-xs mb-2">No se pudieron cargar las noticias</p>
+            <BookOpen size={32} className="text-white/20 mb-2" />
+            <p className="text-white/50 text-xs mb-2">No se pudieron cargar las noticias</p>
             <button
               onClick={() => fetchNews(activeSource)}
-              className="px-3 py-1 bg-cyan-500 rounded-lg text-xs"
+              className="px-3 py-1 bg-cyan-500 text-white rounded-lg text-xs"
             >
               Reintentar
             </button>
@@ -171,7 +171,7 @@ const Newsletter = () => {
               {/* Featured */}
               {featured && <FeaturedCard article={featured} formatDate={formatDate} />}
 
-              {/* Secondary articles - compact horizontal cards */}
+              {/* Secondary articles */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {secondaryArticles.map((article) => (
                   <CompactCard key={article.id} article={article} formatDate={formatDate} />
@@ -181,7 +181,7 @@ const Newsletter = () => {
 
             {/* SIDEBAR */}
             <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 min-h-0">
-              <h3 className="flex items-center gap-1.5 text-xs font-bold mb-3 text-white/70">
+              <h3 className="flex items-center gap-1.5 text-xs font-bold mb-3 text-white">
                 <TrendingUp size={12} className="text-cyan-400" />
                 Tendencias
               </h3>
@@ -194,14 +194,14 @@ const Newsletter = () => {
                     rel="noopener noreferrer"
                     className="flex gap-2 group"
                   >
-                    <span className="text-sm font-black text-white/[0.06] group-hover:text-cyan-400/20 transition w-5 shrink-0 leading-tight">
+                    <span className="text-sm font-black text-white/25 group-hover:text-cyan-400/50 transition w-5 shrink-0 leading-tight">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[11px] font-medium text-white/60 group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+                      <p className="text-[11px] font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
                         {article.title}
                       </p>
-                      <p className="text-[10px] text-white/25 mt-0.5">
+                      <p className="text-[10px] text-white/50 mt-0.5">
                         {article.source} · {formatDate(article.published_at)}
                       </p>
                     </div>
@@ -230,7 +230,7 @@ function FeaturedCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block relative overflow-hidden rounded-xl border border-white/10 hover:border-cyan-400/20 transition-all shrink-0"
+      className="group block relative overflow-hidden rounded-xl border border-white/10 hover:border-cyan-400/30 transition-all shrink-0"
     >
       {article.image ? (
         <img
@@ -240,26 +240,27 @@ function FeaturedCard({
         />
       ) : (
         <div className="w-full h-36 sm:h-44 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center">
-          <Newspaper size={32} className="text-white/10" />
+          <Newspaper size={32} className="text-white/20" />
         </div>
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+      {/* Gradiente más oscuro para que el texto blanco sea siempre legible */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/10" />
 
       <div className="absolute bottom-0 left-0 right-0 p-3">
-        <div className="flex items-center gap-1.5 mb-1">
-          <span className="px-2 py-0.5 text-[10px] bg-cyan-400/20 text-cyan-200 rounded-full font-medium">
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="px-2 py-0.5 text-[10px] bg-cyan-400/25 text-cyan-200 rounded-full font-semibold">
             {article.source}
           </span>
-          <span className="px-2 py-0.5 text-[10px] bg-white/10 text-white/50 rounded-full capitalize">
+          <span className="px-2 py-0.5 text-[10px] bg-white/15 text-white rounded-full capitalize">
             {article.category}
           </span>
         </div>
         <h2 className="text-sm sm:text-base font-bold text-white group-hover:text-cyan-300 transition line-clamp-2 leading-snug mb-1">
           {article.title}
         </h2>
-        <p className="text-white/50 text-[11px] line-clamp-1 mb-1">{article.description}</p>
-        <div className="flex items-center gap-3 text-[10px] text-white/30">
+        <p className="text-white/85 text-[11px] line-clamp-1 mb-1.5">{article.description}</p>
+        <div className="flex items-center gap-3 text-[10px] text-white/70">
           <span className="flex items-center gap-1">
             <Clock size={9} />
             {formatDate(article.published_at)}
@@ -272,7 +273,7 @@ function FeaturedCard({
       </div>
 
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition">
-        <span className="flex items-center gap-0.5 px-2 py-0.5 bg-cyan-500 text-white text-[10px] font-medium rounded-full">
+        <span className="flex items-center gap-0.5 px-2 py-0.5 bg-cyan-500 text-white text-[10px] font-semibold rounded-full">
           Leer <ChevronRight size={10} />
         </span>
       </div>
@@ -292,7 +293,7 @@ function CompactCard({
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex gap-2.5 bg-white/[0.03] border border-white/10 rounded-lg p-2 hover:border-cyan-400/20 transition-all"
+      className="group flex gap-2.5 bg-white/[0.04] border border-white/10 rounded-lg p-2 hover:border-cyan-400/30 hover:bg-white/[0.07] transition-all"
     >
       {/* Thumbnail */}
       <div className="w-20 h-16 rounded-md overflow-hidden shrink-0">
@@ -303,8 +304,8 @@ function CompactCard({
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full bg-slate-700/50 flex items-center justify-center">
-            <BookOpen size={14} className="text-white/15" />
+          <div className="w-full h-full bg-slate-700/60 flex items-center justify-center">
+            <BookOpen size={14} className="text-white/30" />
           </div>
         )}
       </div>
@@ -312,14 +313,14 @@ function CompactCard({
       {/* Text */}
       <div className="flex-1 min-w-0 flex flex-col justify-between">
         <div>
-          <p className="text-[10px] text-cyan-400/60 font-medium uppercase tracking-wider mb-0.5">
+          <p className="text-[10px] text-cyan-400 font-semibold uppercase tracking-wider mb-0.5">
             {article.source}
           </p>
-          <h3 className="text-xs font-semibold text-white/80 group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+          <h3 className="text-xs font-semibold text-white group-hover:text-cyan-300 transition line-clamp-2 leading-snug">
             {article.title}
           </h3>
         </div>
-        <span className="flex items-center gap-1 text-[10px] text-white/25 mt-1">
+        <span className="flex items-center gap-1 text-[10px] text-white/55 mt-1">
           <Clock size={9} />
           {formatDate(article.published_at)}
         </span>

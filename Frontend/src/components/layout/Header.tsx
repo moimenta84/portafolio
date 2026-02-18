@@ -55,9 +55,9 @@ const Header = () => {
           >
             {following ? <UserCheck size={14} /> : <UserPlus size={14} />}
             <span className="hidden sm:inline">{following ? "Siguiendo" : "Seguir"}</span>
-            <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-xs">
-              {followersCount}
-            </span>
+            {followersCount > 0 && (
+              <span className="hidden sm:inline text-xs opacity-60">{followersCount}</span>
+            )}
           </button>
         </div>
       </header>
