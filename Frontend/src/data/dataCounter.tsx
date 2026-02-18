@@ -28,11 +28,4 @@ export const dataCounter: CounterItem[] = [
     lineRight: true,
     lineRightMobile: true,
   },
-  {
-    id: 4,
-    endCounter: 3000,
-    text: "horas de código",
-    lineRight: false,
-    lineRightMobile: false,
-  },
 ]
