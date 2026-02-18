@@ -53,17 +53,17 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-4 pt-3 gap-3">
+      <div className="flex flex-col flex-1 p-3 pt-2 gap-2 items-center text-center">
         <p className="text-xs text-white/90 line-clamp-2 leading-relaxed">
           {description}
         </p>
 
         {/* Tech tags */}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1 justify-center">
           {tech.map((t) => (
             <span
               key={t}
-              className="px-2 py-0.5 text-xs font-semibold bg-cyan-400/20 text-cyan-200 rounded-full border border-cyan-400/25"
+              className="px-2 py-0.5 text-[10px] font-semibold bg-cyan-400/20 text-cyan-200 rounded-full border border-cyan-400/25"
             >
               {t}
             </span>
@@ -75,9 +75,9 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
           href={link}
           target="_blank"
           rel="noreferrer"
-          className="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-white/80 hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
+          className="mt-auto flex items-center gap-1.5 text-xs font-medium text-white/80 hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
         >
-          <ExternalLink size={13} aria-hidden="true" />
+          <ExternalLink size={12} aria-hidden="true" />
           Ver proyecto
         </a>
       </div>
