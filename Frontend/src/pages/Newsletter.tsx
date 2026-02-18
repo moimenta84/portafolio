@@ -77,7 +77,7 @@ const Newsletter = () => {
 
   const featured = articles[0];
   const secondaryArticles = articles.slice(1, 5);
-  const trendingArticles = articles.slice(5, 12);
+  const trendingArticles = articles.slice(5, 9);
 
   return (
     <section className="relative flex-1 flex flex-col overflow-x-hidden">

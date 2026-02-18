@@ -19,11 +19,11 @@ interface NewsSource {
 }
 
 const SOURCES: NewsSource[] = [
-  { id: "genbeta", name: "Genbeta", url: "https://www.genbeta.com/rss", category: "desarrollo" },
-  { id: "xataka", name: "Xataka", url: "https://www.xataka.com/rss", category: "tecnología" },
   { id: "muycomputer", name: "MuyComputer", url: "https://www.muycomputer.com/feed/", category: "software" },
   { id: "hipertextual", name: "Hipertextual", url: "https://hipertextual.com/feed", category: "tecnología" },
   { id: "wwwhatsnew", name: "WWWhat's New", url: "https://wwwhatsnew.com/feed/", category: "desarrollo" },
+  { id: "andro4all", name: "Andro4all", url: "https://andro4all.com/feed", category: "tecnología" },
+  { id: "microsiervos", name: "Microsiervos", url: "https://www.microsiervos.com/index.xml", category: "tecnología" },
 ];
 
 const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutos
