@@ -3,11 +3,13 @@
 // Se muestra la media de todas las valoraciones y la lista de reviews.
 // Las reviews se guardan en el backend (createReview) y se cargan al montar (getReviews).
 
-import { useState } from "react";
-import { Star, Send, MessageSquare } from "lucide-react";
-import { createReview } from "../../services/api";
+import { useState, useEffect } from "react";
+import { Star, Send, MessageSquare, User } from "lucide-react";
+import { getReviews, createReview } from "../../services/api";
+import type { Review } from "../../types";
 
 const ReviewSection = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
@@ -15,6 +17,12 @@ const ReviewSection = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    getReviews()
+      .then(setReviews)
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +33,12 @@ const ReviewSection = () => {
 
     setSubmitting(true);
     try {
-      await createReview({
+      const newReview = await createReview({
         name: name.trim(),
         comment: comment.trim(),
         rating,
       });
+      setReviews((prev) => [newReview, ...prev]);
       setName("");
       setComment("");
       setRating(0);
@@ -42,8 +51,21 @@ const ReviewSection = () => {
     }
   };
 
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      : 0;
+
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
   return (
     <div className="mt-3 max-w-6xl mx-auto w-full shrink-0">
+      {/* Header + Form en una fila */}
       <div className="grid md:grid-cols-[auto_1fr] gap-4 items-start">
         {/* Header */}
         <div className="flex items-center gap-3">
@@ -51,9 +73,29 @@ const ReviewSection = () => {
             <MessageSquare size={12} />
             Opiniones
           </div>
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-1.5">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    size={12}
+                    className={
+                      star <= Math.round(averageRating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-white/20"
+                    }
+                  />
+                ))}
+              </div>
+              <span className="text-white/60 text-xs">
+                {averageRating.toFixed(1)} ({reviews.length})
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Formulario */}
+        {/* Formulario responsive */}
         <div className="flex flex-col gap-1">
           <form
             onSubmit={handleSubmit}
@@ -115,6 +157,42 @@ const ReviewSection = () => {
           )}
         </div>
       </div>
+
+      {/* Lista de reviews */}
+      {reviews.length > 0 && (
+        <div className="flex flex-col gap-2 mt-2">
+          {reviews.map((review) => (
+            <div
+              key={review.id}
+              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2.5"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-teal-400 flex items-center justify-center">
+                    <User size={12} className="text-white" />
+                  </div>
+                  <span className="font-medium text-white text-sm">{review.name}</span>
+                </div>
+                <div className="flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={12}
+                      className={
+                        star <= review.rating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-white/15"
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-white/70">{review.comment}</p>
+              <p className="text-[10px] text-white/30 mt-1">{formatDate(review.created_at)}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
