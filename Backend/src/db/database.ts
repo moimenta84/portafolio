@@ -82,28 +82,28 @@ function seedProjects() {
   const projects = [
     {
       title: "Tienda online",
-      image: "/img/FotoTtienda.png",
+      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop&auto=format",
       description: "Aplicación fullstack con Vite + Express + MySQL para gestionar tareas con autenticación.",
       tech: ["Vite", "Express", "MySQL", "Axios"],
       link: "https://proyectoreact-01-d72fe.web.app/",
     },
     {
       title: "gestor parking",
-      image: "/img/Captura de pantalla 2026-02-16 001622.png",
+      image: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&h=400&fit=crop&auto=format",
       description: "Portfolio moderno construido con React, Tailwind y animaciones con Framer Motion.",
       tech: ["React", "Tailwind", "Framer Motion"],
       link: "https://moimenta84.github.io/Gestor-Parking/",
     },
     {
       title: "API de Productos",
-      image: "https://picsum.photos/seed/api-productos/600/400",
+      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop&auto=format",
       description: "API REST construida con Express y MySQL para gestionar productos, categorías y stock. Incluye validación con Zod y documentación con Swagger.",
       tech: ["Express", "MySQL", "Zod", "Swagger"],
       link: "https://github.com/iker/products-api",
     },
     {
-      title: "Dashboard de Usuarios",
-      image: "https://picsum.photos/seed/dashboard-users/600/400",
+      title: "CRM / ERP",
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop&auto=format",
       description: "Aplicación frontend con Vite que consume una API propia. Incluye gráficos con Chart.js, filtros dinámicos y carga de datos desde JSON.",
       tech: ["Vite", "Chart.js", "Axios", "Sass"],
       link: "https://github.com/iker/users-dashboard",
