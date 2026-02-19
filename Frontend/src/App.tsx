@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Newsletter from "./pages/Newsletter";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
 import IntroAnimation from "./components/animations/intro-animations";
 import { registerVisit } from "./services/api";
 
@@ -60,6 +61,7 @@ function App() {
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/contact" element={<Contact />} />
           </Route>
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Proyecto Final DWEC — Iker Martínez Velasco</title>
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:   #0369a1;
+      --accent2:  #0ea5e9;
+      --dark:     #0f172a;
+      --body:     #1e293b;
+      --muted:    #64748b;
+      --light:    #f8fafc;
+      --border:   #e2e8f0;
+      --api-ext:  #7c3aed;
+      --api-int:  #0369a1;
+    }
+
+    html { font-size: 13px; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: var(--body);
+      background: #fff;
+      line-height: 1.8;
+    }
+
+    /* ═══════════════════════════════════════════
+       PORTADA
+    ═══════════════════════════════════════════ */
+    .cover-page {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 80px;
+      border-bottom: 6px solid var(--accent);
+      page-break-after: always;
+      text-align: center;
+    }
+
+    .cover-top { width: 100%; }
+
+    .cover-institution {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .cover-module {
+      font-family: 'Arial', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .cover-divider {
+      width: 80px;
+      height: 3px;
+      background: var(--accent);
+      margin: 30px auto;
+    }
+
+    .cover-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; }
+
+    .cover-type {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .cover-title {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--dark);
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .cover-subtitle {
+      font-size: 18px;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 30px;
+      font-weight: 400;
+    }
+
+    .cover-desc {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.9;
+    }
+
+    .cover-bottom {
+      width: 100%;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+    }
+
+    .cover-bottom-item { }
+    .cover-bottom-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .cover-bottom-value {
+      font-family: 'Arial', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* ═══════════════════════════════════════════
+       ÍNDICE
+    ═══════════════════════════════════════════ */
+    .toc-page {
+      padding: 60px 80px;
+      page-break-after: always;
+    }
+
+    .toc-page h2 {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .toc-entry {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px dotted var(--border);
+    }
+
+    .toc-entry.main { }
+    .toc-entry.sub { padding-left: 24px; }
+    .toc-entry.sub .toc-title { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+    .toc-num {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 28px;
+    }
+
+    .toc-title {
+      flex: 1;
+      font-family: 'Arial', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .toc-dots { flex: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px; position: relative; top: -4px; }
+    .toc-page-num {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ═══════════════════════════════════════════
+       DOCUMENTO
+    ═══════════════════════════════════════════ */
+    .doc {
+      padding: 50px 90px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Cabecera de capítulo */
+    .chapter {
+      margin-bottom: 48px;
+      page-break-inside: avoid;
+    }
+
+    .chapter-header {
+      margin-bottom: 24px;
+    }
+
+    .chapter-num {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 4px;
+    }
+
+    .chapter-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: -0.3px;
+    }
+
+    /* Subsección */
+    .subsection {
+      margin: 28px 0;
+    }
+
+    .subsection-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--dark);
+      border-left: 4px solid var(--accent2);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+
+    /* Párrafo */
+    p {
+      margin-bottom: 12px;
+      text-align: justify;
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--body);
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENTES
+    ═══════════════════════════════════════════ */
+
+    /* Info box */
+    .info-box {
+      background: #f0f9ff;
+      border-left: 5px solid var(--accent2);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 13px;
+      color: #0c4a6e;
+      line-height: 1.7;
+    }
+
+    /* Stack table */
+    .stack-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+    }
+
+    .stack-table thead tr {
+      background: var(--dark);
+      color: white;
+    }
+
+    .stack-table thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .stack-table tbody tr:nth-child(even) { background: #f8fafc; }
+    .stack-table tbody tr:hover { background: #f0f9ff; }
+
+    .stack-table tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .stack-table tbody td:first-child {
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Páginas table */
+    .pages-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      margin: 16px 0;
+    }
+
+    .pages-table thead tr { background: var(--dark); color: white; }
+    .pages-table thead th { padding: 10px 14px; text-align: left; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    .pages-table tbody tr:nth-child(even) { background: #f8fafc; }
+    .pages-table tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .pages-table .route { font-family: 'Courier New', monospace; color: var(--accent); font-weight: 700; }
+
+    /* ═══ API CARD ═══ */
+    .api-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .api-card.external {
+      border-color: #ddd6fe;
+    }
+
+    .api-card-header {
+      background: var(--api-int);
+      color: white;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .api-card.external .api-card-header {
+      background: var(--api-ext);
+    }
+
+    .api-card-badge {
+      font-family: 'Arial', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.2);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    .api-card-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .api-card-url {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      opacity: 0.85;
+      margin-left: auto;
+    }
+
+    .api-card-body {
+      padding: 14px 18px;
+      background: white;
+    }
+
+    .api-card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    /* Endpoints */
+    .endpoint-list { display: flex; flex-direction: column; gap: 5px; }
+
+    .endpoint-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .method {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 3px;
+      min-width: 42px;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: .5px;
+    }
+    .GET    { background: #dcfce7; color: #166534; }
+    .POST   { background: #dbeafe; color: #1e40af; }
+    .PUT    { background: #fef9c3; color: #854d0e; }
+    .DELETE { background: #fee2e2; color: #991b1b; }
+
+    .endpoint-path { color: var(--accent); flex-shrink: 0; }
+    .endpoint-desc { color: var(--muted); font-family: 'Georgia', serif; font-size: 11px; }
+
+    /* RSS grid */
+    .rss-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      margin: 14px 0;
+    }
+    .rss-table thead tr { background: var(--api-ext); color: white; }
+    .rss-table thead th { padding: 9px 12px; text-align: left; font-size: 11px; letter-spacing: 1px; }
+    .rss-table tbody tr:nth-child(even) { background: #f5f3ff; }
+    .rss-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+    .rss-table .source-name { font-weight: 700; color: var(--api-ext); }
+    .rss-table code { font-family: 'Courier New', monospace; font-size: 10px; color: var(--muted); }
+
+    /* DB */
+    .db-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .db-table-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .db-table-head {
+      background: var(--dark);
+      color: #67e8f9;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+    }
+
+    .db-table-body { padding: 8px 12px; }
+
+    .db-col {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      padding: 3px 0;
+      border-bottom: 1px dashed var(--border);
+      color: var(--muted);
+    }
+    .db-col:last-child { border-bottom: none; }
+    .db-col .pk { color: var(--accent2); font-weight: 700; }
+    .db-col .fk { color: #a78bfa; }
+    .db-col .type { color: #94a3b8; font-size: 10px; }
+
+    /* Features grid */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .feat-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: #f8fafc;
+    }
+
+    .feat-icon { font-size: 20px; margin-bottom: 6px; }
+    .feat-title { font-family: 'Arial', sans-serif; font-size: 12px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .feat-desc { font-size: 11px; color: var(--muted); line-height: 1.5; font-family: 'Arial', sans-serif; }
+
+    /* Arquitectura */
+    .arch-box {
+      background: #0f172a;
+      color: #94a3b8;
+      font-family: 'Courier New', monospace;
+      font-size: 11.5px;
+      padding: 24px 28px;
+      border-radius: 10px;
+      margin: 16px 0;
+      line-height: 2;
+      overflow-x: auto;
+    }
+    .arch-box .c1 { color: #67e8f9; }
+    .arch-box .c2 { color: #4ade80; }
+    .arch-box .c3 { color: #fbbf24; }
+    .arch-box .c4 { color: #c084fc; }
+    .arch-box .c5 { color: #f97316; }
+
+    /* Conclusiones */
+    .conclusion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .conclusion-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .conclusion-card h4 {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .conclusion-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .conclusion-card ul li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    .conclusion-card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent2);
+      font-size: 11px;
+    }
+
+    /* ═══════════════════════════════════════════
+       PIE DE PÁGINA
+    ═══════════════════════════════════════════ */
+    .page-footer {
+      margin-top: 50px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    /* ═══════════════════════════════════════════
+       PRINT
+    ═══════════════════════════════════════════ */
+    @media print {
+      html { font-size: 12px; }
+
+      .cover-page { page-break-after: always; min-height: auto; padding: 50px 60px; }
+      .toc-page   { page-break-after: always; padding: 50px 60px; }
+      .doc        { padding: 40px 70px; }
+
+      .chapter { page-break-inside: avoid; }
+      .api-card { page-break-inside: avoid; }
+
+      @page {
+        margin: 20mm 18mm;
+        size: A4;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     PORTADA
+══════════════════════════════════════════════ -->
+<div class="cover-page">
+
+  <div class="cover-top">
+    <div class="cover-institution">Formación Profesional · Grado Superior</div>
+    <div class="cover-module">Desarrollo de Aplicaciones Web (DAW) — 2.º Curso</div>
+    <div class="cover-divider"></div>
+  </div>
+
+  <div class="cover-main">
+    <div class="cover-type">Proyecto Final de Módulo</div>
+    <div class="cover-title">Portfolio<br>Profesional</div>
+    <div class="cover-subtitle">Aplicación web full-stack con React y Express</div>
+    <p class="cover-desc">
+      Desarrollo de un portfolio personal interactivo que integra una Single Page Application (SPA) en React con una API REST propia en Express, base de datos SQLite y conexión a APIs externas de noticias tecnológicas en tiempo real. Desplegado en producción mediante Render con dominio personalizado.
+    </p>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-bottom-item">
+      <div class="cover-bottom-label">Alumno</div>
+      <div class="cover-bottom-value">Iker Martínez Velasco</div>
+    </div>
+    <div class="cover-bottom-item">
+      <div class="cover-bottom-label">Módulo</div>
+      <div class="cover-bottom-value">DWEC · 2.ª Evaluación</div>
+    </div>
+    <div class="cover-bottom-item">
+      <div class="cover-bottom-label">Curso académico</div>
+      <div class="cover-bottom-value">2025 – 2026</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ÍNDICE
+══════════════════════════════════════════════ -->
+<div class="toc-page">
+  <h2>Índice de contenidos</h2>
+
+  <div class="toc-entry main">
+    <span class="toc-num">1.</span>
+    <span class="toc-title">Introducción y objetivos del proyecto</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">3</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">2.</span>
+    <span class="toc-title">Stack tecnológico</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">3</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">2.1</span>
+    <span class="toc-title">Frontend</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">3</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">2.2</span>
+    <span class="toc-title">Backend</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">4</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">3.</span>
+    <span class="toc-title">Estructura de la aplicación y rutas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">4</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">4.</span>
+    <span class="toc-title">APIs externas conectadas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">5</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">4.1</span>
+    <span class="toc-title">Agregador de feeds RSS — Noticias tecnológicas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">5</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">5.</span>
+    <span class="toc-title">API REST propia</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">6</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">5.1</span><span class="toc-title">Proyectos y Likes</span>
+    <span class="toc-dots"></span><span class="toc-page-num">6</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">5.2</span><span class="toc-title">Seguidores</span>
+    <span class="toc-dots"></span><span class="toc-page-num">6</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">5.3</span><span class="toc-title">Reseñas y valoraciones</span>
+    <span class="toc-dots"></span><span class="toc-page-num">7</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">5.4</span><span class="toc-title">Visitas y analítica</span>
+    <span class="toc-dots"></span><span class="toc-page-num">7</span>
+  </div>
+  <div class="toc-entry sub">
+    <span class="toc-num">5.5</span><span class="toc-title">Noticias con caché</span>
+    <span class="toc-dots"></span><span class="toc-page-num">7</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">6.</span>
+    <span class="toc-title">Modelo de datos — Base de datos SQLite</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">8</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">7.</span>
+    <span class="toc-title">Funcionalidades implementadas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">9</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">8.</span>
+    <span class="toc-title">Despliegue en producción</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">10</span>
+  </div>
+  <div class="toc-entry main">
+    <span class="toc-num">9.</span>
+    <span class="toc-title">Conclusiones y trabajo futuro</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page-num">10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     DOCUMENTO PRINCIPAL
+══════════════════════════════════════════════ -->
+<div class="doc">
+
+  <!-- ─── CAPÍTULO 1 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 1</div>
+      <div class="chapter-title">Introducción y objetivos del proyecto</div>
+    </div>
+
+    <p>El presente documento recoge la memoria técnica del proyecto final del módulo de <strong>Desarrollo Web en Entorno Cliente (DWEC)</strong> correspondiente al segundo curso del ciclo formativo de Grado Superior en Desarrollo de Aplicaciones Web. El proyecto consiste en el diseño, desarrollo y despliegue en producción de un portfolio profesional personal con funcionalidades avanzadas de interacción.</p>
+
+    <p>El objetivo principal es demostrar la capacidad de construir una aplicación web completa de extremo a extremo, abarcando desde el diseño de la interfaz con tecnologías modernas como React y Tailwind CSS, hasta la implementación de una API REST con Express, gestión de base de datos relacional y conexión a servicios externos.</p>
+
+    <div class="info-box">
+      <strong>URL de producción:</strong> <code>https://ikermartinezdev.com</code><br>
+      <strong>Repositorio:</strong> <code>https://github.com/moimenta84/portafolio</code><br>
+      <strong>Plataforma de despliegue:</strong> Render · Dominio personalizado en GoDaddy
+    </div>
+
+    <p>Los objetivos específicos del proyecto son: construir una SPA (Single Page Application) completamente funcional y responsiva; desarrollar una API REST propia con operaciones CRUD sobre base de datos SQLite; integrar APIs externas de noticias mediante feeds RSS con sistema de caché; implementar analítica de visitas e interacciones de usuarios; y desplegar la aplicación en un entorno de producción real accesible desde un dominio personalizado.</p>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 2 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 2</div>
+      <div class="chapter-title">Stack tecnológico</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">2.1 Frontend</div>
+      <p>La capa de presentación se ha desarrollado como una SPA utilizando <strong>React 19</strong> junto con <strong>TypeScript</strong> para el tipado estático, lo que permite detectar errores en tiempo de compilación y mejorar la mantenibilidad del código. El bundler utilizado es <strong>Vite 7</strong>, seleccionado por su velocidad de compilación y su servidor de desarrollo con HMR (Hot Module Replacement). El enrutado de la aplicación se gestiona con <strong>React Router v7</strong>.</p>
+      <p>Para los estilos se emplea <strong>Tailwind CSS v4</strong> con una paleta personalizada que incluye colores corporativos (cyan, darkBg, accent). Las animaciones de interfaz se realizan con <strong>Framer Motion</strong> para las transiciones de página, y con <strong>tsParticles</strong> para los efectos de fondo de partículas. Los iconos provienen de la librería <strong>Lucide React</strong>.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">2.2 Backend</div>
+      <p>El servidor está desarrollado con <strong>Express 5</strong> sobre <strong>Node.js</strong> y <strong>TypeScript</strong>, compilado con <code>tsc</code> y ejecutado directamente con <code>node</code> en producción. La persistencia de datos se gestiona con <strong>SQLite</strong> a través de la librería <code>better-sqlite3</code>, que ofrece operaciones síncronas de alto rendimiento. Para el consumo de feeds RSS externos se utiliza el paquete <code>rss-parser</code>.</p>
+    </div>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Tecnología</th>
+          <th>Versión</th>
+          <th>Capa</th>
+          <th>Propósito</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>React</td><td>19.2</td><td>Frontend</td><td>Framework UI principal, gestión de estado y componentes</td></tr>
+        <tr><td>TypeScript</td><td>5.9</td><td>Ambas</td><td>Tipado estático, mejora mantenibilidad y detección de errores</td></tr>
+        <tr><td>Vite</td><td>7.3</td><td>Frontend</td><td>Bundler y servidor de desarrollo con HMR</td></tr>
+        <tr><td>Tailwind CSS</td><td>4.1</td><td>Frontend</td><td>Framework CSS utility-first con tema personalizado</td></tr>
+        <tr><td>React Router</td><td>7.12</td><td>Frontend</td><td>Enrutado client-side de la SPA</td></tr>
+        <tr><td>Framer Motion</td><td>12.29</td><td>Frontend</td><td>Animaciones de transición entre páginas</td></tr>
+        <tr><td>Express</td><td>5.1</td><td>Backend</td><td>Framework HTTP para la API REST</td></tr>
+        <tr><td>better-sqlite3</td><td>11.7</td><td>Backend</td><td>Base de datos relacional embebida</td></tr>
+        <tr><td>rss-parser</td><td>3.13</td><td>Backend</td><td>Consumo y parseo de feeds RSS externos</td></tr>
+        <tr><td>Lucide React</td><td>0.562</td><td>Frontend</td><td>Biblioteca de iconos SVG</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 3 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 3</div>
+      <div class="chapter-title">Estructura de la aplicación y rutas</div>
+    </div>
+
+    <p>La aplicación está organizada como una SPA con cinco rutas principales gestionadas por React Router. Todas las páginas comparten un layout común que incluye cabecera (<code>Header</code>), barra de navegación (<code>NavBar</code>) y pie de página (<code>Footer</code>). Las transiciones entre páginas incluyen animaciones de entrada y salida implementadas con Framer Motion.</p>
+
+    <table class="pages-table">
+      <thead>
+        <tr>
+          <th>Ruta</th>
+          <th>Página</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="route">/</td>
+          <td><strong>Home</strong></td>
+          <td>Página de inicio con animación de escritura (TypeAnimation), partículas de fondo, badge de disponibilidad y listado de servicios ofrecidos.</td>
+        </tr>
+        <tr>
+          <td class="route">/about</td>
+          <td><strong>About</strong></td>
+          <td>Trayectoria profesional con timeline interactivo, contadores animados (años de experiencia, proyectos, tecnologías y seguidores obtenidos desde la API).</td>
+        </tr>
+        <tr>
+          <td class="route">/projects</td>
+          <td><strong>Projects</strong></td>
+          <td>Galería de proyectos cargados desde la API REST propia con sistema de likes, tecnologías asociadas, links a demo y sección de reseñas con valoración por estrellas.</td>
+        </tr>
+        <tr>
+          <td class="route">/newsletter</td>
+          <td><strong>Newsletter</strong></td>
+          <td>Agregador de noticias tecnológicas en tiempo real consumiendo 5 feeds RSS españoles. Incluye filtros por fuente, sección de tendencias y caché de 30 minutos en SQLite.</td>
+        </tr>
+        <tr>
+          <td class="route">/contact</td>
+          <td><strong>Contact</strong></td>
+          <td>Formulario de contacto, datos personales, enlaces a redes sociales y botón de descarga del currículum vitae en formato PDF.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>El servicio centralizado de comunicación con el backend se encuentra en <code>Frontend/src/services/api.ts</code> e implementa un helper genérico <code>fetchJson&lt;T&gt;</code> con tipado TypeScript que gestiona automáticamente los headers, errores HTTP y parseo de JSON. Todas las llamadas usan rutas relativas (<code>/api/...</code>) que funcionan tanto en desarrollo (mediante el proxy de Vite) como en producción (servidas por el mismo servidor Express).</p>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 4 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 4</div>
+      <div class="chapter-title">APIs externas conectadas</div>
+    </div>
+
+    <p>Este capítulo describe las integraciones con servicios externos. Todas las peticiones a APIs externas se realizan desde el backend, actuando como intermediario entre el navegador del cliente y los servicios de terceros. Esto permite implementar caché, gestionar errores y evitar problemas de CORS.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">4.1 Agregador de feeds RSS — Noticias tecnológicas</div>
+
+      <p>La página Newsletter conecta con <strong>cinco fuentes RSS en español</strong> especializadas en tecnología y desarrollo web. La integración se implementa en el backend usando el paquete <code>rss-parser</code>, que descarga y parsea los feeds XML, normalizando los artículos en un formato JSON común. Para optimizar el rendimiento y reducir la dependencia de servicios externos, se implementa un sistema de <strong>caché en SQLite con una TTL de 30 minutos</strong>. Si una fuente no está disponible temporalmente, el sistema devuelve los últimos artículos almacenados en caché.</p>
+
+      <div class="api-card external">
+        <div class="api-card-header">
+          <span class="api-card-badge">API Externa</span>
+          <span class="api-card-title">Feeds RSS — Noticias Tecnológicas</span>
+          <span class="api-card-url">rss-parser · caché SQLite 30 min</span>
+        </div>
+        <div class="api-card-body">
+          <table class="rss-table">
+            <thead>
+              <tr>
+                <th>Fuente</th>
+                <th>Categoría</th>
+                <th>URL del feed</th>
+                <th>Artículos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="source-name">MuyComputer</td>
+                <td>Software / Hardware</td>
+                <td><code>muycomputer.com/feed/</code></td>
+                <td>10 por petición</td>
+              </tr>
+              <tr>
+                <td class="source-name">Hipertextual</td>
+                <td>Tecnología general</td>
+                <td><code>hipertextual.com/feed</code></td>
+                <td>10 por petición</td>
+              </tr>
+              <tr>
+                <td class="source-name">WWWhat's New</td>
+                <td>Desarrollo web</td>
+                <td><code>wwwhatsnew.com/feed/</code></td>
+                <td>10 por petición</td>
+              </tr>
+              <tr>
+                <td class="source-name">Andro4all</td>
+                <td>Tecnología / Android</td>
+                <td><code>andro4all.com/feed</code></td>
+                <td>10 por petición</td>
+              </tr>
+              <tr>
+                <td class="source-name">Microsiervos</td>
+                <td>Tecnología / Ciencia</td>
+                <td><code>microsiervos.com/index.xml</code></td>
+                <td>10 por petición</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:11px; color:#6b21a8; margin-top:8px; margin-bottom:0;">
+            <strong>Flujo:</strong> Cliente → <code>GET /api/news</code> → Backend comprueba caché SQLite → si expirada, descarga feeds RSS → normaliza artículos → devuelve JSON ordenado por fecha → Frontend renderiza noticias, tendencias y filtros por fuente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 5 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 5</div>
+      <div class="chapter-title">API REST propia</div>
+    </div>
+
+    <p>El backend expone una API REST completa desarrollada con Express 5 y TypeScript. Todos los endpoints están bajo el prefijo <code>/api</code> y devuelven respuestas en formato JSON. El tracking de interacciones de usuario (likes, seguidores, visitas, reseñas) se realiza mediante la dirección IP del cliente, sin necesidad de autenticación.</p>
+
+    <div class="subsection">
+      <div class="subsection-title">5.1 Proyectos y Likes</div>
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-card-badge">REST API</span>
+          <span class="api-card-title">Proyectos</span>
+          <span class="api-card-url">/api/projects</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-card-desc">Gestión del catálogo de proyectos. Los proyectos se inicializan mediante un proceso de <em>seed</em> automático al arrancar el servidor si la tabla está vacía. Las tecnologías de cada proyecto se almacenan como JSON serializado.</p>
+          <div class="endpoint-list">
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/projects</span><span class="endpoint-desc">— Lista todos los proyectos con contadores de likes y estado del usuario</span></div>
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/projects/:id</span><span class="endpoint-desc">— Obtiene un proyecto por su identificador</span></div>
+            <div class="endpoint-row"><span class="method POST">POST</span><span class="endpoint-path">/api/projects</span><span class="endpoint-desc">— Crea un nuevo proyecto (title, description, image, tech, link)</span></div>
+            <div class="endpoint-row"><span class="method PUT">PUT</span><span class="endpoint-path">/api/projects/:id</span><span class="endpoint-desc">— Actualiza los datos de un proyecto existente</span></div>
+            <div class="endpoint-row"><span class="method DELETE">DELETE</span><span class="endpoint-path">/api/projects/:id</span><span class="endpoint-desc">— Elimina un proyecto de la base de datos</span></div>
+            <div class="endpoint-row"><span class="method POST">POST</span><span class="endpoint-path">/api/projects/:id/like</span><span class="endpoint-desc">— Toggle like / unlike en un proyecto (identificado por IP)</span></div>
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/projects/:id/likes</span><span class="endpoint-desc">— Obtiene el número de likes y si el usuario ya ha dado like</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">5.2 Seguidores</div>
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-card-badge">REST API</span>
+          <span class="api-card-title">Seguidores</span>
+          <span class="api-card-url">/api/followers</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-card-desc">Sistema de seguimiento sin autenticación. Cada IP única puede seguir o dejar de seguir el portfolio. El contador de seguidores se muestra en la cabecera y en la página About.</p>
+          <div class="endpoint-list">
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/followers</span><span class="endpoint-desc">— Devuelve total de seguidores y si el usuario actual sigue el portfolio</span></div>
+            <div class="endpoint-row"><span class="method POST">POST</span><span class="endpoint-path">/api/followers/toggle</span><span class="endpoint-desc">— Alterna el estado seguir / dejar de seguir del usuario (por IP)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">5.3 Reseñas y valoraciones</div>
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-card-badge">REST API</span>
+          <span class="api-card-title">Reseñas</span>
+          <span class="api-card-url">/api/reviews</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-card-desc">Sistema de valoración con puntuación de 1 a 5 estrellas. El formulario del frontend realiza validación previa antes de enviar la petición. El backend valida que el rating esté entre 1 y 5 mediante una restricción CHECK en SQLite.</p>
+          <div class="endpoint-list">
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/reviews</span><span class="endpoint-desc">— Obtiene las 3 mejores reseñas públicas (mayor valoración)</span></div>
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/reviews/all</span><span class="endpoint-desc">— Obtiene todas las reseñas (uso administrativo)</span></div>
+            <div class="endpoint-row"><span class="method POST">POST</span><span class="endpoint-path">/api/reviews</span><span class="endpoint-desc">— Crea una nueva reseña con nombre, comentario y valoración (1-5)</span></div>
+            <div class="endpoint-row"><span class="method DELETE">DELETE</span><span class="endpoint-path">/api/reviews/:id</span><span class="endpoint-desc">— Elimina una reseña por su identificador (administrador)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">5.4 Visitas y analítica</div>
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-card-badge">REST API</span>
+          <span class="api-card-title">Visitas</span>
+          <span class="api-card-url">/api/visits</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-card-desc">Sistema de analítica básica que registra automáticamente cada visita a las páginas de la aplicación. Permite obtener tanto el número de visitantes únicos (IPs distintas) como el total de páginas vistas.</p>
+          <div class="endpoint-list">
+            <div class="endpoint-row"><span class="method POST">POST</span><span class="endpoint-path">/api/visits</span><span class="endpoint-desc">— Registra una visita con la IP del cliente y la página visitada</span></div>
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/visits/count</span><span class="endpoint-desc">— Devuelve visitantes únicos totales y total de páginas vistas</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">5.5 Noticias con caché</div>
+      <div class="api-card">
+        <div class="api-card-header">
+          <span class="api-card-badge">REST API</span>
+          <span class="api-card-title">Noticias</span>
+          <span class="api-card-url">/api/news</span>
+        </div>
+        <div class="api-card-body">
+          <p class="api-card-desc">Endpoint que actúa como proxy y agregador de las fuentes RSS externas. Implementa un sistema de caché en SQLite con TTL de 30 minutos. Si una fuente falla, devuelve los últimos datos almacenados en caché para garantizar disponibilidad.</p>
+          <div class="endpoint-list">
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/news</span><span class="endpoint-desc">— Devuelve artículos agregados de todas las fuentes, ordenados por fecha</span></div>
+            <div class="endpoint-row"><span class="method GET">GET</span><span class="endpoint-path">/api/news/:sourceId</span><span class="endpoint-desc">— Artículos filtrados de una fuente RSS concreta</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 6 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 6</div>
+      <div class="chapter-title">Modelo de datos — Base de datos SQLite</div>
+    </div>
+
+    <p>La persistencia de datos se gestiona con una base de datos <strong>SQLite</strong> (<code>portfolio.db</code>) creada automáticamente al iniciar el servidor mediante la función <code>initDatabase()</code>. Se utilizan restricciones de integridad referencial (<code>FOREIGN KEY</code>), restricciones de unicidad (<code>UNIQUE</code>) y restricciones de validación (<code>CHECK</code>) para garantizar la consistencia de los datos. El modo WAL (<em>Write-Ahead Logging</em>) está activado para mejorar el rendimiento en operaciones concurrentes.</p>
+
+    <div class="db-grid">
+      <div class="db-table-card">
+        <div class="db-table-head">projects</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">id</span> <span class="type">INTEGER PK AUTO</span></div>
+          <div class="db-col">title <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">description <span class="type">TEXT</span></div>
+          <div class="db-col">image <span class="type">TEXT</span></div>
+          <div class="db-col">tech <span class="type">TEXT (JSON Array)</span></div>
+          <div class="db-col">link <span class="type">TEXT</span></div>
+          <div class="db-col">created_at <span class="type">DATETIME DEFAULT NOW</span></div>
+        </div>
+      </div>
+      <div class="db-table-card">
+        <div class="db-table-head">likes</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">id</span> <span class="type">INTEGER PK AUTO</span></div>
+          <div class="db-col"><span class="fk">project_id</span> <span class="type">INTEGER FK → projects</span></div>
+          <div class="db-col">ip <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">created_at <span class="type">DATETIME DEFAULT NOW</span></div>
+          <div class="db-col" style="color:#f97316; font-size:10px;">UNIQUE(project_id, ip)</div>
+        </div>
+      </div>
+      <div class="db-table-card">
+        <div class="db-table-head">followers</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">id</span> <span class="type">INTEGER PK AUTO</span></div>
+          <div class="db-col">ip <span class="type">TEXT NOT NULL UNIQUE</span></div>
+          <div class="db-col">created_at <span class="type">DATETIME DEFAULT NOW</span></div>
+        </div>
+      </div>
+      <div class="db-table-card">
+        <div class="db-table-head">reviews</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">id</span> <span class="type">INTEGER PK AUTO</span></div>
+          <div class="db-col">name <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">comment <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">rating <span class="type">INTEGER CHECK(1-5)</span></div>
+          <div class="db-col">ip <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">created_at <span class="type">DATETIME DEFAULT NOW</span></div>
+        </div>
+      </div>
+      <div class="db-table-card">
+        <div class="db-table-head">visits</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">id</span> <span class="type">INTEGER PK AUTO</span></div>
+          <div class="db-col">ip <span class="type">TEXT NOT NULL</span></div>
+          <div class="db-col">page <span class="type">TEXT</span></div>
+          <div class="db-col">created_at <span class="type">DATETIME DEFAULT NOW</span></div>
+        </div>
+      </div>
+      <div class="db-table-card">
+        <div class="db-table-head">news_cache</div>
+        <div class="db-table-body">
+          <div class="db-col"><span class="pk">source_id</span> <span class="type">TEXT PK</span></div>
+          <div class="db-col">data <span class="type">TEXT (JSON articles)</span></div>
+          <div class="db-col">fetched_at <span class="type">INTEGER (timestamp ms)</span></div>
+          <div class="db-col" style="color:#94a3b8; font-size:10px;">TTL: 30 minutos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 7 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 7</div>
+      <div class="chapter-title">Funcionalidades implementadas</div>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">❤️</div>
+        <div class="feat-title">Sistema de likes</div>
+        <div class="feat-desc">Toggle like/unlike en proyectos. Un mismo usuario (IP) no puede votar dos veces. Contador en tiempo real.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👥</div>
+        <div class="feat-title">Seguidores</div>
+        <div class="feat-desc">Botón seguir/dejar de seguir con persistencia por IP. Contador visible en cabecera y página About.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⭐</div>
+        <div class="feat-title">Reseñas</div>
+        <div class="feat-desc">Formulario validado con nombre, comentario y rating 1-5 estrellas. Validación en frontend y backend.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📰</div>
+        <div class="feat-title">Noticias RSS</div>
+        <div class="feat-desc">Agregador de 5 feeds RSS españoles con caché SQLite de 30 min, filtros por fuente y sección de tendencias.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Analítica de visitas</div>
+        <div class="feat-desc">Registro automático de páginas visitadas por IP. Contadores de visitantes únicos y páginas vistas.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📄</div>
+        <div class="feat-title">Descarga de CV</div>
+        <div class="feat-desc">Botón con animación shimmer para descarga directa del currículum en PDF desde el servidor.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">✨</div>
+        <div class="feat-title">Animaciones</div>
+        <div class="feat-desc">Intro con bombilla (sessionStorage), partículas tsParticles, TypeAnimation en hero, transiciones Framer Motion.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Diseño responsivo</div>
+        <div class="feat-desc">Mobile-first con Tailwind CSS. Layout adaptado para móvil, tablet y escritorio en todas las páginas.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔢</div>
+        <div class="feat-title">Contadores animados</div>
+        <div class="feat-desc">Contadores con animación de cuenta usando IntersectionObserver. Se activan al entrar en el viewport.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 8 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 8</div>
+      <div class="chapter-title">Despliegue en producción</div>
+    </div>
+
+    <p>La aplicación está desplegada en <strong>Render</strong> como un único servicio web (<em>Web Service</em>) que compila y sirve tanto el frontend como el backend. El dominio personalizado <code>ikermartinezdev.com</code> está registrado en <strong>GoDaddy</strong> y apunta al servidor de Render mediante registros DNS de tipo A y CNAME. El certificado SSL/HTTPS es generado y renovado automáticamente por Render.</p>
+
+    <table class="stack-table">
+      <thead>
+        <tr><th>Parámetro</th><th>Valor</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Plataforma</td><td>Render (Web Service)</td></tr>
+        <tr><td>Runtime</td><td>Node.js</td></tr>
+        <tr><td>Región</td><td>Frankfurt EU</td></tr>
+        <tr><td>Build Command</td><td><code>cd Frontend &amp;&amp; npm install &amp;&amp; npm run build &amp;&amp; cd ../Backend &amp;&amp; npm install --include=dev &amp;&amp; npm run build</code></td></tr>
+        <tr><td>Start Command</td><td><code>node Backend/dist/index.js</code></td></tr>
+        <tr><td>Dominio</td><td>ikermartinezdev.com (GoDaddy)</td></tr>
+        <tr><td>SSL</td><td>HTTPS automático (Let's Encrypt vía Render)</td></tr>
+        <tr><td>CI/CD</td><td>Auto-deploy en cada push a <code>main</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>La configuración del despliegue se gestiona mediante el fichero <code>render.yaml</code> en la raíz del repositorio. El proceso de build instala y compila primero el frontend (generando <code>Frontend/dist/</code>) y después el backend (generando <code>Backend/dist/</code>). El servidor Express en producción sirve los ficheros estáticos del frontend como si de un CDN se tratase y expone la API bajo el prefijo <code>/api</code>.</p>
+  </div>
+
+
+  <!-- ─── CAPÍTULO 9 ─── -->
+  <div class="chapter">
+    <div class="chapter-header">
+      <div class="chapter-num">Capítulo 9</div>
+      <div class="chapter-title">Conclusiones y trabajo futuro</div>
+    </div>
+
+    <p>El proyecto ha cumplido satisfactoriamente todos los objetivos planteados. Se ha desarrollado una aplicación web full-stack funcional, desplegada en producción con dominio personalizado y accesible públicamente. La integración de una API REST propia junto con servicios externos de noticias RSS demuestra la capacidad de construir sistemas que consumen y exponen datos de forma eficiente.</p>
+
+    <p>Entre los aspectos más relevantes destaca la implementación del sistema de caché para los feeds RSS, que reduce la latencia y la dependencia de servicios externos. Asimismo, el uso de TypeScript en ambas capas (frontend y backend) ha permitido detectar errores en tiempo de desarrollo y mejorar la robustez del código.</p>
+
+    <div class="conclusion-grid">
+      <div class="conclusion-card">
+        <h4>Trabajo futuro</h4>
+        <ul>
+          <li>Migrar la base de datos a PostgreSQL (Render)</li>
+          <li>Añadir autenticación JWT para el panel admin</li>
+          <li>Internacionalización (i18n) en inglés</li>
+          <li>Panel de administración para gestionar proyectos</li>
+          <li>Notificaciones push en nuevos artículos</li>
+          <li>Tests unitarios con Vitest y Testing Library</li>
+          <li>PWA con Service Worker y modo offline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PIE -->
+  <div class="page-footer">
+    <span>Iker Martínez Velasco · 2.º DAW · DWEC · 2.ª Evaluación · Curso 2025–2026</span>
+    <span>ikermartinezdev.com</span>
+  </div>
+
+</div>
+</body>
+</html>
