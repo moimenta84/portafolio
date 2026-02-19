@@ -56,6 +56,19 @@ export function initDatabase() {
   `);
 
   seedProjects();
+  seedReviews();
+}
+
+function seedReviews() {
+  const count = db.prepare("SELECT COUNT(*) as c FROM reviews").get() as { c: number };
+  if (count.c > 0) return;
+
+  db.prepare("INSERT INTO reviews (name, comment, rating, ip) VALUES (?, ?, ?, ?)").run(
+    "Alejandra Espinosa",
+    "Un gran desarrollador fullstack. Nada le frena. Literalmente un CRACK!!",
+    5,
+    "seed"
+  );
 }
 
 function seedProjects() {
