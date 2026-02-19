@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ikermartinezdev
+    runtime: node
+    buildCommand: "cd Frontend && npm install && npm run build && cd ../Backend && npm install --include=dev && npm run build"
+    startCommand: "node Backend/dist/index.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: https://ikermartinezdev.com,https://www.ikermartinezdev.com

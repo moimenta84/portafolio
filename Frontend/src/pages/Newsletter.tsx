@@ -77,7 +77,7 @@ const Newsletter = () => {
 
   const featured = articles[0];
   const secondaryArticles = articles.slice(1, 5);
-  const trendingArticles = articles.slice(5, 11);
+  const trendingArticles = articles.slice(5, 10);
 
   return (
     <section className="relative flex-1 flex flex-col overflow-x-hidden">
@@ -164,7 +164,7 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 flex-1 min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 flex-1 min-h-0 items-start">
 
             {/* MAIN CONTENT */}
             <div className="flex flex-col gap-3 min-h-0">
@@ -185,14 +185,14 @@ const Newsletter = () => {
                 <TrendingUp size={12} className="text-cyan-400" />
                 Tendencias
               </h3>
-              <div className="flex-1 flex flex-col justify-between gap-0">
+              <div className="flex flex-col divide-y divide-white/[0.05]">
                 {trendingArticles.map((article, i) => (
                   <a
                     key={article.id}
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex gap-2 group py-1.5 border-b border-white/[0.05] last:border-0"
+                    className="flex gap-2 group py-2"
                   >
                     <span className="text-sm font-black text-white/25 group-hover:text-cyan-400/50 transition w-5 shrink-0 leading-tight">
                       {String(i + 1).padStart(2, "0")}
