@@ -12,8 +12,8 @@ const Privacy = () => {
           El responsable del tratamiento de los datos recogidos a través de este sitio web es{" "}
           <strong className="text-white">Iker Martínez</strong>, con domicilio en Vergel (Alicante),
           España, contactable en{" "}
-          <a href="mailto:ikerastra@hotmail.com" className="text-cyan-400 hover:underline">
-            ikerastra@hotmail.com
+          <a href="mailto:moimenta267@gmail.com" className="text-cyan-400 hover:underline">
+            moimenta267@gmail.com
           </a>.
         </Section>
 
@@ -73,8 +73,8 @@ const Privacy = () => {
           Si utilizas el formulario de contacto, los datos que introduzcas se utilizarán
           exclusivamente para responder a tu consulta. No se cederán a terceros ni se usarán con
           fines comerciales. Puedes solicitar su eliminación escribiendo a{" "}
-          <a href="mailto:ikerastra@hotmail.com" className="text-cyan-400 hover:underline">
-            ikerastra@hotmail.com
+          <a href="mailto:moimenta267@gmail.com" className="text-cyan-400 hover:underline">
+            moimenta267@gmail.com
           </a>.
         </Section>
 
@@ -108,8 +108,8 @@ const Privacy = () => {
           al tratamiento de tus datos personales. Dado que los datos estadísticos son anónimos desde
           el momento de su recogida, no es posible asociarlos a una persona concreta. Para cualquier
           consulta sobre datos del formulario de contacto, escribe a{" "}
-          <a href="mailto:ikerastra@hotmail.com" className="text-cyan-400 hover:underline">
-            ikerastra@hotmail.com
+          <a href="mailto:moimenta267@gmail.com" className="text-cyan-400 hover:underline">
+            moimenta267@gmail.com
           </a>. Si consideras que el tratamiento no se ajusta a la normativa, puedes reclamar ante la{" "}
           <a
             href="https://www.aepd.es"
