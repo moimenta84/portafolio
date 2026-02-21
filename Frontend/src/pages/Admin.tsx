@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -8,12 +8,13 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  getVisitStats,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
 // ─── Tipos internos ───────────────────────────────────────────────────────────
 
-type Tab = "reviews" | "projects";
+type Tab = "reviews" | "projects" | "stats";
 
 interface ProjectForm {
   title: string;
@@ -54,6 +55,15 @@ const Admin = () => {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
 
+  // ── Stats state ──
+  const [stats, setStats] = useState<{
+    unique_visitors: number;
+    total_page_views: number;
+    today_visitors: number;
+    by_page: { page: string; views: number; unique_visitors: number }[];
+  } | null>(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +93,12 @@ const Admin = () => {
       .then(setProjects)
       .catch(() => {})
       .finally(() => setProjectsLoading(false));
+
+    setStatsLoading(true);
+    getVisitStats()
+      .then(setStats)
+      .catch(() => {})
+      .finally(() => setStatsLoading(false));
   }, [authed]);
 
   // ── Reviews ──
@@ -257,6 +273,17 @@ const Admin = () => {
               </span>
             )}
           </button>
+          <button
+            onClick={() => setTab("stats")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+              tab === "stats"
+                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <BarChart2 size={14} />
+            Estadísticas
+          </button>
         </div>
 
         {/* ── TAB: RESEÑAS ── */}
@@ -427,6 +454,75 @@ const Admin = () => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ── TAB: ESTADÍSTICAS ── */}
+        {tab === "stats" && (
+          <div>
+            {statsLoading && <Spinner />}
+
+            {!statsLoading && stats && (
+              <>
+                {/* Tarjetas resumen */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                      <Users size={13} />
+                      Visitantes únicos
+                    </div>
+                    <span className="text-2xl font-bold text-white">{stats.unique_visitors}</span>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                      <Eye size={13} />
+                      Páginas vistas
+                    </div>
+                    <span className="text-2xl font-bold text-white">{stats.total_page_views}</span>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                      <TrendingUp size={13} />
+                      Hoy
+                    </div>
+                    <span className="text-2xl font-bold text-cyan-400">{stats.today_visitors}</span>
+                  </div>
+                </div>
+
+                {/* Desglose por página */}
+                <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Por página</p>
+                <div className="flex flex-col gap-2">
+                  {stats.by_page.map((p) => {
+                    const pct = stats.total_page_views > 0
+                      ? Math.round((p.views / stats.total_page_views) * 100)
+                      : 0;
+                    return (
+                      <div key={p.page} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-sm font-medium text-white">{p.page || "/"}</span>
+                          <div className="flex items-center gap-3 text-xs text-white/40">
+                            <span>{p.unique_visitors} únicos</span>
+                            <span className="text-white/60 font-semibold">{p.views} vistas</span>
+                          </div>
+                        </div>
+                        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-cyan-400/60 rounded-full transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {!statsLoading && !stats && (
+              <p className="text-white/30 text-sm text-center py-12">
+                No hay datos de visitas todavía.
+              </p>
+            )}
           </div>
         )}
       </div>

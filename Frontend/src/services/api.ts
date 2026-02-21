@@ -63,6 +63,13 @@ export const registerVisit = (page: string) =>
     body: JSON.stringify({ page }),
   });
 export const getVisitCount = () => fetchJson<VisitsData>("/visits/count");
+export const getVisitStats = () =>
+  fetchJson<{
+    unique_visitors: number;
+    total_page_views: number;
+    today_visitors: number;
+    by_page: { page: string; views: number; unique_visitors: number }[];
+  }>("/visits/stats");
 
 // Reviews
 export const getReviews = () => fetchJson<Review[]>("/reviews");

@@ -18,12 +18,16 @@ import { registerVisit } from "./services/api";
 // Se ejecuta cada vez que cambia la ruta gracias a useLocation().
 
 
+// Registra UNA sola visita por sesión al montar, ignorando navegaciones internas y /admin.
 function VisitTracker() {
   const location = useLocation();
 
   useEffect(() => {
+    if (location.pathname === "/admin") return;
+    if (sessionStorage.getItem("visitRegistered")) return;
+    sessionStorage.setItem("visitRegistered", "true");
     registerVisit(location.pathname).catch(() => {});
-  }, [location.pathname]);
+  }, []);
 
   return null;
 }
