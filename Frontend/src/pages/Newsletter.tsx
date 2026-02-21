@@ -101,7 +101,7 @@ const Newsletter = () => {
 
   return (
     <section className="relative flex-1 flex flex-col overflow-x-hidden">
-      <div className="max-w-5xl mx-auto text-white px-4 md:px-6 flex-1 flex flex-col min-h-0 py-4 w-full">
+      <div className="max-w-5xl w-full mx-auto text-white px-4 md:px-8 flex-1 flex flex-col min-h-0 py-4">
 
         {/* HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">

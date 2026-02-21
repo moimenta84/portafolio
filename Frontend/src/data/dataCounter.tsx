@@ -23,9 +23,9 @@ export const dataCounter: CounterItem[] = [
   },
   {
     id: 3,
-    endCounter: 5,
-    text: "tecnologías utilizadas",
-    lineRight: true,
-    lineRightMobile: true,
+    endCounter: 15,
+    text: "tecnologías dominadas",
+    lineRight: false,
+    lineRightMobile: false,
   },
 ]

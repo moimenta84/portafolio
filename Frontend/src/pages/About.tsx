@@ -10,7 +10,7 @@ const About = () => {
         <header>
           <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
             Mi{" "}
-            <span className="text-white">
+            <span className="text-cyan-400">
               trayectoria
             </span>
           </h2>

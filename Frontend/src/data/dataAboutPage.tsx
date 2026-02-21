@@ -31,8 +31,8 @@ export const dataAboutPage: AboutItem[] = [
   {
     id: 4,
     title: "Arquitectura y despliegue",
-    subtitle: "En formación",
-    description: "Primeros despliegues en entornos reales con Docker y CI/CD, foco en buenas prácticas, testing básico y preparación para trabajar en equipos de desarrollo.",
+    subtitle: "DevOps & Producción",
+    description: "Despliegues en entornos reales con Docker, CI/CD y VPS. Foco en buenas prácticas, testing básico y preparación para trabajar en equipos de desarrollo profesional.",
     date: "2025",
   },
 ]
