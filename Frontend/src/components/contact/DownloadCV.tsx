@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { Download, Briefcase, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { registerCvDownload } from "../../services/api";
 
 const CV_PATH = "/Pdf/curriculumIkerMartinez.pdf";
 const CV_FILENAME = "Iker_Martinez_CV.pdf";
@@ -19,6 +20,7 @@ const DownloadCV = () => {
     link.download = CV_FILENAME;
     link.click();
 
+    registerCvDownload().catch(() => {});
     setDownloaded(true);
     setTimeout(() => setDownloaded(false), 3000);
   };

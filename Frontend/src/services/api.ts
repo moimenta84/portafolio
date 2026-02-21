@@ -69,7 +69,18 @@ export const getVisitStats = () =>
     total_page_views: number;
     today_visitors: number;
     by_page: { page: string; views: number; unique_visitors: number }[];
+    by_region: { region: string; visitors: number }[];
+    empresa_visitors: number;
+    usuario_visitors: number;
   }>("/visits/stats");
+
+// CV Downloads
+export const registerCvDownload = () =>
+  fetchJson<{ total_downloads: number }>("/cv/download", { method: "POST" });
+export const getCvDownloads = () =>
+  fetchJson<{ total_downloads: number; unique_downloads: number; today_downloads: number }>(
+    "/cv/downloads"
+  );
 
 // Reviews
 export const getReviews = () => fetchJson<Review[]>("/reviews");

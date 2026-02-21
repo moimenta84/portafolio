@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -9,6 +9,7 @@ import {
   updateProject,
   deleteProject,
   getVisitStats,
+  getCvDownloads,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -61,8 +62,18 @@ const Admin = () => {
     total_page_views: number;
     today_visitors: number;
     by_page: { page: string; views: number; unique_visitors: number }[];
+    by_region: { region: string; visitors: number }[];
+    empresa_visitors: number;
+    usuario_visitors: number;
   } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
+
+  // ── CV downloads state ──
+  const [cvStats, setCvStats] = useState<{
+    total_downloads: number;
+    unique_downloads: number;
+    today_downloads: number;
+  } | null>(null);
 
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
@@ -99,6 +110,10 @@ const Admin = () => {
       .then(setStats)
       .catch(() => {})
       .finally(() => setStatsLoading(false));
+
+    getCvDownloads()
+      .then(setCvStats)
+      .catch(() => {});
   }, [authed]);
 
   // ── Reviews ──
@@ -488,6 +503,89 @@ const Admin = () => {
                     <span className="text-2xl font-bold text-cyan-400">{stats.today_visitors}</span>
                   </div>
                 </div>
+
+                {/* CV Downloads */}
+                {cvStats && (
+                  <>
+                    <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Curriculum Vitae</p>
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <FileDown size={13} />
+                          Total descargas
+                        </div>
+                        <span className="text-2xl font-bold text-white">{cvStats.total_downloads}</span>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <Users size={13} />
+                          Personas únicas
+                        </div>
+                        <span className="text-2xl font-bold text-white">{cvStats.unique_downloads}</span>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <TrendingUp size={13} />
+                          Hoy
+                        </div>
+                        <span className="text-2xl font-bold text-cyan-400">{cvStats.today_downloads}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Tipo de visitante */}
+                {(stats.empresa_visitors > 0 || stats.usuario_visitors > 0) && (
+                  <>
+                    <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Tipo de visitante</p>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <Users size={13} />
+                          Usuarios residenciales
+                        </div>
+                        <span className="text-2xl font-bold text-white">{stats.usuario_visitors}</span>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <Building2 size={13} />
+                          Empresas / corporativo
+                        </div>
+                        <span className="text-2xl font-bold text-cyan-400">{stats.empresa_visitors}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Desglose por provincia */}
+                {stats.by_region.length > 0 && (
+                  <>
+                    <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">
+                      <MapPin size={11} className="inline mr-1" />
+                      Por provincia / región
+                    </p>
+                    <div className="flex flex-col gap-2 mb-6">
+                      {stats.by_region.map((r) => {
+                        const maxVisitors = stats.by_region[0].visitors;
+                        const pct = Math.round((r.visitors / maxVisitors) * 100);
+                        return (
+                          <div key={r.region} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-sm font-medium text-white">{r.region}</span>
+                              <span className="text-xs text-white/60 font-semibold">{r.visitors} visitante{r.visitors !== 1 ? "s" : ""}</span>
+                            </div>
+                            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-cyan-400/60 rounded-full transition-all"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
 
                 {/* Desglose por página */}
                 <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Por página</p>

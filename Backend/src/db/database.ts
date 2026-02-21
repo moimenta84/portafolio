@@ -42,6 +42,17 @@ export function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ip TEXT NOT NULL,
       page TEXT,
+      city TEXT,
+      region TEXT,
+      country TEXT,
+      org TEXT,
+      is_company INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS cv_downloads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ip TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -54,6 +65,14 @@ export function initDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
+
+  // Migraciones: añadir columnas nuevas si no existen (producción)
+  const migrate = (sql: string) => { try { db.exec(sql); } catch {} };
+  migrate("ALTER TABLE visits ADD COLUMN city TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN region TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN country TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN org TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN is_company INTEGER DEFAULT 0");
 
   seedProjects();
   seedReviews();
