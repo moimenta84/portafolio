@@ -54,9 +54,8 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
       animate={{ opacity: exiting ? 0 : 1 }}
-      transition={{ duration: exiting ? 0.6 : 0.4, ease: "easeInOut" }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] bg-[#0a0f1a] flex items-center justify-center px-4"
     >
       <motion.div
