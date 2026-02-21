@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { socialNetworks } from "../../data/social";
 
 const Footer = () => {
@@ -5,7 +6,10 @@ const Footer = () => {
     <footer className="w-full border-t border-white/10 py-3 px-4 bg-darkBg/60 backdrop-blur-md">
       <div className="flex items-center justify-between max-w-6xl mx-auto">
         <p className="text-slate-300 text-xs">
-          © {new Date().getFullYear()} iker.martinez
+          © {new Date().getFullYear()} iker.martinez{" "}
+          <Link to="/admin" className="text-white/20 hover:text-white/50 transition-colors">
+            ·
+          </Link>
         </p>
 
         <div className="flex items-center gap-3 text-slate-300">

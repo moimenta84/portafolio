@@ -1,3 +1,5 @@
+// Middleware que obtiene la IP del cliente desde los headers o el socket // y la guarda en req.clientIp para que pueda usarse en las rutas
+
 import type { Request, Response, NextFunction } from "express";
 
 declare global {

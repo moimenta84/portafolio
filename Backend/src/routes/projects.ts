@@ -1,5 +1,6 @@
 import { Router } from "express";
 import db from "../db/database.js";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 const router = Router();
 
@@ -50,7 +51,7 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/projects - Create project
-router.post("/", (req, res) => {
+router.post("/", requireAuth, (req, res) => {
   const { title, description, image, tech, link } = req.body;
 
   if (!title) {
@@ -73,7 +74,7 @@ router.post("/", (req, res) => {
 });
 
 // PUT /api/projects/:id - Update project
-router.put("/:id", (req, res) => {
+router.put("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
   const { title, description, image, tech, link } = req.body;
 
@@ -99,7 +100,7 @@ router.put("/:id", (req, res) => {
 });
 
 // DELETE /api/projects/:id - Delete project
-router.delete("/:id", (req, res) => {
+router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
 
   const existing = db.prepare("SELECT * FROM projects WHERE id = ?").get(id);

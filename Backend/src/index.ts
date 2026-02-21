@@ -1,9 +1,11 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { initDatabase } from "./db/database.js";
 import { getIp } from "./middleware/getIp.js";
+import authRouter from "./routes/auth.js";
 import projectsRouter from "./routes/projects.js";
 import likesRouter from "./routes/likes.js";
 import followersRouter from "./routes/followers.js";
@@ -22,6 +24,7 @@ app.use(express.json());
 app.use(getIp);
 
 // API Routes
+app.use("/api/auth", authRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/projects", likesRouter);
 app.use("/api/followers", followersRouter);

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import db from "../db/database.js";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router.get("/", (_req, res) => {
 });
 
 // GET /api/reviews/all - All reviews (admin)
-router.get("/all", (_req, res) => {
+router.get("/all", requireAuth, (_req, res) => {
   const reviews = db
     .prepare("SELECT id, name, comment, rating, ip, created_at FROM reviews ORDER BY created_at DESC")
     .all();
@@ -47,7 +48,7 @@ router.post("/", (req, res) => {
 });
 
 // DELETE /api/reviews/:id - Delete a review (admin)
-router.delete("/:id", (req, res) => {
+router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
 
   const existing = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id);

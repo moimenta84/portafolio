@@ -8,10 +8,15 @@ import type { Project, FollowersData, VisitsData, Review } from "../types";
 
 const API_BASE = "/api";
 
+function getAuthHeaders(): Record<string, string> {
+  const token = sessionStorage.getItem("adminToken");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 // Helper genérico — hace fetch, parsea JSON y lanza error si la respuesta no es OK
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     ...options,
   });
   if (!res.ok) {
@@ -20,6 +25,13 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   }
   return res.json();
 }
+
+// Auth
+export const login = (password: string) =>
+  fetchJson<{ token: string }>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
 
 // Projects
 export const getProjects = () => fetchJson<Project[]>("/projects");
