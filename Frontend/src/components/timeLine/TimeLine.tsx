@@ -34,12 +34,12 @@ const TimeLine = () => {
                 </div>
 
                 {/* Subtitle as tag */}
-                <p className="text-xs font-medium text-white/50 mb-1.5">
+                <p className="text-xs font-semibold text-white/75 mb-1.5 tracking-wide uppercase">
                   {data.subtitle}
                 </p>
 
                 {/* Description */}
-                <p className="text-xs text-white/40 leading-relaxed">
+                <p className="text-xs text-white/80 leading-relaxed font-light">
                   {data.description}
                 </p>
               </div>

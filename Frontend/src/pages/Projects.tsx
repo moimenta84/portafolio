@@ -56,7 +56,7 @@ const Projects = () => {
             </div>
             <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
           </div>
-          <p className="text-sm text-white/50 leading-relaxed max-w-2xl">
+          <p className="text-sm text-white/80 leading-relaxed max-w-2xl font-light">
             Proyectos personales orientados a entornos reales de empresa. Apps full stack y APIs REST para practicar arquitectura, buenas prácticas y flujos de trabajo de consultoría.
           </p>
         </div>

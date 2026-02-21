@@ -54,7 +54,7 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3 pt-2 gap-2 items-center text-center">
-        <p className="text-xs text-white/90 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-white leading-relaxed line-clamp-2 font-light">
           {description}
         </p>
 
@@ -75,7 +75,7 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
           href={link}
           target="_blank"
           rel="noreferrer"
-          className="mt-auto flex items-center gap-1.5 text-xs font-medium text-white/80 hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded"
+          className="mt-auto flex items-center gap-1.5 text-xs font-semibold text-white hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded tracking-wide"
         >
           <ExternalLink size={12} aria-hidden="true" />
           Ver proyecto
