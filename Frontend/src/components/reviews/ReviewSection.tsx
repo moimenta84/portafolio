@@ -153,7 +153,7 @@ const ReviewSection = () => {
             </div>
           </form>
           {error && (
-            <p className="text-red-400 text-[11px] px-1">{error}</p>
+            <p className="text-red-400 text-xs px-1">{error}</p>
           )}
         </div>
       </div>
@@ -164,7 +164,7 @@ const ReviewSection = () => {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2.5"
+              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5"
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
@@ -188,7 +188,7 @@ const ReviewSection = () => {
                 </div>
               </div>
               <p className="text-xs text-white/70">{review.comment}</p>
-              <p className="text-[10px] text-white/30 mt-1">{formatDate(review.created_at)}</p>
+              <p className="text-xs text-white/50 mt-1">{formatDate(review.created_at)}</p>
             </div>
           ))}
         </div>

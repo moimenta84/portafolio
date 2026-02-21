@@ -17,7 +17,7 @@ export const dataCounter: CounterItem[] = [
   {
     id: 2,
     endCounter: 12,
-    text: " mis proyecto reales",
+    text: "proyectos completados",
     lineRight: true,
     lineRightMobile: false,
   },

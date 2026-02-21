@@ -36,23 +36,23 @@ const Introduction = () => {
           </span>
         </h1>
 
-        <p className="mx-auto mb-4 text-sm md:mx-0 text-white/65 text-center md:text-left leading-relaxed">
-          Desarrollo aplicaciones web modernas, limpias y escalables. Código limpio y despliegue profesional.
+        <p className="mx-auto mb-4 text-sm md:mx-0 text-white/70 text-center md:text-left leading-relaxed">
+          Creo aplicaciones web modernas, escalables y listas para producción, con arquitecturas limpias y buenas prácticas desde el primer commit.
         </p>
 
         {/* Microcredenciales */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1.5 mb-4">
-          <span className="flex items-center gap-1 text-white/55 text-xs">
+          <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
             React · TypeScript · Spring Boot
           </span>
-          <span className="flex items-center gap-1 text-white/55 text-xs">
+          <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            Docker & CI/CD
+            Docker · CI/CD · despliegue en VPS
           </span>
-          <span className="flex items-center gap-1 text-white/55 text-xs">
+          <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            Disponible para equipo
+            Scrum · código limpio · testing
           </span>
         </div>
 

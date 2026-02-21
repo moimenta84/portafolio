@@ -123,7 +123,7 @@ const Admin = () => {
 
     getFollowers()
       .then((data) => setFollowersCount(data.followers_count))
-      .catch(() => {});
+      .catch((err) => console.error("Followers error:", err));
   }, [authed]);
 
   // ── Reviews ──

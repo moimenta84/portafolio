@@ -194,14 +194,14 @@ const Newsletter = () => {
                     rel="noopener noreferrer"
                     className="flex gap-2 group py-2"
                   >
-                    <span className="text-sm font-black text-white/25 group-hover:text-cyan-400/50 transition w-5 shrink-0 leading-tight">
+                    <span className="text-sm font-black text-white/50 group-hover:text-cyan-400 transition w-5 shrink-0 leading-tight">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[11px] font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+                      <p className="text-xs font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
                         {article.title}
                       </p>
-                      <p className="text-[10px] text-white/50 mt-0.5">
+                      <p className="text-xs text-white/60 mt-0.5">
                         {article.source} · {formatDate(article.published_at)}
                       </p>
                     </div>
