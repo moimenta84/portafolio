@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -61,8 +61,10 @@ const Admin = () => {
     unique_visitors: number;
     total_page_views: number;
     today_visitors: number;
+    avg_duration_seconds: number;
     by_page: { page: string; views: number; unique_visitors: number }[];
     by_region: { region: string; visitors: number }[];
+    by_referrer: { referrer: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
   } | null>(null);
@@ -480,7 +482,7 @@ const Admin = () => {
             {!statsLoading && stats && (
               <>
                 {/* Tarjetas resumen */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="grid grid-cols-2 gap-3 mb-3">
                   <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                       <Users size={13} />
@@ -495,12 +497,25 @@ const Admin = () => {
                     </div>
                     <span className="text-2xl font-bold text-white">{stats.total_page_views}</span>
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
                       <TrendingUp size={13} />
                       Hoy
                     </div>
                     <span className="text-2xl font-bold text-cyan-400">{stats.today_visitors}</span>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                      <Clock size={13} />
+                      Duración media
+                    </div>
+                    <span className="text-2xl font-bold text-white">
+                      {stats.avg_duration_seconds > 0
+                        ? `${Math.floor(stats.avg_duration_seconds / 60)}m ${stats.avg_duration_seconds % 60}s`
+                        : "—"}
+                    </span>
                   </div>
                 </div>
 
@@ -579,6 +594,33 @@ const Admin = () => {
                                 className="h-full bg-cyan-400/60 rounded-full transition-all"
                                 style={{ width: `${pct}%` }}
                               />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {/* Origen del tráfico */}
+                {stats.by_referrer.length > 0 && (
+                  <>
+                    <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">
+                      <Globe size={11} className="inline mr-1" />
+                      Origen del tráfico
+                    </p>
+                    <div className="flex flex-col gap-2 mb-6">
+                      {stats.by_referrer.map((r) => {
+                        const max = stats.by_referrer[0].visitors;
+                        const pct = Math.round((r.visitors / max) * 100);
+                        return (
+                          <div key={r.referrer} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-sm font-medium text-white capitalize">{r.referrer}</span>
+                              <span className="text-xs text-white/60 font-semibold">{r.visitors}</span>
+                            </div>
+                            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                              <div className="h-full bg-cyan-400/60 rounded-full" style={{ width: `${pct}%` }} />
                             </div>
                           </div>
                         );

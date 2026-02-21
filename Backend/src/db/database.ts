@@ -47,6 +47,11 @@ export function initDatabase() {
       country TEXT,
       org TEXT,
       is_company INTEGER DEFAULT 0,
+      timezone TEXT,
+      isp TEXT,
+      as_number TEXT,
+      duration_seconds INTEGER,
+      referrer TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -73,6 +78,12 @@ export function initDatabase() {
   migrate("ALTER TABLE visits ADD COLUMN country TEXT");
   migrate("ALTER TABLE visits ADD COLUMN org TEXT");
   migrate("ALTER TABLE visits ADD COLUMN is_company INTEGER DEFAULT 0");
+  migrate("ALTER TABLE visits ADD COLUMN timezone TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN isp TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN as_number TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN duration_seconds INTEGER");
+  migrate("ALTER TABLE visits ADD COLUMN referrer TEXT");
+  migrate("CREATE INDEX IF NOT EXISTS idx_visits_created_at ON visits(created_at)");
 
   seedProjects();
   seedReviews();

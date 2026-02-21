@@ -18,7 +18,7 @@ import { registerVisit } from "./services/api";
 // Se ejecuta cada vez que cambia la ruta gracias a useLocation().
 
 
-// Registra UNA sola visita por sesión al montar, ignorando navegaciones internas y /admin.
+// Registra UNA sola visita por sesión con referrer, y envía la duración al salir.
 function VisitTracker() {
   const location = useLocation();
 
@@ -26,7 +26,24 @@ function VisitTracker() {
     if (location.pathname === "/admin") return;
     if (sessionStorage.getItem("visitRegistered")) return;
     sessionStorage.setItem("visitRegistered", "true");
-    registerVisit(location.pathname).catch(() => {});
+    sessionStorage.setItem("visitStart", Date.now().toString());
+    registerVisit(location.pathname, document.referrer).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      const start = sessionStorage.getItem("visitStart");
+      if (!start) return;
+      const seconds = Math.round((Date.now() - parseInt(start)) / 1000);
+      if (seconds < 2) return;
+      const blob = new Blob(
+        [JSON.stringify({ seconds })],
+        { type: "application/json" }
+      );
+      navigator.sendBeacon("/api/visits/duration", blob);
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
   }, []);
 
   return null;

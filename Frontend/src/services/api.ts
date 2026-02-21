@@ -57,10 +57,10 @@ export const toggleFollow = () =>
   fetchJson<FollowersData>("/followers/toggle", { method: "POST" });
 
 // Visits
-export const registerVisit = (page: string) =>
+export const registerVisit = (page: string, referrer: string) =>
   fetchJson<{ total_visits: number }>("/visits", {
     method: "POST",
-    body: JSON.stringify({ page }),
+    body: JSON.stringify({ page, referrer }),
   });
 export const getVisitCount = () => fetchJson<VisitsData>("/visits/count");
 export const getVisitStats = () =>
@@ -68,8 +68,10 @@ export const getVisitStats = () =>
     unique_visitors: number;
     total_page_views: number;
     today_visitors: number;
+    avg_duration_seconds: number;
     by_page: { page: string; views: number; unique_visitors: number }[];
     by_region: { region: string; visitors: number }[];
+    by_referrer: { referrer: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
   }>("/visits/stats");
