@@ -13,7 +13,7 @@ export const socialNetworks = [
   },
   {
     id: 3,
-    src: "https://www.instagram.com/tuusuario",
+    src: "https://www.instagram.com/iker_martinez_velasco/",
     logo: <Instagram size={30} />,
   },
   {
