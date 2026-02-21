@@ -1,112 +1,117 @@
-// IntroAnimation.tsx — Animación de bienvenida que se muestra al entrar a la web.
-// Tiene 3 etapas: "lamp" (aparece la bombilla con rebote), "light" (explosión de luz)
-// y "complete" (desaparece y muestra la app).
-// Usa Framer Motion para las animaciones de escala, rotación, brillo y fade.
-// Solo se muestra una vez por sesión (controlado desde App.tsx con sessionStorage).
+// IntroAnimation.tsx — Animación de terminal al entrar a la web.
+// Simula una terminal que escribe líneas de código con efecto typewriter.
+// Solo se muestra una vez por sesión (controlado desde App.tsx).
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Lightbulb } from "lucide-react";
 
 interface IntroAnimationProps {
   onComplete: () => void;
 }
 
+const LINES = [
+  { text: "> Inicializando portafolio...", status: null },
+  { text: "> Cargando proyectos", status: "OK" },
+  { text: "> Conectando backend", status: "OK" },
+  { text: "> Bienvenido a ikermartinezdev.com", status: null },
+];
+
+const CHAR_SPEED = 20; // ms por carácter
+
 const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
-  // Tres fases: bombilla aparece → explota en luz → se completa
-  const [stage, setStage] = useState<"lamp" | "light" | "complete">("lamp");
+  const [completedLines, setCompletedLines] = useState<typeof LINES>([]);
+  const [currentLine, setCurrentLine] = useState(0);
+  const [currentChars, setCurrentChars] = useState(0);
+  const [exiting, setExiting] = useState(false);
 
-  // Temporizadores para avanzar entre fases automáticamente
   useEffect(() => {
-    const lampTimer = setTimeout(() => setStage("light"), 1000);
-    const lightTimer = setTimeout(() => {
-      setStage("complete");
-      onComplete();
-    }, 1800);
+    if (currentLine >= LINES.length) return;
 
-    return () => {
-      clearTimeout(lampTimer);
-      clearTimeout(lightTimer);
-    };
-  }, [onComplete]);
+    const line = LINES[currentLine];
 
-  if (stage === "complete") return null;
+    if (currentChars < line.text.length) {
+      const t = setTimeout(() => setCurrentChars((c) => c + 1), CHAR_SPEED);
+      return () => clearTimeout(t);
+    }
+
+    // Línea completa — espera y avanza
+    const pauseAfter = line.status ? 350 : 200;
+    const t = setTimeout(() => {
+      setCompletedLines((prev) => [...prev, line]);
+      const next = currentLine + 1;
+      if (next >= LINES.length) {
+        setTimeout(() => {
+          setExiting(true);
+          setTimeout(onComplete, 500);
+        }, 700);
+      } else {
+        setCurrentLine(next);
+        setCurrentChars(0);
+      }
+    }, pauseAfter);
+    return () => clearTimeout(t);
+  }, [currentLine, currentChars, onComplete]);
 
   return (
     <motion.div
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[100] bg-gradient-to-br from-[#0f172a] to-[#030712] flex items-center justify-center overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: exiting ? 0 : 1 }}
+      transition={{ duration: exiting ? 0.6 : 0.4, ease: "easeInOut" }}
+      className="fixed inset-0 z-[100] bg-[#0a0f1a] flex items-center justify-center px-4"
     >
-      <div className="relative z-10 flex items-center justify-center w-full h-full">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.97 }}
+        animate={{ opacity: exiting ? 0 : 1, y: exiting ? -10 : 0, scale: exiting ? 0.97 : 1 }}
+        transition={{ duration: exiting ? 0.5 : 0.4, ease: "easeOut" }}
+        className="w-full max-w-lg"
+      >
+        {/* Ventana de terminal */}
+        <div className="bg-[#0d1117] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
 
-        {/* Lámpara */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5, y: -50 }}
-          animate={{
-            opacity: 1,
-            scale: stage === "lamp" ? [0.5, 1.4, 1.1] : 1.1,
-            y: stage === "lamp" ? [-50, -30, -40] : -40
-          }}
-          transition={{
-            opacity: { duration: 0.5 },
-            scale: { duration: 0.7 },
-            y: { duration: 0.7 }
-          }}
-        >
-          <motion.div
-            animate={{
-              rotate: stage === "lamp" ? [-15, 15, -15, 15, -8, 8, 0] : 0,
-            }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="relative"
-          >
-            <motion.div
-              animate={{
-                opacity: stage === "lamp" ? [0, 1, 0.8, 1] : 0,
-                scale: stage === "lamp" ? [0.5, 1.5, 1.2, 1.5] : 0.5,
-              }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="absolute inset-0 bg-cyan-400 rounded-full blur-xl"
-            />
-            
-            <div className="relative bg-cyan-400/20 backdrop-blur-sm rounded-full p-6 md:p-10">
-              <Lightbulb 
-                size={100} 
-                className="text-cyan-400"
-                strokeWidth={2}
-              />
-            </div>
-          </motion.div>
-        </motion.div>
+          {/* Barra de título */}
+          <div className="flex items-center gap-1.5 px-4 py-3 bg-white/5 border-b border-white/10">
+            <div className="w-3 h-3 rounded-full bg-red-400/70" />
+            <div className="w-3 h-3 rounded-full bg-yellow-400/70" />
+            <div className="w-3 h-3 rounded-full bg-green-400/70" />
+            <span className="ml-2 text-white/30 text-xs font-mono">iker@portfolio ~ bash</span>
+          </div>
 
-        {/* Explosión de luz */}
-        {stage === "light" && (
-          <>
-            <motion.div
-              initial={{ scale: 0, opacity: 1 }}
-              animate={{ scale: 15, opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute w-64 h-64 bg-cyan-400 rounded-full blur-xl"
-            />
+          {/* Contenido */}
+          <div className="p-6 font-mono text-sm space-y-2 min-h-[160px]">
 
-            <motion.div
-              initial={{ scale: 0, opacity: 0.9 }}
-              animate={{ scale: 18, opacity: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut", delay: 0.05 }}
-              className="absolute w-64 h-64 bg-white rounded-full blur-lg"
-            />
+            {/* Líneas completadas */}
+            {completedLines.map((line, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-cyan-400">{line.text}</span>
+                {line.status && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-green-400 font-bold text-xs"
+                  >
+                    [{line.status}]
+                  </motion.span>
+                )}
+              </div>
+            ))}
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ duration: 0.7, times: [0, 0.4, 1] }}
-              className="absolute inset-0 bg-white"
-            />
-          </>
-        )}
-      </div>
+            {/* Línea en proceso de escritura */}
+            {currentLine < LINES.length && (
+              <div className="flex items-center">
+                <span className="text-cyan-400">
+                  {LINES[currentLine].text.slice(0, currentChars)}
+                </span>
+                <motion.span
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ repeat: Infinity, duration: 0.7 }}
+                  className="inline-block w-[2px] h-4 bg-cyan-400 ml-0.5"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
