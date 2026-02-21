@@ -16,6 +16,8 @@ import { registerVisit } from "./services/api";
 
 // Componente invisible que registra cada visita de página en el backend.
 // Se ejecuta cada vez que cambia la ruta gracias a useLocation().
+
+
 function VisitTracker() {
   const location = useLocation();
 
