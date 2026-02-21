@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -10,6 +10,7 @@ import {
   deleteProject,
   getVisitStats,
   getCvDownloads,
+  getFollowers,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -77,6 +78,9 @@ const Admin = () => {
     today_downloads: number;
   } | null>(null);
 
+  // ── Followers state ──
+  const [followersCount, setFollowersCount] = useState<number | null>(null);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,6 +119,10 @@ const Admin = () => {
 
     getCvDownloads()
       .then(setCvStats)
+      .catch(() => {});
+
+    getFollowers()
+      .then((data) => setFollowersCount(data.followers_count))
       .catch(() => {});
   }, [authed]);
 
@@ -518,6 +526,17 @@ const Admin = () => {
                     </span>
                   </div>
                 </div>
+
+                {/* Seguidores */}
+                {followersCount !== null && (
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1 mb-6">
+                    <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                      <UserPlus size={13} />
+                      Seguidores del portfolio
+                    </div>
+                    <span className="text-2xl font-bold text-cyan-400">{followersCount}</span>
+                  </div>
+                )}
 
                 {/* CV Downloads */}
                 {cvStats && (

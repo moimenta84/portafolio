@@ -1,27 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { dataCounter } from "../data/dataCounter";
 
-interface CounterServicesProps {
-  followersCount: number | null;
-}
-
-const CounterServices = ({ followersCount }: CounterServicesProps) => {
-  const allItems = [
-    ...dataCounter.map((item) => ({
-      id: String(item.id),
-      value: item.endCounter,
-      label: item.text,
-      lineRight: item.lineRight ?? false,
-      animated: true,
-    })),
-    {
-      id: "followers",
-      value: followersCount,
-      label: "seguidores",
-      lineRight: false,
-      animated: false,
-    },
-  ];
+const CounterServices = () => {
+  const allItems = dataCounter.map((item) => ({
+    id: String(item.id),
+    value: item.endCounter,
+    label: item.text,
+    lineRight: item.lineRight ?? false,
+    animated: true,
+  }));
 
   return (
     <>
