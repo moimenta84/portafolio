@@ -22,10 +22,19 @@ router.post("/", async (req, res) => {
 
   db.prepare("INSERT INTO subscribers (email) VALUES (?)").run(email);
 
-  // Obtener últimas noticias del caché RSS
-  const articles = db.prepare(
-    "SELECT title, url, source FROM rss_cache ORDER BY published_at DESC LIMIT 5"
-  ).all() as { title: string; url: string; source: string }[];
+  // Obtener últimas noticias del caché (news_cache almacena JSON por fuente)
+  let articles: { title: string; url: string; source: string }[] = [];
+  try {
+    const rows = db.prepare("SELECT data FROM news_cache LIMIT 5").all() as { data: string }[];
+    articles = rows
+      .flatMap((row) => {
+        try { return JSON.parse(row.data); } catch { return []; }
+      })
+      .slice(0, 5)
+      .map((a: any) => ({ title: a.title, url: a.url, source: a.source }));
+  } catch {
+    // Si no hay caché todavía, se envía el email sin noticias
+  }
 
   // Email de bienvenida con noticias
   await sendEmail(
