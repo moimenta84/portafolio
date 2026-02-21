@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import Newsletter from "./pages/Newsletter";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import Privacy from "./pages/Privacy";
 import IntroAnimation from "./components/animations/intro-animations";
 import { registerVisit } from "./services/api";
 
@@ -83,6 +84,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Route>
           <Route path="/admin" element={<Admin />} />
         </Routes>

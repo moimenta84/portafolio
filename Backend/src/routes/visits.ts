@@ -9,6 +9,14 @@ const RESIDENTIAL_ISPS = [
   "yoigo", "jazztel", "digi", "lowi", "euskaltel", "telecable", "r cable",
 ];
 
+// Anonimiza la IP: guarda solo los primeros 3 octetos (IPv4) para cumplir con RGPD
+function anonymizeIp(ip: string): string {
+  const ipv4 = ip.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3}$/);
+  if (ipv4) return `${ipv4[1]}.0`;
+  if (ip.includes(":")) return ip.split(":").slice(0, 4).join(":") + ":0:0:0:0";
+  return ip;
+}
+
 function isPrivateIp(ip: string): boolean {
   return /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(ip)
     || ip === "::1" || ip === "" || ip === "unknown";
@@ -58,14 +66,17 @@ router.post("/", async (req, res) => {
     if (geo) ({ city, region, country, org, is_company, timezone, isp, as_number } = geo);
   }
 
-  const cleanReferrer = referrer
-    ? new URL(referrer).hostname.replace(/^www\./, "")
-    : "directo";
+  const anonIp = anonymizeIp(ip);
+
+  let cleanReferrer = "directo";
+  try {
+    cleanReferrer = referrer ? new URL(referrer).hostname.replace(/^www\./, "") : "directo";
+  } catch {}
 
   db.prepare(`
     INSERT INTO visits (ip, page, city, region, country, org, is_company, timezone, isp, as_number, referrer)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(ip, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer);
+  `).run(anonIp, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer);
 
   const total = db.prepare("SELECT COUNT(DISTINCT ip) as c FROM visits").get() as { c: number };
   res.json({ total_visits: total.c });
@@ -73,7 +84,7 @@ router.post("/", async (req, res) => {
 
 // POST /api/visits/duration - Actualizar duración de la última visita de esta IP
 router.post("/duration", (req, res) => {
-  const ip = req.clientIp || "";
+  const ip = anonymizeIp(req.clientIp || "");
   const { seconds } = req.body;
   if (!seconds || seconds < 2) { res.json({ ok: true }); return; }
 

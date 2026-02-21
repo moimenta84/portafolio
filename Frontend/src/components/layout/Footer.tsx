@@ -5,8 +5,11 @@ const Footer = () => {
   return (
     <footer className="w-full border-t border-white/10 py-3 px-4 bg-darkBg/60 backdrop-blur-md">
       <div className="flex items-center justify-between max-w-6xl mx-auto">
-        <p className="text-slate-300 text-xs">
-          © {new Date().getFullYear()} iker.martinez{" "}
+        <p className="text-slate-300 text-xs flex items-center gap-2">
+          © {new Date().getFullYear()} iker.martinez
+          <Link to="/privacy" className="text-white/30 hover:text-white/60 transition-colors">
+            Privacidad
+          </Link>
           <Link to="/admin" className="text-white/20 hover:text-white/50 transition-colors">
             ·
           </Link>
