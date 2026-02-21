@@ -22,6 +22,7 @@ const ContactForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -36,19 +37,26 @@ const ContactForm = () => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
+    setError("");
 
-    // Simula envío
-    console.log("Datos del formulario:", formData);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    // Simula delay de red
-    setTimeout(() => {
+      if (!res.ok) throw new Error("Error al enviar");
+
       setSuccess(true);
-      setLoading(false);
       setFormData({ name: "", email: "", subject: "", message: "" });
-
-      // Oculta el mensaje de éxito después de 5 segundos
       setTimeout(() => setSuccess(false), 5000);
-    }, 1500);
+    } catch {
+      setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,6 +66,12 @@ const ContactForm = () => {
       {success && (
         <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-2 mb-3">
           <p className="text-sm">¡Mensaje enviado con éxito! Te responderé pronto.</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-2 mb-3">
+          <p className="text-sm">{error}</p>
         </div>
       )}
 

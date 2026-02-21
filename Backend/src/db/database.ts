@@ -69,6 +69,12 @@ export function initDatabase() {
       ip TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 
   // Migraciones: añadir columnas nuevas si no existen (producción)
@@ -84,6 +90,11 @@ export function initDatabase() {
   migrate("ALTER TABLE visits ADD COLUMN duration_seconds INTEGER");
   migrate("ALTER TABLE visits ADD COLUMN referrer TEXT");
   migrate("CREATE INDEX IF NOT EXISTS idx_visits_created_at ON visits(created_at)");
+  migrate(`CREATE TABLE IF NOT EXISTS subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
 
   seedProjects();
   seedReviews();

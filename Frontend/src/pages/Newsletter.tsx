@@ -34,6 +34,8 @@ const Newsletter = () => {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [subLoading, setSubLoading] = useState(false);
+  const [subError, setSubError] = useState("");
 
   const fetchNews = useCallback(async (sourceId: string) => {
     setLoading(true);
@@ -56,11 +58,29 @@ const Newsletter = () => {
 
   const handleSourceChange = (id: string) => setActiveSource(id);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubscribed(true);
-    setEmail("");
-    setTimeout(() => setSubscribed(false), 4000);
+    setSubLoading(true);
+    setSubError("");
+
+    try {
+      const res = await fetch("/api/subscribers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) throw new Error("Error al suscribirse");
+
+      setSubscribed(true);
+      setEmail("");
+      setTimeout(() => setSubscribed(false), 4000);
+    } catch {
+      setSubError("Error al suscribirse");
+      setTimeout(() => setSubError(""), 4000);
+    } finally {
+      setSubLoading(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -95,23 +115,29 @@ const Newsletter = () => {
 
           <form
             onSubmit={handleSubscribe}
-            className="flex gap-1 bg-white/5 border border-white/10 rounded-lg p-0.5"
+            className="flex flex-col gap-1"
           >
-            <input
-              type="email"
-              placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="flex-1 min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none text-xs"
-            />
-            <button
-              type="submit"
-              className="flex items-center gap-1 px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-md transition text-xs shrink-0"
-            >
-              <Send size={10} />
-              {subscribed ? "¡Listo!" : "Suscribir"}
-            </button>
+            <div className="flex gap-1 bg-white/5 border border-white/10 rounded-lg p-0.5">
+              <input
+                type="email"
+                placeholder="tu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex-1 min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none text-xs"
+              />
+              <button
+                type="submit"
+                disabled={subLoading}
+                className="flex items-center gap-1 px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-md transition text-xs shrink-0 disabled:opacity-60"
+              >
+                <Send size={10} />
+                {subLoading ? "..." : subscribed ? "¡Listo!" : "Suscribir"}
+              </button>
+            </div>
+            {subError && (
+              <p className="text-[10px] text-red-400 px-1">{subError}</p>
+            )}
           </form>
         </div>
 

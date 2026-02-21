@@ -13,6 +13,8 @@ import visitsRouter from "./routes/visits.js";
 import newsRouter from "./routes/news.js";
 import reviewsRouter from "./routes/reviews.js";
 import cvRouter from "./routes/cv.js";
+import contactRouter from "./routes/contact.js";
+import subscribersRouter from "./routes/subscribers.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -33,6 +35,8 @@ app.use("/api/visits", visitsRouter);
 app.use("/api/news", newsRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/cv", cvRouter);
+app.use("/api/contact", contactRouter);
+app.use("/api/subscribers", subscribersRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {
