@@ -22,6 +22,7 @@ import cvRouter from "./routes/cv.js";
 import contactRouter from "./routes/contact.js";
 import subscribersRouter from "./routes/subscribers.js";
 import auditRouter from "./routes/audit.js";
+import trackRouter from "./routes/track.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/contact",     contactLimiter,      contactRouter);
 app.use("/api/subscribers", subscriptionLimiter, subscribersRouter);
 app.use("/api/events",     eventsLimiter,       eventsRouter);
 app.use("/api/audit",                          auditRouter);
+app.use("/api/track",                          trackRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

@@ -131,7 +131,7 @@ export function contactEmailHtml(name: string, email: string, subject: string, m
   `);
 }
 
-export function welcomeEmailHtml(articles: { title: string; url: string; source: string }[], unsubscribeToken?: string) {
+export function welcomeEmailHtml(articles: { title: string; url: string; source: string }[], unsubscribeToken?: string, trackingPixelUrl?: string) {
   const articlesHtml = articles.slice(0, 5).map((a, i) => `
     <tr>
       <td style="padding:14px 0;border-bottom:1px solid #1e293b">
@@ -180,6 +180,7 @@ export function welcomeEmailHtml(articles: { title: string; url: string; source:
         Ver feed completo →
       </a>
     </div>
+    ${trackingPixelUrl ? `<img src="${trackingPixelUrl}" width="1" height="1" border="0" alt="" style="display:block;width:1px;height:1px;overflow:hidden;opacity:0" />` : ""}
   `, unsubscribeToken);
 }
 

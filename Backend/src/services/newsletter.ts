@@ -49,31 +49,40 @@ export async function fetchArticles(): Promise<Article[]> {
     .map((a: any) => ({ title: a.title, url: a.url, source: a.source }));
 }
 
+const BASE_URL = "https://ikermartinezdev.com";
+
 // Envía el newsletter a todos los suscriptores
 export async function dispatchToAll(): Promise<{ sent: number; errors: number; total: number }> {
   const subscribers = db
-    .prepare("SELECT email, unsubscribe_token FROM subscribers")
-    .all() as { email: string; unsubscribe_token: string }[];
+    .prepare("SELECT id, email, unsubscribe_token FROM subscribers")
+    .all() as { id: number; email: string; unsubscribe_token: string }[];
 
   if (!subscribers.length) return { sent: 0, errors: 0, total: 0 };
 
   console.log(`[newsletter] Enviando a ${subscribers.length} suscriptores...`);
   const articles = await fetchArticles();
 
+  // Pre-insertar el registro para obtener el sendId antes de enviar
+  const sendRecord = db
+    .prepare("INSERT INTO newsletter_sends (total, sent, errors) VALUES (?, ?, ?)")
+    .run(subscribers.length, 0, 0);
+  const sendId = sendRecord.lastInsertRowid;
+
   let sent = 0, errors = 0;
   for (const sub of subscribers) {
+    const pixelUrl = `${BASE_URL}/api/track/open/${sendId}/${sub.id}`;
     try {
       await sendEmail(
         sub.email,
         "📰 Últimas noticias — Iker Martínez Dev",
-        welcomeEmailHtml(articles, sub.unsubscribe_token)
+        welcomeEmailHtml(articles, sub.unsubscribe_token, pixelUrl)
       );
       sent++;
     } catch { errors++; }
   }
 
   console.log(`[newsletter] Enviado: ${sent} ok, ${errors} errores`);
-  db.prepare("INSERT INTO newsletter_sends (total, sent, errors) VALUES (?, ?, ?)").run(subscribers.length, sent, errors);
+  db.prepare("UPDATE newsletter_sends SET sent = ?, errors = ? WHERE id = ?").run(sent, errors, sendId);
   return { sent, errors, total: subscribers.length };
 }
 

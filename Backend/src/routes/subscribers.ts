@@ -59,9 +59,14 @@ router.post("/send-newsletter", requireAuth, async (req, res) => {
 
 // GET /api/subscribers/history - Historial de newsletters enviados (admin)
 router.get("/history", requireAuth, (_req, res) => {
-  const rows = db
-    .prepare("SELECT id, sent_at, total, sent, errors FROM newsletter_sends ORDER BY sent_at DESC LIMIT 20")
-    .all();
+  const rows = db.prepare(`
+    SELECT ns.id, ns.sent_at, ns.total, ns.sent, ns.errors,
+           COUNT(DISTINCT no.subscriber_id) as opens
+    FROM newsletter_sends ns
+    LEFT JOIN newsletter_opens no ON no.send_id = ns.id
+    GROUP BY ns.id
+    ORDER BY ns.sent_at DESC LIMIT 20
+  `).all();
   res.json(rows);
 });
 

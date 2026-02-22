@@ -101,7 +101,7 @@ export const deleteSubscriber = (id: number) =>
 export const sendNewsletter = () =>
   fetchJson<{ ok: boolean; sent: number; errors: number; total: number }>("/subscribers/send-newsletter", { method: "POST" });
 export const getNewsletterHistory = () =>
-  fetchJson<{ id: number; sent_at: string; total: number; sent: number; errors: number }[]>("/subscribers/history");
+  fetchJson<{ id: number; sent_at: string; total: number; sent: number; errors: number; opens: number }[]>("/subscribers/history");
 
 // Visit history
 export const getVisitHistory = () =>

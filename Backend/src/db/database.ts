@@ -130,6 +130,13 @@ export function initDatabase() {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
   migrate("CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC)");
+  migrate(`CREATE TABLE IF NOT EXISTS newsletter_opens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    send_id INTEGER NOT NULL,
+    subscriber_id INTEGER NOT NULL,
+    opened_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(send_id, subscriber_id)
+  )`);
 
   seedProjects();
   seedReviews();

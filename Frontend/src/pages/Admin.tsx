@@ -103,7 +103,7 @@ const Admin = () => {
   const [visitHistory, setVisitHistory] = useState<{ date: string; visitors: number }[]>([]);
 
   // ── Newsletter history state ──
-  const [newsletterHistory, setNewsletterHistory] = useState<{ id: number; sent_at: string; total: number; sent: number; errors: number }[]>([]);
+  const [newsletterHistory, setNewsletterHistory] = useState<{ id: number; sent_at: string; total: number; sent: number; errors: number; opens: number }[]>([]);
 
   // ── Audit log state ──
   const [auditLog, setAuditLog] = useState<{ id: number; action: string; details: string; ip: string; created_at: string }[]>([]);
@@ -925,22 +925,36 @@ const Admin = () => {
                 <div className="mt-8">
                   <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Historial de envíos</p>
                   <div className="flex flex-col gap-2">
-                    {newsletterHistory.map((h) => (
-                      <div key={h.id} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-xs text-white font-medium">
-                            {new Date(h.sent_at).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                          </p>
-                          <p className="text-[10px] text-white/40 mt-0.5">
-                            {h.sent} de {h.total} enviados
-                            {h.errors > 0 && <span className="text-red-400 ml-1">· {h.errors} errores</span>}
-                          </p>
+                    {newsletterHistory.map((h) => {
+                      const openRate = h.sent > 0 ? Math.round((h.opens / h.sent) * 100) : 0;
+                      return (
+                        <div key={h.id} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                          <div className="flex items-center justify-between gap-3 mb-2">
+                            <p className="text-xs text-white font-medium">
+                              {new Date(h.sent_at).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                            </p>
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${h.errors === 0 ? "bg-cyan-400/10 border-cyan-400/20 text-cyan-400" : "bg-red-400/10 border-red-400/20 text-red-400"}`}>
+                              {h.errors === 0 ? "✓ OK" : "⚠ Errores"}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-4 text-[10px] text-white/40">
+                            <span>{h.sent}/{h.total} enviados{h.errors > 0 && <span className="text-red-400 ml-1">· {h.errors} err</span>}</span>
+                            <span className="flex items-center gap-1 text-violet-400 font-semibold">
+                              <Mail size={9} />
+                              {h.opens} aperturas · {openRate}%
+                            </span>
+                          </div>
+                          {h.sent > 0 && (
+                            <div className="mt-2 h-1 bg-white/5 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-violet-400/50 rounded-full"
+                                style={{ width: `${Math.max(openRate, 1)}%` }}
+                              />
+                            </div>
+                          )}
                         </div>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${h.errors === 0 ? "bg-cyan-400/10 border-cyan-400/20 text-cyan-400" : "bg-red-400/10 border-red-400/20 text-red-400"}`}>
-                          {h.errors === 0 ? "✓ OK" : "⚠ Errores"}
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
