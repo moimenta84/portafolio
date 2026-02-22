@@ -45,11 +45,13 @@ router.post("/", async (req, res) => {
       .map((a: any) => ({ title: a.title, url: a.url, source: a.source }));
   } catch {}
 
+  console.log(`[subscribers] Enviando email de bienvenida a ${email}`);
   await sendEmail(
     email,
     "🚀 ¡Bienvenido al newsletter de Iker Martínez Dev!",
     welcomeEmailHtml(articles, token)
   );
+  console.log(`[subscribers] Email enviado correctamente a ${email}`);
 
   res.json({ ok: true });
 });
@@ -57,7 +59,7 @@ router.post("/", async (req, res) => {
 // GET /api/subscribers - Listar todos los suscriptores (admin)
 router.get("/", requireAuth, (_req, res) => {
   const rows = db
-    .prepare("SELECT id, email, city, region, country, created_at FROM subscribers ORDER BY created_at DESC")
+    .prepare("SELECT id, email, city, region, country, source, created_at FROM subscribers ORDER BY created_at DESC")
     .all();
   res.json(rows);
 });

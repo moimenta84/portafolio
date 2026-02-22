@@ -35,13 +35,15 @@ router.post("/email", async (req, res) => {
       if (geo) ({ city, region, country } = geo);
     }
     db.prepare(
-      "INSERT INTO subscribers (email, unsubscribe_token, city, region, country) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO subscribers (email, unsubscribe_token, city, region, country, source) VALUES (?, ?, ?, ?, ?, 'follow')"
     ).run(email, token, city, region, country);
+    console.log(`[followers] Enviando email de bienvenida a ${email}`);
     await sendEmail(
       email,
       "👋 ¡Gracias por seguirme! — Iker Martínez Dev",
       followWelcomeEmailHtml(token)
     );
+    console.log(`[followers] Email enviado correctamente a ${email}`);
   }
 
   const count = db.prepare("SELECT COUNT(*) as c FROM followers").get() as { c: number };
