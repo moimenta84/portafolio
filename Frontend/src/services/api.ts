@@ -105,3 +105,19 @@ export const getNewsletterHistory = () =>
 // Visit history
 export const getVisitHistory = () =>
   fetchJson<{ date: string; visitors: number }[]>("/visits/history");
+
+// Conversion events
+export const registerEvent = (type: string, metadata?: Record<string, unknown>) =>
+  fetch("/api/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type, metadata }),
+  }).catch(() => {});
+
+export const getConversionStats = () =>
+  fetchJson<{
+    funnel: { total_visitors: number; cv_downloads: number; project_clicks: number; contact_submits: number; follows: number };
+    this_week: { visitors: number; cv_downloads: number; project_clicks: number; contact_submits: number; follows: number };
+    last_week: { visitors: number; cv_downloads: number; project_clicks: number; contact_submits: number; follows: number };
+    top_projects: { title: string; clicks: number }[];
+  }>("/events/stats");

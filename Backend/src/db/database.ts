@@ -106,6 +106,14 @@ export function initDatabase() {
   migrate("ALTER TABLE subscribers ADD COLUMN region TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN country TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN source TEXT DEFAULT 'follow'");
+  migrate(`CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    ip TEXT,
+    metadata TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+  migrate("CREATE INDEX IF NOT EXISTS idx_events_type_created ON events(type, created_at)");
   migrate(`CREATE TABLE IF NOT EXISTS newsletter_sends (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,

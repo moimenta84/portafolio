@@ -35,3 +35,12 @@ export const reviewLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Eventos de conversión: 60 por hora por IP
+export const eventsLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 60,
+  message: { error: "Demasiadas peticiones." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

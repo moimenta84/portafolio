@@ -1,5 +1,6 @@
 import { Heart, ExternalLink } from "lucide-react";
 import type { Project } from "../../types";
+import { registerEvent } from "../../services/api";
 
 interface ProjectCardProps {
   project: Project;
@@ -75,6 +76,7 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
           href={link}
           target="_blank"
           rel="noreferrer"
+          onClick={() => registerEvent("project_click", { project_id: id, title })}
           className="mt-auto flex items-center gap-1.5 text-xs font-semibold text-white hover:text-cyan-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded tracking-wide"
         >
           <ExternalLink size={12} aria-hidden="true" />

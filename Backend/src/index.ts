@@ -8,8 +8,9 @@ import { initDatabase } from "./db/database.js";
 import { dispatchToAll } from "./services/newsletter.js";
 import { runBackup } from "./services/backup.js";
 import { getIp } from "./middleware/getIp.js";
-import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter } from "./middleware/rateLimits.js";
+import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter, eventsLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
+import eventsRouter from "./routes/events.js";
 import projectsRouter from "./routes/projects.js";
 import likesRouter from "./routes/likes.js";
 import followersRouter from "./routes/followers.js";
@@ -44,6 +45,7 @@ app.use("/api/reviews",     reviewLimiter,       reviewsRouter);
 app.use("/api/cv",                               cvRouter);
 app.use("/api/contact",     contactLimiter,      contactRouter);
 app.use("/api/subscribers", subscriptionLimiter, subscribersRouter);
+app.use("/api/events",     eventsLimiter,       eventsRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

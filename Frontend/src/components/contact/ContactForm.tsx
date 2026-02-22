@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { registerEvent } from "../../services/api";
 
 interface FormData {
   name: string;
@@ -50,6 +51,7 @@ const ContactForm = () => {
 
       setSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
+      registerEvent("contact_submit");
       setTimeout(() => setSuccess(false), 5000);
     } catch {
       setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");

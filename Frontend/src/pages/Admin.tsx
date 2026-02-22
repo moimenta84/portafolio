@@ -16,6 +16,7 @@ import {
   deleteSubscriber,
   sendNewsletter,
   getNewsletterHistory,
+  getConversionStats,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -92,6 +93,10 @@ const Admin = () => {
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
 
+  // ── Conversion stats state ──
+  type ConversionStats = Awaited<ReturnType<typeof getConversionStats>>;
+  const [convStats, setConvStats] = useState<ConversionStats | null>(null);
+
   // ── Visit history state ──
   const [visitHistory, setVisitHistory] = useState<{ date: string; visitors: number }[]>([]);
 
@@ -148,6 +153,10 @@ const Admin = () => {
 
     getVisitHistory()
       .then(setVisitHistory)
+      .catch(() => {});
+
+    getConversionStats()
+      .then(setConvStats)
       .catch(() => {});
 
     getNewsletterHistory()
@@ -556,6 +565,16 @@ const Admin = () => {
             {/* Gráfica de visitas diarias */}
             {visitHistory.length > 0 && (
               <VisitChart data={visitHistory} />
+            )}
+
+            {/* Esta semana vs semana anterior */}
+            {convStats && (
+              <WeekComparison data={convStats} />
+            )}
+
+            {/* Embudo de conversión */}
+            {convStats && (
+              <ConversionFunnel data={convStats} />
             )}
 
             {!statsLoading && stats && (
@@ -1033,6 +1052,102 @@ const Spinner = () => (
     <div className="w-7 h-7 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
   </div>
 );
+
+// ─── Helper: calcular cambio porcentual ──────────────────────────────────────
+
+function pctChange(current: number, prev: number): { value: number | null; up: boolean } {
+  if (prev === 0) return { value: current > 0 ? null : 0, up: true };
+  return { value: Math.round(((current - prev) / prev) * 100), up: current >= prev };
+}
+
+// ─── Comparativa esta semana vs semana anterior ───────────────────────────────
+
+type ConvStatsType = Awaited<ReturnType<typeof getConversionStats>>;
+
+const WeekComparison = ({ data }: { data: ConvStatsType }) => {
+  const tw = data.this_week;
+  const lw = data.last_week;
+
+  const metrics = [
+    { label: "Visitantes",   tw: tw.visitors,        lw: lw.visitors,        icon: "👁" },
+    { label: "CV descargado", tw: tw.cv_downloads,    lw: lw.cv_downloads,    icon: "📄" },
+    { label: "Proyectos",    tw: tw.project_clicks,  lw: lw.project_clicks,  icon: "🔗" },
+    { label: "Contactos",    tw: tw.contact_submits, lw: lw.contact_submits, icon: "✉️" },
+    { label: "Seguidores",   tw: tw.follows,         lw: lw.follows,         icon: "👤" },
+  ];
+
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 mb-4">
+      <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Esta semana vs semana anterior</p>
+      <div className="grid grid-cols-5 gap-2">
+        {metrics.map((m) => {
+          const { value, up } = pctChange(m.tw, m.lw);
+          return (
+            <div key={m.label} className="flex flex-col items-center text-center gap-1">
+              <span className="text-base">{m.icon}</span>
+              <span className="text-lg font-bold text-white">{m.tw}</span>
+              <span className="text-[9px] text-white/40">{m.label}</span>
+              <span className={`text-[9px] font-semibold ${up ? "text-emerald-400" : "text-red-400"}`}>
+                {value === null ? "nuevo" : value === 0 ? "—" : `${up ? "+" : ""}${value}%`}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ─── Embudo de conversión ─────────────────────────────────────────────────────
+
+const ConversionFunnel = ({ data }: { data: ConvStatsType }) => {
+  const { funnel, top_projects } = data;
+  const base = funnel.total_visitors || 1;
+
+  const steps = [
+    { label: "Visitantes",    value: funnel.total_visitors,  pct: 100,                                          color: "bg-cyan-400/50" },
+    { label: "Ver proyectos", value: funnel.project_clicks,  pct: Math.round((funnel.project_clicks / base) * 100),  color: "bg-cyan-400/45" },
+    { label: "CV descargado", value: funnel.cv_downloads,    pct: Math.round((funnel.cv_downloads / base) * 100),    color: "bg-teal-400/50" },
+    { label: "Contacto",      value: funnel.contact_submits, pct: Math.round((funnel.contact_submits / base) * 100), color: "bg-emerald-400/50" },
+    { label: "Seguidores",    value: funnel.follows,         pct: Math.round((funnel.follows / base) * 100),         color: "bg-emerald-400/40" },
+  ];
+
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 mb-6">
+      <p className="text-xs text-white/30 uppercase tracking-wider mb-4">Embudo de conversión (total)</p>
+      <div className="flex flex-col gap-2">
+        {steps.map((s) => (
+          <div key={s.label}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-white/70">{s.label}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white">{s.value}</span>
+                <span className="text-[10px] text-white/40 w-8 text-right">{s.pct}%</span>
+              </div>
+            </div>
+            <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className={`h-full ${s.color} rounded-full`} style={{ width: `${Math.max(s.pct, 1)}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {top_projects.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-white/5">
+          <p className="text-[10px] text-white/30 uppercase tracking-wider mb-2">Proyectos más visitados</p>
+          <div className="flex flex-col gap-1.5">
+            {top_projects.map((p, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <span className="text-xs text-white/60 truncate">{p.title}</span>
+                <span className="text-xs font-semibold text-cyan-400 ml-2">{p.clicks} clics</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ─── Gráfica de visitas diarias ───────────────────────────────────────────────
 
