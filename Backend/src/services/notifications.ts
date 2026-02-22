@@ -68,7 +68,7 @@ export function contactEmailHtml(name: string, email: string, subject: string, m
   `;
 }
 
-export function welcomeEmailHtml(articles: { title: string; url: string; source: string }[]) {
+export function welcomeEmailHtml(articles: { title: string; url: string; source: string }[], unsubscribeToken?: string) {
   const articlesHtml = articles.slice(0, 5).map(a => `
     <tr>
       <td style="padding:10px 0;border-bottom:1px solid #1e293b">
@@ -78,6 +78,10 @@ export function welcomeEmailHtml(articles: { title: string; url: string; source:
     </tr>
   `).join("");
 
+  const unsubscribeLink = unsubscribeToken
+    ? `<a href="https://ikermartinezdev.com/api/subscribers/unsubscribe?token=${unsubscribeToken}" style="color:#475569">Cancelar suscripción</a>`
+    : "";
+
   return `
     <div style="font-family:Inter,sans-serif;max-width:600px;margin:auto;background:#0f172a;color:#e2e8f0;padding:32px;border-radius:12px">
       <h2 style="color:#22d3ee;margin-bottom:8px">🚀 ¡Bienvenido al newsletter!</h2>
@@ -85,6 +89,30 @@ export function welcomeEmailHtml(articles: { title: string; url: string; source:
       <table style="width:100%;border-collapse:collapse">${articlesHtml}</table>
       <p style="margin-top:24px;color:#475569;font-size:12px">
         Suscrito desde <a href="https://ikermartinezdev.com" style="color:#22d3ee">ikermartinezdev.com</a>
+        ${unsubscribeLink ? ` · ${unsubscribeLink}` : ""}
+      </p>
+    </div>
+  `;
+}
+
+export function followWelcomeEmailHtml(unsubscribeToken: string) {
+  const unsubscribeLink = `https://ikermartinezdev.com/api/subscribers/unsubscribe?token=${unsubscribeToken}`;
+  return `
+    <div style="font-family:Inter,sans-serif;max-width:600px;margin:auto;background:#0f172a;color:#e2e8f0;padding:32px;border-radius:12px">
+      <h2 style="color:#22d3ee;margin-bottom:8px">👋 ¡Gracias por seguirme!</h2>
+      <p style="color:#94a3b8;margin-bottom:16px">
+        A partir de ahora te avisaré cuando publique nuevos proyectos, mejoras en el portafolio o novedades relevantes de mi carrera como desarrollador.
+      </p>
+      <p style="color:#94a3b8;margin-bottom:24px">
+        Mientras tanto puedes echarle un vistazo a lo que ya he construido:
+      </p>
+      <a href="https://ikermartinezdev.com/projects"
+         style="display:inline-block;padding:10px 24px;background:#22d3ee;color:#0f172a;border-radius:8px;text-decoration:none;font-weight:700">
+        Ver proyectos
+      </a>
+      <p style="margin-top:32px;color:#475569;font-size:12px">
+        Recibido desde <a href="https://ikermartinezdev.com" style="color:#22d3ee">ikermartinezdev.com</a>
+        · <a href="${unsubscribeLink}" style="color:#475569">Cancelar suscripción</a>
       </p>
     </div>
   `;

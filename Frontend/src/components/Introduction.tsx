@@ -5,6 +5,7 @@
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import { CheckCircle } from "lucide-react";
+import FollowButton from "./ui/FollowButton";
 
 const Introduction = () => {
   return (
@@ -74,6 +75,7 @@ const Introduction = () => {
           >
             Contactar
           </Link>
+          <FollowButton size="sm" />
         </div>
       </div>
     </div>

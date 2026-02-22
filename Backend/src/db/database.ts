@@ -73,6 +73,10 @@ export function initDatabase() {
     CREATE TABLE IF NOT EXISTS subscribers (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
+      unsubscribe_token TEXT,
+      city TEXT,
+      region TEXT,
+      country TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
@@ -93,8 +97,13 @@ export function initDatabase() {
   migrate(`CREATE TABLE IF NOT EXISTS subscribers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT NOT NULL UNIQUE,
+    unsubscribe_token TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+  migrate("ALTER TABLE subscribers ADD COLUMN unsubscribe_token TEXT");
+  migrate("ALTER TABLE subscribers ADD COLUMN city TEXT");
+  migrate("ALTER TABLE subscribers ADD COLUMN region TEXT");
+  migrate("ALTER TABLE subscribers ADD COLUMN country TEXT");
 
   seedProjects();
   seedReviews();

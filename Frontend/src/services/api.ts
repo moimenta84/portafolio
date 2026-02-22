@@ -91,3 +91,11 @@ export const createReview = (data: { name: string; comment: string; rating: numb
   fetchJson<Review>("/reviews", { method: "POST", body: JSON.stringify(data) });
 export const deleteReview = (id: number) =>
   fetchJson<{ message: string }>(`/reviews/${id}`, { method: "DELETE" });
+
+// Subscribers
+export const getSubscribers = () =>
+  fetchJson<{ id: number; email: string; city: string; region: string; country: string; created_at: string }[]>("/subscribers");
+export const deleteSubscriber = (id: number) =>
+  fetchJson<{ ok: boolean }>(`/subscribers/${id}`, { method: "DELETE" });
+export const sendNewsletter = () =>
+  fetchJson<{ ok: boolean; sent: number; errors: number; total: number }>("/subscribers/send-newsletter", { method: "POST" });

@@ -5,10 +5,11 @@ import {
   Clock,
   TrendingUp,
   BookOpen,
-  Send,
   ChevronRight,
   Newspaper,
+  Bell,
 } from "lucide-react";
+import { useFollow } from "../contexts/FollowContext";
 
 interface NewsArticle {
   id: string;
@@ -28,14 +29,11 @@ interface NewsSource {
 }
 
 const Newsletter = () => {
+  const { openModal, following } = useFollow();
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [sources, setSources] = useState<NewsSource[]>([]);
   const [activeSource, setActiveSource] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [subLoading, setSubLoading] = useState(false);
-  const [subError, setSubError] = useState("");
 
   const fetchNews = useCallback(async (sourceId: string) => {
     setLoading(true);
@@ -58,31 +56,6 @@ const Newsletter = () => {
 
   const handleSourceChange = (id: string) => setActiveSource(id);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubLoading(true);
-    setSubError("");
-
-    try {
-      const res = await fetch("/api/subscribers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!res.ok) throw new Error("Error al suscribirse");
-
-      setSubscribed(true);
-      setEmail("");
-      setTimeout(() => setSubscribed(false), 4000);
-    } catch {
-      setSubError("Error al suscribirse");
-      setTimeout(() => setSubError(""), 4000);
-    } finally {
-      setSubLoading(false);
-    }
-  };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -100,45 +73,27 @@ const Newsletter = () => {
   const trendingArticles = articles.slice(5, 10);
 
   return (
-    <section className="relative flex-1 flex flex-col overflow-x-hidden">
-      <div className="max-w-5xl w-full mx-auto text-white px-4 md:px-8 flex-1 flex flex-col min-h-0 py-4">
+    <section className="relative flex-1 flex flex-col justify-center py-6">
+      <div className="text-white flex flex-col gap-3">
 
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
               <Newspaper size={12} />
               Feed
             </div>
-            <div className="hidden sm:block flex-1 h-px bg-gradient-to-r from-white/10 to-transparent w-16" />
+            <div className="hidden sm:block h-px bg-gradient-to-r from-white/10 to-transparent w-16" />
           </div>
-
-          <form
-            onSubmit={handleSubscribe}
-            className="flex flex-col gap-1"
-          >
-            <div className="flex gap-1 bg-white/5 border border-white/10 rounded-lg p-0.5">
-              <input
-                type="email"
-                placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="flex-1 min-w-0 w-36 px-2.5 py-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none text-xs"
-              />
-              <button
-                type="submit"
-                disabled={subLoading}
-                className="flex items-center gap-1 px-2.5 py-1 bg-cyan-500 hover:bg-cyan-400 text-white font-medium rounded-md transition text-xs shrink-0 disabled:opacity-60"
-              >
-                <Send size={10} />
-                {subLoading ? "..." : subscribed ? "¡Listo!" : "Suscribir"}
-              </button>
-            </div>
-            {subError && (
-              <p className="text-[10px] text-red-400 px-1">{subError}</p>
-            )}
-          </form>
+          {!following && (
+            <button
+              onClick={openModal}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border border-cyan-400/20 bg-cyan-400/5 text-cyan-400 text-[11px] hover:bg-cyan-400/15 hover:border-cyan-400/40 transition-all group"
+            >
+              <Bell size={11} className="group-hover:animate-bounce" />
+              Recibir noticias por email
+            </button>
+          )}
         </div>
 
         {/* TABS */}
@@ -190,10 +145,10 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 flex-1 min-h-0 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 items-start">
 
             {/* MAIN CONTENT */}
-            <div className="flex flex-col gap-3 min-h-0">
+            <div className="flex flex-col gap-3">
               {/* Featured */}
               {featured && <FeaturedCard article={featured} formatDate={formatDate} />}
 

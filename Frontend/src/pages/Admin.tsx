@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -11,12 +11,15 @@ import {
   getVisitStats,
   getCvDownloads,
   getFollowers,
+  getSubscribers,
+  deleteSubscriber,
+  sendNewsletter,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
 // ─── Tipos internos ───────────────────────────────────────────────────────────
 
-type Tab = "reviews" | "projects" | "stats";
+type Tab = "reviews" | "projects" | "stats" | "subscribers";
 
 interface ProjectForm {
   title: string;
@@ -81,6 +84,12 @@ const Admin = () => {
   // ── Followers state ──
   const [followersCount, setFollowersCount] = useState<number | null>(null);
 
+  // ── Subscribers state ──
+  const [subscribers, setSubscribers] = useState<{ id: number; email: string; city: string; region: string; country: string; created_at: string }[]>([]);
+  const [subDeleteConfirm, setSubDeleteConfirm] = useState<number | null>(null);
+  const [sending, setSending] = useState(false);
+  const [sendResult, setSendResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,6 +133,10 @@ const Admin = () => {
     getFollowers()
       .then((data) => setFollowersCount(data.followers_count))
       .catch((err) => console.error("Followers error:", err));
+
+    getSubscribers()
+      .then(setSubscribers)
+      .catch(() => {});
   }, [authed]);
 
   // ── Reviews ──
@@ -196,6 +209,27 @@ const Admin = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  // ── Subscribers: enviar newsletter ──
+  const handleSendNewsletter = async () => {
+    setSending(true);
+    setSendResult(null);
+    try {
+      const result = await sendNewsletter();
+      setSendResult({ sent: result.sent, errors: result.errors, total: result.total });
+    } catch {
+      setSendResult({ sent: 0, errors: -1, total: 0 });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // ── Subscribers: eliminar ──
+  const handleDeleteSubscriber = async (id: number) => {
+    await deleteSubscriber(id);
+    setSubscribers((prev) => prev.filter((s) => s.id !== id));
+    setSubDeleteConfirm(null);
   };
 
   // ── Projects: eliminar ──
@@ -308,6 +342,22 @@ const Admin = () => {
           >
             <BarChart2 size={14} />
             Estadísticas
+          </button>
+          <button
+            onClick={() => setTab("subscribers")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+              tab === "subscribers"
+                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <Mail size={14} />
+            Suscriptores
+            {subscribers.length > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
+                {subscribers.length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -682,6 +732,89 @@ const Admin = () => {
                 No hay datos de visitas todavía.
               </p>
             )}
+          </div>
+        )}
+
+        {/* ── TAB: SUSCRIPTORES ── */}
+        {tab === "subscribers" && (
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs text-white/40">
+                {subscribers.length} suscriptor{subscribers.length !== 1 ? "es" : ""} en total
+              </p>
+              <button
+                onClick={handleSendNewsletter}
+                disabled={sending || subscribers.length === 0}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/20 rounded-lg text-xs text-cyan-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Mail size={13} />
+                {sending ? "Enviando…" : "Enviar newsletter"}
+              </button>
+            </div>
+
+            {sendResult && (
+              <div className={`mb-4 px-4 py-3 rounded-xl border text-xs ${sendResult.errors === -1 ? "bg-red-400/10 border-red-400/20 text-red-400" : "bg-cyan-400/10 border-cyan-400/20 text-cyan-300"}`}>
+                {sendResult.errors === -1
+                  ? "Error al enviar el newsletter. Comprueba GMAIL_APP_PASSWORD en el .env."
+                  : `✓ Enviado a ${sendResult.sent} de ${sendResult.total} suscriptores${sendResult.errors > 0 ? ` (${sendResult.errors} errores)` : ""}.`}
+              </div>
+            )}
+
+            {subscribers.length === 0 && (
+              <p className="text-white/30 text-sm text-center py-12">
+                Todavía no hay suscriptores.
+              </p>
+            )}
+
+            <div className="flex flex-col gap-2">
+              {subscribers.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="bg-white/5 border border-white/10 rounded-xl px-5 py-3 flex items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Mail size={13} className="text-cyan-400 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm text-white font-medium truncate">{sub.email}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-[10px] text-white/30">{formatDate(sub.created_at)}</p>
+                        {(sub.city || sub.country) && (
+                          <span className="flex items-center gap-1 text-[10px] text-white/40">
+                            <MapPin size={9} />
+                            {[sub.city, sub.country].filter(Boolean).join(", ")}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {subDeleteConfirm === sub.id ? (
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleDeleteSubscriber(sub.id)}
+                        className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer font-medium"
+                      >
+                        Confirmar
+                      </button>
+                      <button
+                        onClick={() => setSubDeleteConfirm(null)}
+                        className="text-[10px] text-white/30 hover:text-white/60 cursor-pointer"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setSubDeleteConfirm(sub.id)}
+                      className="text-white/20 hover:text-red-400 transition-colors cursor-pointer shrink-0"
+                      title="Eliminar suscriptor"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

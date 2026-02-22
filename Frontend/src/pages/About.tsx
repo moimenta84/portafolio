@@ -4,7 +4,7 @@ import CounterServices from "../services/CounterServices";
 const About = () => {
   return (
     <section className="relative flex-1 flex flex-col justify-center py-6">
-      <div className="max-w-5xl mx-auto px-4 md:px-6 text-white w-full space-y-6">
+      <div className="text-white flex flex-col gap-6">
 
         {/* HEADER */}
         <header>

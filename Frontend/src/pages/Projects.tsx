@@ -44,8 +44,8 @@ const Projects = () => {
   };
 
   return (
-    <section className="relative flex-1 flex flex-col px-4 md:px-6 py-4">
-      <div className="max-w-5xl mx-auto w-full flex flex-col flex-1">
+    <section className="relative flex-1 flex flex-col justify-center py-6">
+      <div className="flex flex-col gap-4">
 
         {/* HEADER */}
         <div className="mb-4">
