@@ -1,9 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import cron from "node-cron";
 import path from "path";
 import { fileURLToPath } from "url";
 import { initDatabase } from "./db/database.js";
+import { dispatchToAll } from "./services/newsletter.js";
 import { getIp } from "./middleware/getIp.js";
 import authRouter from "./routes/auth.js";
 import projectsRouter from "./routes/projects.js";
@@ -52,6 +54,12 @@ app.get("/{*splat}", (_req, res) => {
 
 // Init DB and start server
 initDatabase();
+
+// Newsletter automático — todos los lunes a las 9:00 (Madrid)
+cron.schedule("0 9 * * 1", () => {
+  console.log("[cron] Enviando newsletter semanal...");
+  dispatchToAll().catch((err) => console.error("[cron] Error:", err));
+}, { timezone: "Europe/Madrid" });
 
 app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);

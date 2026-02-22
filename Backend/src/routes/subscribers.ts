@@ -1,9 +1,9 @@
 import { Router } from "express";
 import crypto from "crypto";
 import db from "../db/database.js";
-import { sendEmail, welcomeEmailHtml } from "../services/notifications.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { getGeoData, isPrivateIp } from "../utils/geo.js";
+import { dispatchToAll, dispatchToOne } from "../services/newsletter.js";
 
 const router = Router();
 
@@ -33,24 +33,8 @@ router.post("/", async (req, res) => {
     "INSERT INTO subscribers (email, unsubscribe_token, city, region, country) VALUES (?, ?, ?, ?, ?)"
   ).run(email, token, city, region, country);
 
-  // Obtener últimas noticias del caché
-  let articles: { title: string; url: string; source: string }[] = [];
-  try {
-    const rows = db.prepare("SELECT data FROM news_cache LIMIT 5").all() as { data: string }[];
-    articles = rows
-      .flatMap((row) => {
-        try { return JSON.parse(row.data); } catch { return []; }
-      })
-      .slice(0, 5)
-      .map((a: any) => ({ title: a.title, url: a.url, source: a.source }));
-  } catch {}
-
   console.log(`[subscribers] Enviando email de bienvenida a ${email}`);
-  await sendEmail(
-    email,
-    "🚀 ¡Bienvenido al newsletter de Iker Martínez Dev!",
-    welcomeEmailHtml(articles, token)
-  );
+  await dispatchToOne(email, token);
   console.log(`[subscribers] Email enviado correctamente a ${email}`);
 
   res.json({ ok: true });
@@ -64,39 +48,10 @@ router.get("/", requireAuth, (_req, res) => {
   res.json(rows);
 });
 
-// POST /api/subscribers/send-newsletter - Enviar newsletter a todos los suscriptores
+// POST /api/subscribers/send-newsletter - Enviar newsletter a todos los suscriptores (manual desde admin)
 router.post("/send-newsletter", requireAuth, async (_req, res) => {
-  const subscribers = db
-    .prepare("SELECT email, unsubscribe_token FROM subscribers")
-    .all() as { email: string; unsubscribe_token: string }[];
-
-  if (subscribers.length === 0) {
-    res.json({ ok: true, sent: 0, errors: 0, total: 0 });
-    return;
-  }
-
-  let articles: { title: string; url: string; source: string }[] = [];
-  try {
-    const rows = db.prepare("SELECT data FROM news_cache LIMIT 10").all() as { data: string }[];
-    articles = rows
-      .flatMap((row) => { try { return JSON.parse(row.data); } catch { return []; } })
-      .slice(0, 5)
-      .map((a: any) => ({ title: a.title, url: a.url, source: a.source }));
-  } catch {}
-
-  let sent = 0, errors = 0;
-  for (const sub of subscribers) {
-    try {
-      await sendEmail(
-        sub.email,
-        "📰 Últimas noticias — Iker Martínez Dev",
-        welcomeEmailHtml(articles, sub.unsubscribe_token)
-      );
-      sent++;
-    } catch { errors++; }
-  }
-
-  res.json({ ok: true, sent, errors, total: subscribers.length });
+  const result = await dispatchToAll();
+  res.json({ ok: true, ...result });
 });
 
 // DELETE /api/subscribers/:id - Eliminar suscriptor (admin)
