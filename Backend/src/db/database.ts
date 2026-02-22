@@ -130,6 +130,11 @@ export function initDatabase() {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
   migrate("CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC)");
+
+  // Eliminar proyectos placeholder con links falsos (github.com/iker/*)
+  try {
+    db.prepare("DELETE FROM projects WHERE link LIKE 'https://github.com/iker/%'").run();
+  } catch {}
   migrate(`CREATE TABLE IF NOT EXISTS newsletter_opens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     send_id INTEGER NOT NULL,
@@ -190,27 +195,6 @@ function seedProjects() {
       description: "Interfaz frontend para gestión de clientes y recursos consumiendo API externa. Buenas prácticas en React, separación de componentes y arquitectura escalable.",
       tech: ["React", "TypeScript", "Chart.js"],
       link: "https://github.com/moimenta84/Crm-platform",
-    },
-    {
-      title: "Clon de Twitter (Mini)",
-      image: "/img/projects/twitter-clone.png",
-      description: "Mini clon de Twitter con Express, SQLite y autenticación JWT. Permite publicar tweets, likes y seguir usuarios.",
-      tech: ["Express", "SQLite", "JWT", "Bcrypt"],
-      link: "https://github.com/iker/twitter-mini",
-    },
-    {
-      title: "Buscador de Películas",
-      image: "/img/projects/movies.png",
-      description: "Buscador de películas usando la API de OMDb. Incluye debounce con Lodash, almacenamiento local y diseño responsive.",
-      tech: ["Vite", "Lodash", "LocalStorage", "CSS Modules"],
-      link: "https://github.com/iker/movies-search",
-    },
-    {
-      title: "Ecommerce Frontend",
-      image: "/img/projects/ecommerce.png",
-      description: "Frontend de ecommerce con carrito persistente, filtros avanzados y consumo de API. Animaciones suaves con GSAP.",
-      tech: ["Vite", "GSAP", "Axios", "Sass"],
-      link: "https://github.com/iker/ecommerce-frontend",
     },
   ];
 
