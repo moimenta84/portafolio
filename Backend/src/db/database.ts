@@ -121,6 +121,7 @@ export function initDatabase() {
     sent INTEGER NOT NULL,
     errors INTEGER NOT NULL
   )`);
+  migrate("ALTER TABLE visits ADD COLUMN device TEXT DEFAULT 'desktop'");
 
   seedProjects();
   seedReviews();

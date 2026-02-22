@@ -5,6 +5,14 @@ import { getGeoData, isPrivateIp } from "../utils/geo.js";
 
 const router = Router();
 
+// Detecta el tipo de dispositivo a partir del User-Agent
+function detectDevice(ua: string): "mobile" | "tablet" | "desktop" {
+  const u = ua.toLowerCase();
+  if (/tablet|ipad|playbook|silk/.test(u)) return "tablet";
+  if (/mobile|android|iphone|ipod|blackberry|windows phone/.test(u)) return "mobile";
+  return "desktop";
+}
+
 // Anonimiza la IP: guarda solo los primeros 3 octetos (IPv4) para cumplir con RGPD
 function anonymizeIp(ip: string): string {
   const ipv4 = ip.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3}$/);
@@ -17,6 +25,7 @@ function anonymizeIp(ip: string): string {
 router.post("/", async (req, res) => {
   const ip = req.clientIp || "";
   const { page, referrer } = req.body;
+  const device = detectDevice(req.headers["user-agent"] || "");
 
   let city = "", region = "", country = "", org = "", is_company = 0;
   let timezone = "", isp = "", as_number = "";
@@ -41,9 +50,9 @@ router.post("/", async (req, res) => {
   } catch {}
 
   db.prepare(`
-    INSERT INTO visits (ip, page, city, region, country, org, is_company, timezone, isp, as_number, referrer)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(anonIp, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer);
+    INSERT INTO visits (ip, page, city, region, country, org, is_company, timezone, isp, as_number, referrer, device)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(anonIp, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer, device);
 
   const total = db.prepare("SELECT COUNT(DISTINCT ip) as c FROM visits").get() as { c: number };
   res.json({ total_visits: total.c });
@@ -109,6 +118,13 @@ router.get("/stats", requireAuth, (_req, res) => {
     "SELECT COUNT(DISTINCT ip) as c FROM visits WHERE is_company = 0"
   ).get() as { c: number };
 
+  const byDevice = db.prepare(`
+    SELECT COALESCE(device, 'desktop') as device, COUNT(DISTINCT ip) as visitors
+    FROM visits
+    GROUP BY COALESCE(device, 'desktop')
+    ORDER BY visitors DESC
+  `).all() as { device: string; visitors: number }[];
+
   res.json({
     unique_visitors: total.unique_visitors,
     total_page_views: total.total_page_views,
@@ -117,23 +133,24 @@ router.get("/stats", requireAuth, (_req, res) => {
     by_page: byPage,
     by_region: byRegion,
     by_referrer: byReferrer,
+    by_device: byDevice,
     empresa_visitors: empresaCount.c,
     usuario_visitors: usuarioCount.c,
   });
 });
 
-// GET /api/visits/history - Visitas diarias últimas 2 semanas (admin)
+// GET /api/visits/history - Visitas diarias últimos 30 días (admin)
 router.get("/history", requireAuth, (_req, res) => {
   const rows = db.prepare(`
     SELECT date(created_at) as date, COUNT(DISTINCT ip) as visitors
     FROM visits
-    WHERE created_at >= date('now', '-13 days')
+    WHERE created_at >= date('now', '-29 days')
     GROUP BY date(created_at)
     ORDER BY date ASC
   `).all() as { date: string; visitors: number }[];
 
   const result = [];
-  for (let i = 13; i >= 0; i--) {
+  for (let i = 29; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.toISOString().slice(0, 10);

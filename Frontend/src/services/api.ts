@@ -72,6 +72,7 @@ export const getVisitStats = () =>
     by_page: { page: string; views: number; unique_visitors: number }[];
     by_region: { region: string; visitors: number }[];
     by_referrer: { referrer: string; visitors: number }[];
+    by_device: { device: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
   }>("/visits/stats");

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -72,6 +72,7 @@ const Admin = () => {
     by_page: { page: string; views: number; unique_visitors: number }[];
     by_region: { region: string; visitors: number }[];
     by_referrer: { referrer: string; visitors: number }[];
+    by_device: { device: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
   } | null>(null);
@@ -565,6 +566,11 @@ const Admin = () => {
             {/* Gráfica de visitas diarias */}
             {visitHistory.length > 0 && (
               <VisitChart data={visitHistory} />
+            )}
+
+            {/* Desglose por dispositivo */}
+            {stats && stats.by_device.length > 0 && (
+              <DeviceBreakdown data={stats.by_device} />
             )}
 
             {/* Esta semana vs semana anterior */}
@@ -1149,6 +1155,46 @@ const ConversionFunnel = ({ data }: { data: ConvStatsType }) => {
   );
 };
 
+// ─── Desglose por dispositivo ─────────────────────────────────────────────────
+
+const deviceMeta: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  desktop: { label: "Escritorio", icon: <Monitor size={13} />, color: "bg-cyan-400/50" },
+  mobile:  { label: "Móvil",      icon: <Smartphone size={13} />, color: "bg-violet-400/50" },
+  tablet:  { label: "Tablet",     icon: <Tablet size={13} />,     color: "bg-amber-400/50" },
+};
+
+const DeviceBreakdown = ({ data }: { data: { device: string; visitors: number }[] }) => {
+  const total = data.reduce((a, d) => a + d.visitors, 0) || 1;
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 mb-4">
+      <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Dispositivos</p>
+      <div className="flex flex-col gap-3">
+        {data.map((d) => {
+          const meta = deviceMeta[d.device] ?? { label: d.device, icon: <Monitor size={13} />, color: "bg-cyan-400/50" };
+          const pct = Math.round((d.visitors / total) * 100);
+          return (
+            <div key={d.device}>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2 text-white/60 text-xs">
+                  {meta.icon}
+                  <span>{meta.label}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-white">{d.visitors}</span>
+                  <span className="text-[10px] text-white/40 w-8 text-right">{pct}%</span>
+                </div>
+              </div>
+              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div className={`h-full ${meta.color} rounded-full`} style={{ width: `${Math.max(pct, 1)}%` }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 // ─── Gráfica de visitas diarias ───────────────────────────────────────────────
 
 const VisitChart = ({ data }: { data: { date: string; visitors: number }[] }) => {
@@ -1159,7 +1205,7 @@ const VisitChart = ({ data }: { data: { date: string; visitors: number }[] }) =>
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs text-white/30 uppercase tracking-wider">Visitas diarias — últimas 2 semanas</p>
+        <p className="text-xs text-white/30 uppercase tracking-wider">Visitas diarias — últimos 30 días</p>
         <span className="text-xs text-cyan-400 font-semibold">{total} visitas</span>
       </div>
       <div className="flex items-end gap-1" style={{ height: 72 }}>
