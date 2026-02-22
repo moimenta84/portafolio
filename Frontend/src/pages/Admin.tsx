@@ -85,7 +85,7 @@ const Admin = () => {
   const [followersCount, setFollowersCount] = useState<number | null>(null);
 
   // ── Subscribers state ──
-  const [subscribers, setSubscribers] = useState<{ id: number; email: string; city: string; region: string; country: string; created_at: string }[]>([]);
+  const [subscribers, setSubscribers] = useState<{ id: number; email: string; city: string; region: string; country: string; source: string; created_at: string }[]>([]);
   const [subDeleteConfirm, setSubDeleteConfirm] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
@@ -736,87 +736,127 @@ const Admin = () => {
         )}
 
         {/* ── TAB: SUSCRIPTORES ── */}
-        {tab === "subscribers" && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs text-white/40">
-                {subscribers.length} suscriptor{subscribers.length !== 1 ? "es" : ""} en total
-              </p>
-              <button
-                onClick={handleSendNewsletter}
-                disabled={sending || subscribers.length === 0}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/20 rounded-lg text-xs text-cyan-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Mail size={13} />
-                {sending ? "Enviando…" : "Enviar newsletter"}
-              </button>
-            </div>
+        {tab === "subscribers" && (() => {
+          const followSubs = subscribers.filter((s) => s.source === "follow");
+          const newsletterSubs = subscribers.filter((s) => s.source !== "follow");
 
-            {sendResult && (
-              <div className={`mb-4 px-4 py-3 rounded-xl border text-xs ${sendResult.errors === -1 ? "bg-red-400/10 border-red-400/20 text-red-400" : "bg-cyan-400/10 border-cyan-400/20 text-cyan-300"}`}>
-                {sendResult.errors === -1
-                  ? "Error al enviar el newsletter. Comprueba GMAIL_APP_PASSWORD en el .env."
-                  : `✓ Enviado a ${sendResult.sent} de ${sendResult.total} suscriptores${sendResult.errors > 0 ? ` (${sendResult.errors} errores)` : ""}.`}
-              </div>
-            )}
-
-            {subscribers.length === 0 && (
-              <p className="text-white/30 text-sm text-center py-12">
-                Todavía no hay suscriptores.
-              </p>
-            )}
-
-            <div className="flex flex-col gap-2">
-              {subscribers.map((sub) => (
-                <div
-                  key={sub.id}
-                  className="bg-white/5 border border-white/10 rounded-xl px-5 py-3 flex items-center justify-between gap-3"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Mail size={13} className="text-cyan-400 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-sm text-white font-medium truncate">{sub.email}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <p className="text-[10px] text-white/30">{formatDate(sub.created_at)}</p>
-                        {(sub.city || sub.country) && (
-                          <span className="flex items-center gap-1 text-[10px] text-white/40">
-                            <MapPin size={9} />
-                            {[sub.city, sub.country].filter(Boolean).join(", ")}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+          const SubRow = ({ sub }: { sub: typeof subscribers[0] }) => (
+            <div
+              key={sub.id}
+              className="bg-white/5 border border-white/10 rounded-xl px-5 py-3 flex items-center justify-between gap-3"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Mail size={13} className="text-cyan-400 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm text-white font-medium truncate">{sub.email}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-[10px] text-white/30">{formatDate(sub.created_at)}</p>
+                    {(sub.city || sub.country) && (
+                      <span className="flex items-center gap-1 text-[10px] text-white/40">
+                        <MapPin size={9} />
+                        {[sub.city, sub.country].filter(Boolean).join(", ")}
+                      </span>
+                    )}
                   </div>
-
-                  {subDeleteConfirm === sub.id ? (
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        onClick={() => handleDeleteSubscriber(sub.id)}
-                        className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer font-medium"
-                      >
-                        Confirmar
-                      </button>
-                      <button
-                        onClick={() => setSubDeleteConfirm(null)}
-                        className="text-[10px] text-white/30 hover:text-white/60 cursor-pointer"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setSubDeleteConfirm(sub.id)}
-                      className="text-white/20 hover:text-red-400 transition-colors cursor-pointer shrink-0"
-                      title="Eliminar suscriptor"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  )}
                 </div>
-              ))}
+              </div>
+
+              {subDeleteConfirm === sub.id ? (
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => handleDeleteSubscriber(sub.id)}
+                    className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer font-medium"
+                  >
+                    Confirmar
+                  </button>
+                  <button
+                    onClick={() => setSubDeleteConfirm(null)}
+                    className="text-[10px] text-white/30 hover:text-white/60 cursor-pointer"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setSubDeleteConfirm(sub.id)}
+                  className="text-white/20 hover:text-red-400 transition-colors cursor-pointer shrink-0"
+                  title="Eliminar suscriptor"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
-          </div>
-        )}
+          );
+
+          return (
+            <div>
+              {/* Cabecera con botón enviar */}
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs text-white/40">
+                  {subscribers.length} email{subscribers.length !== 1 ? "s" : ""} en total
+                </p>
+                <button
+                  onClick={handleSendNewsletter}
+                  disabled={sending || subscribers.length === 0}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/20 rounded-lg text-xs text-cyan-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Mail size={13} />
+                  {sending ? "Enviando…" : "Enviar newsletter"}
+                </button>
+              </div>
+
+              {sendResult && (
+                <div className={`mb-4 px-4 py-3 rounded-xl border text-xs ${sendResult.errors === -1 ? "bg-red-400/10 border-red-400/20 text-red-400" : "bg-cyan-400/10 border-cyan-400/20 text-cyan-300"}`}>
+                  {sendResult.errors === -1
+                    ? "Error al enviar el newsletter. Comprueba GMAIL_APP_PASSWORD en el .env."
+                    : `✓ Enviado a ${sendResult.sent} de ${sendResult.total} suscriptores${sendResult.errors > 0 ? ` (${sendResult.errors} errores)` : ""}.`}
+                </div>
+              )}
+
+              {subscribers.length === 0 && (
+                <p className="text-white/30 text-sm text-center py-12">
+                  Todavía no hay suscriptores.
+                </p>
+              )}
+
+              {/* Sección: Seguidores */}
+              {followSubs.length > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <UserPlus size={13} className="text-cyan-400" />
+                    <p className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+                      Seguidores
+                    </p>
+                    <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/50">
+                      {followSubs.length}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {followSubs.map((sub) => <SubRow key={sub.id} sub={sub} />)}
+                  </div>
+                </div>
+              )}
+
+              {/* Sección: Newsletter */}
+              {newsletterSubs.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Mail size={13} className="text-cyan-400" />
+                    <p className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+                      Newsletter
+                    </p>
+                    <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/50">
+                      {newsletterSubs.length}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {newsletterSubs.map((sub) => <SubRow key={sub.id} sub={sub} />)}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* ── MODAL: Crear / Editar proyecto ── */}

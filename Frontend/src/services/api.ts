@@ -94,7 +94,7 @@ export const deleteReview = (id: number) =>
 
 // Subscribers
 export const getSubscribers = () =>
-  fetchJson<{ id: number; email: string; city: string; region: string; country: string; created_at: string }[]>("/subscribers");
+  fetchJson<{ id: number; email: string; city: string; region: string; country: string; source: string; created_at: string }[]>("/subscribers");
 export const deleteSubscriber = (id: number) =>
   fetchJson<{ ok: boolean }>(`/subscribers/${id}`, { method: "DELETE" });
 export const sendNewsletter = () =>
