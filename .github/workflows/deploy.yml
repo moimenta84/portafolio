@@ -47,4 +47,5 @@ jobs:
             cd Frontend && npm install && npm run build && cd ..
             cd Backend  && npm install && npm run build && cd ..
             pm2 restart portfolio
+            pm2 save
             echo "✅ Deploy completado"
