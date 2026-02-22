@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -17,12 +17,13 @@ import {
   sendNewsletter,
   getNewsletterHistory,
   getConversionStats,
+  getAuditLog,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
 // ─── Tipos internos ───────────────────────────────────────────────────────────
 
-type Tab = "reviews" | "projects" | "stats" | "subscribers";
+type Tab = "reviews" | "projects" | "stats" | "subscribers" | "security";
 
 interface ProjectForm {
   title: string;
@@ -104,6 +105,9 @@ const Admin = () => {
   // ── Newsletter history state ──
   const [newsletterHistory, setNewsletterHistory] = useState<{ id: number; sent_at: string; total: number; sent: number; errors: number }[]>([]);
 
+  // ── Audit log state ──
+  const [auditLog, setAuditLog] = useState<{ id: number; action: string; details: string; ip: string; created_at: string }[]>([]);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +166,10 @@ const Admin = () => {
 
     getNewsletterHistory()
       .then(setNewsletterHistory)
+      .catch(() => {});
+
+    getAuditLog()
+      .then(setAuditLog)
       .catch(() => {});
   }, [authed]);
 
@@ -384,6 +392,17 @@ const Admin = () => {
                 {subscribers.length}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => setTab("security")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+              tab === "security"
+                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <Shield size={14} />
+            Seguridad
           </button>
         </div>
 
@@ -930,6 +949,59 @@ const Admin = () => {
         })()}
       </div>
 
+      {/* ── TAB: SEGURIDAD ── */}
+      {tab === "security" && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-white/40">
+              Últimas {auditLog.length} acciones registradas
+            </p>
+            <button
+              onClick={() => getAuditLog().then(setAuditLog).catch(() => {})}
+              className="text-xs text-white/30 hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              Actualizar
+            </button>
+          </div>
+
+          {auditLog.length === 0 && (
+            <p className="text-white/30 text-sm text-center py-12">
+              No hay entradas en el log todavía.
+            </p>
+          )}
+
+          <div className="flex flex-col gap-2">
+            {auditLog.map((entry) => {
+              const meta = auditMeta(entry.action);
+              return (
+                <div
+                  key={entry.id}
+                  className={`border rounded-xl px-4 py-3 flex items-start gap-3 ${meta.bg}`}
+                >
+                  <span className="text-base mt-0.5 shrink-0">{meta.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-xs font-semibold ${meta.color}`}>
+                        {meta.label}
+                      </span>
+                      <span className="text-[10px] text-white/30">
+                        {new Date(entry.created_at).toLocaleString("es-ES", {
+                          day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/60 mt-0.5 leading-relaxed">{entry.details}</p>
+                    {entry.ip && (
+                      <p className="text-[10px] text-white/20 mt-1 font-mono">{entry.ip}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* ── MODAL: Crear / Editar proyecto ── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -1050,6 +1122,22 @@ const Admin = () => {
     </div>
   );
 };
+
+// ─── Metadatos para el audit log ─────────────────────────────────────────────
+
+function auditMeta(action: string): { icon: string; label: string; color: string; bg: string } {
+  const map: Record<string, { icon: string; label: string; color: string; bg: string }> = {
+    LOGIN_SUCCESS:    { icon: "🔓", label: "Login correcto",         color: "text-emerald-400", bg: "bg-emerald-400/5 border-emerald-400/15" },
+    LOGIN_FAILED:     { icon: "🚨", label: "Intento fallido",        color: "text-red-400",     bg: "bg-red-400/10 border-red-400/20" },
+    PROJECT_CREATE:   { icon: "➕", label: "Proyecto creado",        color: "text-cyan-400",    bg: "bg-white/5 border-white/10" },
+    PROJECT_UPDATE:   { icon: "✏️",  label: "Proyecto editado",       color: "text-cyan-300",    bg: "bg-white/5 border-white/10" },
+    PROJECT_DELETE:   { icon: "🗑️",  label: "Proyecto eliminado",     color: "text-orange-400",  bg: "bg-orange-400/5 border-orange-400/15" },
+    REVIEW_DELETE:    { icon: "🗑️",  label: "Reseña eliminada",       color: "text-orange-400",  bg: "bg-orange-400/5 border-orange-400/15" },
+    SUBSCRIBER_DELETE:{ icon: "🗑️",  label: "Suscriptor eliminado",   color: "text-orange-400",  bg: "bg-orange-400/5 border-orange-400/15" },
+    NEWSLETTER_SEND:  { icon: "📧", label: "Newsletter enviado",     color: "text-violet-400",  bg: "bg-violet-400/5 border-violet-400/15" },
+  };
+  return map[action] ?? { icon: "📋", label: action, color: "text-white/60", bg: "bg-white/5 border-white/10" };
+}
 
 // ─── Spinner reutilizable ─────────────────────────────────────────────────────
 

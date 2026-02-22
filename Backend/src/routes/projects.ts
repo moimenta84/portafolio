@@ -1,6 +1,7 @@
 import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
+import { logAudit } from "../utils/audit.js";
 
 const router = Router();
 
@@ -53,6 +54,7 @@ router.get("/:id", (req, res) => {
 // POST /api/projects - Create project
 router.post("/", requireAuth, (req, res) => {
   const { title, description, image, tech, link } = req.body;
+  const ip = req.clientIp || "";
 
   if (!title) {
     res.status(400).json({ error: "El título es obligatorio" });
@@ -62,6 +64,8 @@ router.post("/", requireAuth, (req, res) => {
   const result = db.prepare(
     "INSERT INTO projects (title, description, image, tech, link) VALUES (?, ?, ?, ?, ?)"
   ).run(title, description || "", image || "", JSON.stringify(tech || []), link || "");
+
+  logAudit("PROJECT_CREATE", `Proyecto creado: "${title}"`, ip);
 
   const project = db.prepare("SELECT * FROM projects WHERE id = ?").get(result.lastInsertRowid) as any;
 
@@ -77,6 +81,7 @@ router.post("/", requireAuth, (req, res) => {
 router.put("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
   const { title, description, image, tech, link } = req.body;
+  const ip = req.clientIp || "";
 
   const existing = db.prepare("SELECT * FROM projects WHERE id = ?").get(id);
   if (!existing) {
@@ -96,20 +101,23 @@ router.put("/:id", requireAuth, (req, res) => {
   );
 
   const updated = db.prepare("SELECT * FROM projects WHERE id = ?").get(id) as any;
+  logAudit("PROJECT_UPDATE", `Proyecto editado: "${updated.title}" (id ${id})`, ip);
   res.json({ ...updated, tech: JSON.parse(updated.tech || "[]") });
 });
 
 // DELETE /api/projects/:id - Delete project
 router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
+  const ip = req.clientIp || "";
 
-  const existing = db.prepare("SELECT * FROM projects WHERE id = ?").get(id);
+  const existing = db.prepare("SELECT * FROM projects WHERE id = ?").get(id) as any;
   if (!existing) {
     res.status(404).json({ error: "Proyecto no encontrado" });
     return;
   }
 
   db.prepare("DELETE FROM projects WHERE id = ?").run(id);
+  logAudit("PROJECT_DELETE", `Proyecto eliminado: "${existing.title}" (id ${id})`, ip);
   res.json({ message: "Proyecto eliminado" });
 });
 

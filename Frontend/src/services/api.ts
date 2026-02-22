@@ -115,6 +115,10 @@ export const registerEvent = (type: string, metadata?: Record<string, unknown>) 
     body: JSON.stringify({ type, metadata }),
   }).catch(() => {});
 
+// Audit log
+export const getAuditLog = () =>
+  fetchJson<{ id: number; action: string; details: string; ip: string; created_at: string }[]>("/audit");
+
 export const getConversionStats = () =>
   fetchJson<{
     funnel: { total_visitors: number; cv_downloads: number; project_clicks: number; contact_submits: number; follows: number };

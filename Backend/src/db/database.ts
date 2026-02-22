@@ -122,6 +122,14 @@ export function initDatabase() {
     errors INTEGER NOT NULL
   )`);
   migrate("ALTER TABLE visits ADD COLUMN device TEXT DEFAULT 'desktop'");
+  migrate(`CREATE TABLE IF NOT EXISTS audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    action TEXT NOT NULL,
+    details TEXT,
+    ip TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+  migrate("CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC)");
 
   seedProjects();
   seedReviews();

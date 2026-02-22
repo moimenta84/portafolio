@@ -4,6 +4,7 @@ import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { getGeoData, isPrivateIp } from "../utils/geo.js";
 import { dispatchToAll, dispatchToOne } from "../services/newsletter.js";
+import { logAudit } from "../utils/audit.js";
 
 const router = Router();
 
@@ -49,8 +50,10 @@ router.get("/", requireAuth, (_req, res) => {
 });
 
 // POST /api/subscribers/send-newsletter - Enviar newsletter a todos los suscriptores (manual desde admin)
-router.post("/send-newsletter", requireAuth, async (_req, res) => {
+router.post("/send-newsletter", requireAuth, async (req, res) => {
+  const ip = req.clientIp || "";
   const result = await dispatchToAll();
+  logAudit("NEWSLETTER_SEND", `Newsletter enviado: ${result.sent}/${result.total} (${result.errors} errores)`, ip);
   res.json({ ok: true, ...result });
 });
 
@@ -65,7 +68,10 @@ router.get("/history", requireAuth, (_req, res) => {
 // DELETE /api/subscribers/:id - Eliminar suscriptor (admin)
 router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
+  const ip = req.clientIp || "";
+  const sub = db.prepare("SELECT email FROM subscribers WHERE id = ?").get(id) as any;
   db.prepare("DELETE FROM subscribers WHERE id = ?").run(id);
+  if (sub) logAudit("SUBSCRIBER_DELETE", `Suscriptor eliminado: ${sub.email}`, ip);
   res.json({ ok: true });
 });
 

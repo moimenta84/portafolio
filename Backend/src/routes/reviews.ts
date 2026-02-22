@@ -1,6 +1,7 @@
 import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
+import { logAudit } from "../utils/audit.js";
 
 const router = Router();
 
@@ -50,14 +51,16 @@ router.post("/", (req, res) => {
 // DELETE /api/reviews/:id - Delete a review (admin)
 router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;
+  const ip = req.clientIp || "";
 
-  const existing = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id);
+  const existing = db.prepare("SELECT * FROM reviews WHERE id = ?").get(id) as any;
   if (!existing) {
     res.status(404).json({ error: "Review no encontrada" });
     return;
   }
 
   db.prepare("DELETE FROM reviews WHERE id = ?").run(id);
+  logAudit("REVIEW_DELETE", `Reseña eliminada de "${existing.name}" (${existing.rating}★)`, ip);
   res.json({ message: "Review eliminada" });
 });
 
