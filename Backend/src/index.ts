@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { initDatabase } from "./db/database.js";
 import { dispatchToAll } from "./services/newsletter.js";
 import { getIp } from "./middleware/getIp.js";
+import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
 import projectsRouter from "./routes/projects.js";
 import likesRouter from "./routes/likes.js";
@@ -29,16 +30,16 @@ app.use(express.json());
 app.use(getIp);
 
 // API Routes
-app.use("/api/auth", authRouter);
-app.use("/api/projects", projectsRouter);
-app.use("/api/projects", likesRouter);
-app.use("/api/followers", followersRouter);
-app.use("/api/visits", visitsRouter);
-app.use("/api/news", newsRouter);
-app.use("/api/reviews", reviewsRouter);
-app.use("/api/cv", cvRouter);
-app.use("/api/contact", contactRouter);
-app.use("/api/subscribers", subscribersRouter);
+app.use("/api/auth",        authLimiter,         authRouter);
+app.use("/api/projects",                         projectsRouter);
+app.use("/api/projects",                         likesRouter);
+app.use("/api/followers",   subscriptionLimiter, followersRouter);
+app.use("/api/visits",                           visitsRouter);
+app.use("/api/news",                             newsRouter);
+app.use("/api/reviews",     reviewLimiter,       reviewsRouter);
+app.use("/api/cv",                               cvRouter);
+app.use("/api/contact",     contactLimiter,      contactRouter);
+app.use("/api/subscribers", subscriptionLimiter, subscribersRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {
