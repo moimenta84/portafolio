@@ -24,6 +24,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Confiar en el proxy de Nginx (necesario para que express-rate-limit lea la IP real)
+app.set("trust proxy", 1);
+
 // Middleware
 const allowedOrigins = process.env.CORS_ORIGIN || "http://localhost:5173";
 app.use(cors({ origin: allowedOrigins.split(",") }));
