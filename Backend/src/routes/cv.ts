@@ -1,6 +1,7 @@
 import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
+import { sendTelegram } from "../services/notifications.js";
 
 const router = Router();
 
@@ -12,6 +13,15 @@ router.post("/download", (req, res) => {
   const total = db.prepare(
     "SELECT COUNT(*) as c FROM cv_downloads"
   ).get() as { c: number };
+
+  const unique = db.prepare(
+    "SELECT COUNT(DISTINCT ip) as c FROM cv_downloads"
+  ).get() as { c: number };
+
+  sendTelegram(
+    `📄 <b>CV descargado</b>\n` +
+    `🔢 Total descargas: <b>${total.c}</b> (${unique.c} personas únicas)`
+  ).catch(() => {});
 
   res.json({ total_downloads: total.c });
 });

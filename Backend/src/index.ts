@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { initDatabase } from "./db/database.js";
 import { dispatchToAll } from "./services/newsletter.js";
 import { runBackup } from "./services/backup.js";
+import { sendWeeklyDigest } from "./services/digest.js";
 import { getIp } from "./middleware/getIp.js";
 import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter, eventsLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
@@ -71,6 +72,12 @@ cron.schedule("0 9 * * 1", () => {
 // Backup diario de la BD — cada día a las 3:00 (Madrid)
 cron.schedule("0 3 * * *", () => {
   runBackup().catch((err) => console.error("[cron] Error backup:", err));
+}, { timezone: "Europe/Madrid" });
+
+// Resumen semanal en Telegram — domingos a las 20:00 (Madrid)
+cron.schedule("0 20 * * 0", () => {
+  console.log("[cron] Enviando resumen semanal...");
+  sendWeeklyDigest().catch((err) => console.error("[cron] Error digest:", err));
 }, { timezone: "Europe/Madrid" });
 
 app.listen(Number(PORT), "0.0.0.0", () => {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import crypto from "crypto";
 import db from "../db/database.js";
-import { sendEmail, followWelcomeEmailHtml } from "../services/notifications.js";
+import { sendEmail, followWelcomeEmailHtml, sendTelegram } from "../services/notifications.js";
 import { getGeoData, isPrivateIp } from "../utils/geo.js";
 
 const router = Router();
@@ -37,12 +37,21 @@ router.post("/email", async (req, res) => {
     db.prepare(
       "INSERT INTO subscribers (email, unsubscribe_token, city, region, country, source) VALUES (?, ?, ?, ?, ?, 'follow')"
     ).run(email, token, city, region, country);
+    const totalSubs = db.prepare("SELECT COUNT(*) as c FROM subscribers").get() as { c: number };
     console.log(`[followers] Enviando email de bienvenida a ${email}`);
-    await sendEmail(
-      email,
-      "👋 ¡Gracias por seguirme! — Iker Martínez Dev",
-      followWelcomeEmailHtml(token)
-    );
+    await Promise.all([
+      sendEmail(
+        email,
+        "👋 ¡Gracias por seguirme! — Iker Martínez Dev",
+        followWelcomeEmailHtml(token)
+      ),
+      sendTelegram(
+        `👤 <b>Nuevo seguidor</b>\n` +
+        `📧 ${email}\n` +
+        `📍 ${[city, country].filter(Boolean).join(", ") || "Ubicación desconocida"}\n` +
+        `📊 Total suscriptores: <b>${totalSubs.c}</b>`
+      ),
+    ]);
     console.log(`[followers] Email enviado correctamente a ${email}`);
   }
 
