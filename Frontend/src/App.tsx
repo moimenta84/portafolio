@@ -19,17 +19,42 @@ import { registerVisit } from "./services/api";
 // Se ejecuta cada vez que cambia la ruta gracias a useLocation().
 
 
-// Registra UNA sola visita por sesión con referrer, y envía la duración al salir.
+// Registra cada página única visitada por sesión con referrer real, y envía la duración al salir.
+// - Omite la página /admin
+// - Omite visitas del propio administrador (si hay token JWT en sessionStorage)
+// - Registra cada ruta única una vez por sesión (no solo la primera)
+// - Lee UTM source de la URL para detectar tráfico de redes sociales (apps móviles suprimen el referrer)
 function VisitTracker() {
   const location = useLocation();
 
   useEffect(() => {
+    // No registrar visitas del admin ni de la propia página de admin
     if (location.pathname === "/admin") return;
-    if (sessionStorage.getItem("visitRegistered")) return;
-    sessionStorage.setItem("visitRegistered", "true");
-    sessionStorage.setItem("visitStart", Date.now().toString());
-    registerVisit(location.pathname, document.referrer).catch(() => {});
-  }, []);
+    if (sessionStorage.getItem("adminToken")) return;
+
+    // Registrar cada ruta única una sola vez por sesión
+    const visitedPages: string[] = JSON.parse(sessionStorage.getItem("visitedPages") || "[]");
+    if (visitedPages.includes(location.pathname)) return;
+    visitedPages.push(location.pathname);
+    sessionStorage.setItem("visitedPages", JSON.stringify(visitedPages));
+
+    // Arrancar el cronómetro de duración solo en la primera página de la sesión
+    if (!sessionStorage.getItem("visitStart")) {
+      sessionStorage.setItem("visitStart", Date.now().toString());
+    }
+
+    // Referrer real: en la primera página mirar UTM source o document.referrer;
+    // en navegación interna no enviar referrer externo (evita atribuir todas las
+    // páginas al mismo origen de entrada)
+    let referrer = "";
+    if (visitedPages.length === 1) {
+      const params = new URLSearchParams(location.search);
+      const utmSource = params.get("utm_source");
+      referrer = utmSource ? `utm:${utmSource}` : document.referrer;
+    }
+
+    registerVisit(location.pathname, referrer).catch(() => {});
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const handleUnload = () => {

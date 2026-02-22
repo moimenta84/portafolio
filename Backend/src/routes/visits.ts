@@ -30,7 +30,14 @@ router.post("/", async (req, res) => {
 
   let cleanReferrer = "directo";
   try {
-    cleanReferrer = referrer ? new URL(referrer).hostname.replace(/^www\./, "") : "directo";
+    if (referrer) {
+      // UTM source enviado desde el frontend (p.ej. utm:linkedin)
+      if (referrer.startsWith("utm:")) {
+        cleanReferrer = referrer.slice(4);
+      } else {
+        cleanReferrer = new URL(referrer).hostname.replace(/^www\./, "");
+      }
+    }
   } catch {}
 
   db.prepare(`

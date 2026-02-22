@@ -20,7 +20,11 @@ const DownloadCV = () => {
     link.download = CV_FILENAME;
     link.click();
 
-    registerCvDownload().catch(() => {});
+    // Registrar solo una descarga por sesión (evitar duplicados por múltiples clics)
+    if (!sessionStorage.getItem("cvDownloaded")) {
+      sessionStorage.setItem("cvDownloaded", "true");
+      registerCvDownload().catch(() => {});
+    }
     setDownloaded(true);
     setTimeout(() => setDownloaded(false), 3000);
   };
