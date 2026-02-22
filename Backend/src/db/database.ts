@@ -77,6 +77,7 @@ export function initDatabase() {
       city TEXT,
       region TEXT,
       country TEXT,
+      source TEXT DEFAULT 'follow',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
@@ -104,6 +105,7 @@ export function initDatabase() {
   migrate("ALTER TABLE subscribers ADD COLUMN city TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN region TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN country TEXT");
+  migrate("ALTER TABLE subscribers ADD COLUMN source TEXT DEFAULT 'follow'");
 
   seedProjects();
   seedReviews();

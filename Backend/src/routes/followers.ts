@@ -8,7 +8,7 @@ const router = Router();
 
 // POST /api/followers/email - Seguir con email (registra follow + guarda email)
 router.post("/email", async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.body ?? {};
   const ip = req.clientIp || "";
 
   if (!email || !email.includes("@")) {
