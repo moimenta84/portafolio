@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { initDatabase } from "./db/database.js";
 import { dispatchToAll } from "./services/newsletter.js";
+import { runBackup } from "./services/backup.js";
 import { getIp } from "./middleware/getIp.js";
 import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
@@ -59,7 +60,12 @@ initDatabase();
 // Newsletter automático — todos los lunes a las 9:00 (Madrid)
 cron.schedule("0 9 * * 1", () => {
   console.log("[cron] Enviando newsletter semanal...");
-  dispatchToAll().catch((err) => console.error("[cron] Error:", err));
+  dispatchToAll().catch((err) => console.error("[cron] Error newsletter:", err));
+}, { timezone: "Europe/Madrid" });
+
+// Backup diario de la BD — cada día a las 3:00 (Madrid)
+cron.schedule("0 3 * * *", () => {
+  runBackup().catch((err) => console.error("[cron] Error backup:", err));
 }, { timezone: "Europe/Madrid" });
 
 app.listen(Number(PORT), "0.0.0.0", () => {
