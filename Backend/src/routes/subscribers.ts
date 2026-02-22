@@ -54,6 +54,14 @@ router.post("/send-newsletter", requireAuth, async (_req, res) => {
   res.json({ ok: true, ...result });
 });
 
+// GET /api/subscribers/history - Historial de newsletters enviados (admin)
+router.get("/history", requireAuth, (_req, res) => {
+  const rows = db
+    .prepare("SELECT id, sent_at, total, sent, errors FROM newsletter_sends ORDER BY sent_at DESC LIMIT 20")
+    .all();
+  res.json(rows);
+});
+
 // DELETE /api/subscribers/:id - Eliminar suscriptor (admin)
 router.delete("/:id", requireAuth, (req, res) => {
   const { id } = req.params;

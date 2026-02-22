@@ -122,4 +122,26 @@ router.get("/stats", requireAuth, (_req, res) => {
   });
 });
 
+// GET /api/visits/history - Visitas diarias últimas 2 semanas (admin)
+router.get("/history", requireAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT date(created_at) as date, COUNT(DISTINCT ip) as visitors
+    FROM visits
+    WHERE created_at >= date('now', '-13 days')
+    GROUP BY date(created_at)
+    ORDER BY date ASC
+  `).all() as { date: string; visitors: number }[];
+
+  const result = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0, 10);
+    const found = rows.find((r) => r.date === dateStr);
+    result.push({ date: dateStr, visitors: found?.visitors ?? 0 });
+  }
+
+  res.json(result);
+});
+
 export default router;

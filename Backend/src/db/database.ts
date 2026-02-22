@@ -106,6 +106,13 @@ export function initDatabase() {
   migrate("ALTER TABLE subscribers ADD COLUMN region TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN country TEXT");
   migrate("ALTER TABLE subscribers ADD COLUMN source TEXT DEFAULT 'follow'");
+  migrate(`CREATE TABLE IF NOT EXISTS newsletter_sends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total INTEGER NOT NULL,
+    sent INTEGER NOT NULL,
+    errors INTEGER NOT NULL
+  )`);
 
   seedProjects();
   seedReviews();

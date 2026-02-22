@@ -73,6 +73,7 @@ export async function dispatchToAll(): Promise<{ sent: number; errors: number; t
   }
 
   console.log(`[newsletter] Enviado: ${sent} ok, ${errors} errores`);
+  db.prepare("INSERT INTO newsletter_sends (total, sent, errors) VALUES (?, ?, ?)").run(subscribers.length, sent, errors);
   return { sent, errors, total: subscribers.length };
 }
 

@@ -9,11 +9,13 @@ import {
   updateProject,
   deleteProject,
   getVisitStats,
+  getVisitHistory,
   getCvDownloads,
   getFollowers,
   getSubscribers,
   deleteSubscriber,
   sendNewsletter,
+  getNewsletterHistory,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -90,6 +92,12 @@ const Admin = () => {
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
 
+  // ── Visit history state ──
+  const [visitHistory, setVisitHistory] = useState<{ date: string; visitors: number }[]>([]);
+
+  // ── Newsletter history state ──
+  const [newsletterHistory, setNewsletterHistory] = useState<{ id: number; sent_at: string; total: number; sent: number; errors: number }[]>([]);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,6 +144,14 @@ const Admin = () => {
 
     getSubscribers()
       .then(setSubscribers)
+      .catch(() => {});
+
+    getVisitHistory()
+      .then(setVisitHistory)
+      .catch(() => {});
+
+    getNewsletterHistory()
+      .then(setNewsletterHistory)
       .catch(() => {});
   }, [authed]);
 
@@ -537,6 +553,11 @@ const Admin = () => {
           <div>
             {statsLoading && <Spinner />}
 
+            {/* Gráfica de visitas diarias */}
+            {visitHistory.length > 0 && (
+              <VisitChart data={visitHistory} />
+            )}
+
             {!statsLoading && stats && (
               <>
                 {/* Tarjetas resumen */}
@@ -854,6 +875,31 @@ const Admin = () => {
                   </div>
                 </div>
               )}
+
+              {/* Historial de envíos */}
+              {newsletterHistory.length > 0 && (
+                <div className="mt-8">
+                  <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Historial de envíos</p>
+                  <div className="flex flex-col gap-2">
+                    {newsletterHistory.map((h) => (
+                      <div key={h.id} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-xs text-white font-medium">
+                            {new Date(h.sent_at).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </p>
+                          <p className="text-[10px] text-white/40 mt-0.5">
+                            {h.sent} de {h.total} enviados
+                            {h.errors > 0 && <span className="text-red-400 ml-1">· {h.errors} errores</span>}
+                          </p>
+                        </div>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${h.errors === 0 ? "bg-cyan-400/10 border-cyan-400/20 text-cyan-400" : "bg-red-400/10 border-red-400/20 text-red-400"}`}>
+                          {h.errors === 0 ? "✓ OK" : "⚠ Errores"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })()}
@@ -987,5 +1033,48 @@ const Spinner = () => (
     <div className="w-7 h-7 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
   </div>
 );
+
+// ─── Gráfica de visitas diarias ───────────────────────────────────────────────
+
+const VisitChart = ({ data }: { data: { date: string; visitors: number }[] }) => {
+  const max = Math.max(...data.map((d) => d.visitors), 1);
+  const total = data.reduce((a, d) => a + d.visitors, 0);
+  const today = new Date().toISOString().slice(0, 10);
+
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-xs text-white/30 uppercase tracking-wider">Visitas diarias — últimas 2 semanas</p>
+        <span className="text-xs text-cyan-400 font-semibold">{total} visitas</span>
+      </div>
+      <div className="flex items-end gap-1" style={{ height: 72 }}>
+        {data.map((d) => {
+          const pct = (d.visitors / max) * 100;
+          const isToday = d.date === today;
+          const dayNum = d.date.slice(8);
+          return (
+            <div
+              key={d.date}
+              title={`${d.date}: ${d.visitors} visitante${d.visitors !== 1 ? "s" : ""}`}
+              className="flex-1 flex flex-col items-center gap-1 group cursor-default"
+            >
+              <div className="w-full flex flex-col justify-end" style={{ height: 56 }}>
+                <div
+                  className={`w-full rounded-t transition-colors ${
+                    isToday ? "bg-cyan-400" : "bg-cyan-400/35 group-hover:bg-cyan-400/65"
+                  }`}
+                  style={{ height: `${Math.max(pct, d.visitors > 0 ? 6 : 1)}%` }}
+                />
+              </div>
+              <span className={`text-[8px] ${isToday ? "text-cyan-400" : "text-white/20"}`}>
+                {dayNum}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 export default Admin;
