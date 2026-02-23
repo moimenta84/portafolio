@@ -45,7 +45,7 @@ const Projects = () => {
   };
 
   return (
-    <section className="relative flex-1 flex flex-col py-6">
+    <section className="relative flex-1 flex flex-col pt-14 pb-6">
       <SEO
         title="Proyectos"
         description="Proyectos full stack de Iker Martínez: aplicaciones con React, TypeScript y Spring Boot desplegadas en producción. APIs REST, CI/CD y arquitecturas orientadas a empresa."

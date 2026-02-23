@@ -11,7 +11,7 @@ export const dataAboutPage: AboutItem[] = [
     id: 1,
     title: "Fundamentos de programación",
     subtitle: "JavaScript y lógica",
-    description: "Aprendizaje autodidacta de JavaScript, lógica de programación, estructuras básicas, DOM y buenas prácticas iniciales aplicadas en proyectos personales.",
+    description: "Primeros proyectos con JavaScript: lógica de programación, estructuras básicas, DOM y buenas prácticas aplicadas desde el inicio en proyectos propios.",
     date: "2022",
   },
   {
@@ -34,5 +34,12 @@ export const dataAboutPage: AboutItem[] = [
     subtitle: "DevOps & Producción",
     description: "Despliegues en entornos reales con Docker, CI/CD y VPS. Foco en buenas prácticas, testing básico y preparación para trabajar en equipos de desarrollo profesional.",
     date: "2025",
+  },
+  {
+    id: 5,
+    title: "Ciclo Superior DAW",
+    subtitle: "Formación oficial · En curso",
+    description: "Cursando el Ciclo Superior de Desarrollo de Aplicaciones Web, consolidando fundamentos técnicos con formación oficial mientras aplico lo aprendido en proyectos reales.",
+    date: "2026",
   },
 ]
