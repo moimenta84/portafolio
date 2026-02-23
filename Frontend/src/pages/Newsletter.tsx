@@ -151,7 +151,7 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-3 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-4 items-start">
 
             {/* MAIN CONTENT */}
             <div className="flex flex-col gap-3">
@@ -167,7 +167,7 @@ const Newsletter = () => {
             </div>
 
             {/* SIDEBAR */}
-            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 flex flex-col">
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 flex flex-col sticky top-20 self-start">
               <h3 className="flex items-center gap-1.5 text-xs font-bold mb-3 text-white shrink-0">
                 <TrendingUp size={12} className="text-cyan-400" />
                 Tendencias
