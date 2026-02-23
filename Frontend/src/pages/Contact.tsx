@@ -19,9 +19,9 @@ const Contact = () => {
       <div className="text-white flex flex-col gap-6">
         {/* TÍTULO */}
         <div className="text-center">
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">
+          <h2 className="text-2xl md:text-3xl font-bold mb-1">
             ¿Tienes un proyecto en mente?
-          </h1>
+          </h2>
           <p className="text-sm text-white/70">
             Envíame los detalles y recibirás una propuesta personalizada.
           </p>

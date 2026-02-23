@@ -10,7 +10,7 @@ const Footer = () => {
           <Link to="/privacy" className="text-white/30 hover:text-white/60 transition-colors">
             Privacidad
           </Link>
-          <Link to="/admin" className="text-white/20 hover:text-white/50 transition-colors">
+          <Link to="/admin" aria-label="Panel de administración" className="text-white/20 hover:text-white/50 transition-colors">
             ·
           </Link>
         </p>
