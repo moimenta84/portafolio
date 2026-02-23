@@ -74,7 +74,7 @@ const Newsletter = () => {
   const trendingArticles = articles.slice(5, 10);
 
   return (
-    <section className="relative flex-1 flex flex-col pt-14 pb-6">
+    <section className="relative flex-1 flex flex-col py-10">
       <SEO
         title="Newsletter · Noticias Dev"
         description="Feed de noticias y tendencias de desarrollo web curado para Iker Martínez. React, TypeScript, Spring Boot, DevOps y más. Suscríbete para recibir lo más relevante cada semana."
@@ -223,10 +223,10 @@ function FeaturedCard({
         <img
           src={article.image}
           alt={article.title}
-          className="w-full h-36 sm:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-48 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
-        <div className="w-full h-36 sm:h-44 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center">
+        <div className="w-full h-48 sm:h-64 bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center">
           <Newspaper size={32} className="text-white/20" />
         </div>
       )}
@@ -283,7 +283,7 @@ function CompactCard({
       className="group flex gap-2.5 bg-white/[0.04] border border-white/10 rounded-lg p-2 hover:border-cyan-400/30 hover:bg-white/[0.07] transition-all"
     >
       {/* Thumbnail */}
-      <div className="w-20 h-16 rounded-md overflow-hidden shrink-0">
+      <div className="w-24 h-20 rounded-md overflow-hidden shrink-0">
         {article.image ? (
           <img
             src={article.image}

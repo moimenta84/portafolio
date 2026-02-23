@@ -158,7 +158,7 @@ export function ChatWidget() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 12, scale: 0.9 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-[6.75rem] right-[4.5rem] z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0a0a0a] border border-cyan-500/30 shadow-lg pointer-events-none"
+            className="fixed bottom-[10.5rem] md:bottom-[6.75rem] right-[4.5rem] z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0a0a0a] border border-cyan-500/30 shadow-lg pointer-events-none"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
             <span className="text-xs text-white/80 whitespace-nowrap">
@@ -172,7 +172,7 @@ export function ChatWidget() {
       <button
         onClick={() => { setOpen((v) => !v); setShowLabel(false); }}
         aria-label={open ? "Cerrar chat" : "Abrir chat"}
-        className="fixed bottom-[5.5rem] right-4 z-40 flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 shadow-lg hover:bg-cyan-500/30 hover:scale-105 transition-all"
+        className="fixed bottom-36 md:bottom-[5.5rem] right-4 z-40 flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 shadow-lg hover:bg-cyan-500/30 hover:scale-105 transition-all"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
