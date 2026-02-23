@@ -71,7 +71,7 @@ const Newsletter = () => {
 
   const featured = articles[0];
   const secondaryArticles = articles.slice(1, 5);
-  const trendingArticles = articles.slice(5, 13);
+  const trendingArticles = articles.slice(5, 10);
 
   return (
     <section className="relative flex-1 flex flex-col py-10">
@@ -151,7 +151,7 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-4 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-4 items-stretch">
 
             {/* MAIN CONTENT */}
             <div className="flex flex-col gap-3">
@@ -167,7 +167,7 @@ const Newsletter = () => {
             </div>
 
             {/* SIDEBAR */}
-            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 flex flex-col sticky top-20 self-start">
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 flex flex-col h-full">
               <h3 className="flex items-center gap-1.5 text-sm font-bold mb-4 text-white shrink-0">
                 <TrendingUp size={14} className="text-cyan-400" />
                 Tendencias
@@ -179,13 +179,13 @@ const Newsletter = () => {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex gap-3 group py-3"
+                    className="flex gap-2 group py-2.5"
                   >
                     <span className="text-base font-black text-white/50 group-hover:text-cyan-400 transition w-6 shrink-0 leading-tight">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+                      <p className="text-xs font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
                         {article.title}
                       </p>
                       <p className="text-xs text-white/60 mt-1">
