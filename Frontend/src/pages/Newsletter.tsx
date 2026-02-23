@@ -167,9 +167,9 @@ const Newsletter = () => {
             </div>
 
             {/* SIDEBAR */}
-            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 flex flex-col sticky top-20 self-start">
-              <h3 className="flex items-center gap-1.5 text-xs font-bold mb-3 text-white shrink-0">
-                <TrendingUp size={12} className="text-cyan-400" />
+            <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 flex flex-col sticky top-20 self-start">
+              <h3 className="flex items-center gap-1.5 text-sm font-bold mb-4 text-white shrink-0">
+                <TrendingUp size={14} className="text-cyan-400" />
                 Tendencias
               </h3>
               <div className="flex flex-col divide-y divide-white/[0.05]">
@@ -179,16 +179,16 @@ const Newsletter = () => {
                     href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex gap-2 group py-2"
+                    className="flex gap-3 group py-3"
                   >
-                    <span className="text-sm font-black text-white/50 group-hover:text-cyan-400 transition w-5 shrink-0 leading-tight">
+                    <span className="text-base font-black text-white/50 group-hover:text-cyan-400 transition w-6 shrink-0 leading-tight">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
+                      <p className="text-sm font-medium text-white group-hover:text-cyan-400 transition line-clamp-2 leading-snug">
                         {article.title}
                       </p>
-                      <p className="text-xs text-white/60 mt-0.5">
+                      <p className="text-xs text-white/60 mt-1">
                         {article.source} · {formatDate(article.published_at)}
                       </p>
                     </div>
