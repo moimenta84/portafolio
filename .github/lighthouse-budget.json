@@ -1,0 +1,11 @@
+[
+  {
+    "path": "/*",
+    "scores": [
+      { "metric": "performance",    "minScore": 0.70 },
+      { "metric": "accessibility",  "minScore": 0.85 },
+      { "metric": "best-practices", "minScore": 0.85 },
+      { "metric": "seo",            "minScore": 0.90 }
+    ]
+  }
+]

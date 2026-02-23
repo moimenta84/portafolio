@@ -6,10 +6,16 @@
 import ContactForm from "../components/contact/ContactForm";
 import ContactInfo from "../components/contact/ContactInfo";
 import DownloadCV from "../components/contact/DownloadCV";
+import SEO from "../components/SEO";
 
 const Contact = () => {
   return (
     <section className="relative flex-1 flex flex-col justify-center py-6">
+      <SEO
+        title="Contacto"
+        description="¿Tienes un proyecto en mente? Contacta con Iker Martínez, desarrollador Full Stack. Envía los detalles y recibirás una propuesta personalizada. También puedes descargar su CV."
+        path="/contact"
+      />
       <div className="text-white flex flex-col gap-6">
         {/* TÍTULO */}
         <div className="text-center">

@@ -11,6 +11,7 @@ import { sendWeeklyDigest } from "./services/digest.js";
 import { getIp } from "./middleware/getIp.js";
 import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter, eventsLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
+import sitemapRouter from "./routes/sitemap.js";
 import eventsRouter from "./routes/events.js";
 import projectsRouter from "./routes/projects.js";
 import likesRouter from "./routes/likes.js";
@@ -57,10 +58,32 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Sitemap dinámico (antes que express.static para tomar precedencia)
+app.use(sitemapRouter);
+
+// Impedir indexación de la API en buscadores
+app.use("/api", (_req, res, next) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow");
+  next();
+});
+
 // Serve frontend static files in production
 const frontendDist = path.join(__dirname, "..", "..", "Frontend", "dist");
-app.use(express.static(frontendDist));
+app.use(
+  express.static(frontendDist, {
+    setHeaders(res, filePath) {
+      // Assets con hash en el nombre → caché agresiva (1 año)
+      if (/\.(js|css|woff2?|ttf|otf|eot)$/.test(filePath) && filePath.includes("-")) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      } else {
+        // HTML y otros → sin caché para reflejar deploys al instante
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      }
+    },
+  })
+);
 app.get("/{*splat}", (_req, res) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.sendFile(path.join(frontendDist, "index.html"));
 });
 

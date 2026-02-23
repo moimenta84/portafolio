@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import SEO from "../components/SEO";
 import {
   RefreshCw,
   ExternalLink,
@@ -74,6 +75,11 @@ const Newsletter = () => {
 
   return (
     <section className="relative flex-1 flex flex-col justify-center py-6">
+      <SEO
+        title="Newsletter · Noticias Dev"
+        description="Feed de noticias y tendencias de desarrollo web curado para Iker Martínez. React, TypeScript, Spring Boot, DevOps y más. Suscríbete para recibir lo más relevante cada semana."
+        path="/newsletter"
+      />
       <div className="text-white flex flex-col gap-3">
 
         {/* HEADER */}

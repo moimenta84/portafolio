@@ -1,10 +1,17 @@
 // Home.tsx — Página principal / Hero del portfolio.
 
 import Introduction from "../components/Introduction";
+import SEO from "../components/SEO";
 
 const Home = () => {
   return (
     <section className="relative flex-1 flex flex-col">
+      <SEO
+        title="Desarrollador Full Stack"
+        description="Portfolio de Iker Martínez, desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales, APIs REST y arquitecturas limpias."
+        path="/"
+        type="profile"
+      />
 
       {/* HERO */}
       <div className="relative z-10 flex-1 flex items-center w-full">

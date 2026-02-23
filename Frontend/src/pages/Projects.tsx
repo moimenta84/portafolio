@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FolderGit2 } from "lucide-react";
+import SEO from "../components/SEO";
 import ProjectCard from "../components/projectCard/ProjectCard";
 import ReviewSection from "../components/reviews/ReviewSection";
 import { getProjects, toggleLike } from "../services/api";
@@ -45,6 +46,11 @@ const Projects = () => {
 
   return (
     <section className="relative flex-1 flex flex-col justify-center py-6">
+      <SEO
+        title="Proyectos"
+        description="Proyectos full stack de Iker Martínez: aplicaciones con React, TypeScript y Spring Boot desplegadas en producción. APIs REST, CI/CD y arquitecturas orientadas a empresa."
+        path="/projects"
+      />
       <div className="flex flex-col gap-4">
 
         {/* HEADER */}

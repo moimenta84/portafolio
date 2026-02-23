@@ -1,6 +1,14 @@
+import SEO from "../components/SEO";
+
 const Privacy = () => {
   return (
     <section className="flex-1 px-4 md:px-6 py-8 overflow-y-auto">
+      <SEO
+        title="Política de Privacidad"
+        description="Política de privacidad del portfolio de Iker Martínez. Información sobre el tratamiento de datos, cookies y derechos RGPD."
+        path="/privacy"
+        noIndex={true}
+      />
       <div className="max-w-2xl mx-auto text-white/80 text-sm leading-relaxed space-y-6">
 
         <div>

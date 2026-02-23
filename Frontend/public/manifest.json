@@ -1,0 +1,21 @@
+{
+  "name": "Iker Martínez — Desarrollador Full Stack",
+  "short_name": "Iker Dev",
+  "description": "Portfolio de Iker Martínez, desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales, APIs REST y arquitecturas limpias.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#22d3ee",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "categories": ["portfolio", "developer", "technology"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

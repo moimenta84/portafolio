@@ -2,20 +2,32 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- SEO -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#22d3ee" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- SEO básico (fallback global; cada página lo sobreescribe vía React 19) -->
     <title>Iker Martínez — Desarrollador Full Stack</title>
     <meta name="description" content="Portfolio de Iker Martínez, desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales, APIs REST y arquitecturas limpias." />
     <meta name="author" content="Iker Martínez" />
+    <meta name="keywords" content="desarrollador full stack, React, TypeScript, Spring Boot, portfolio, Iker Martínez, desarrollo web, API REST, frontend, backend" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://ikermartinezdev.com" />
 
     <!-- Open Graph (LinkedIn, WhatsApp, Slack…) -->
+    <meta property="og:site_name" content="Iker Martínez · Dev" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ikermartinezdev.com" />
     <meta property="og:title" content="Iker Martínez — Desarrollador Full Stack" />
     <meta property="og:description" content="Desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales desplegados en producción con CI/CD." />
     <meta property="og:image" content="https://ikermartinezdev.com/img/1760052219751.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Iker Martínez — Desarrollador Full Stack" />
     <meta property="og:locale" content="es_ES" />
 
     <!-- Twitter Card -->
@@ -23,7 +35,49 @@
     <meta name="twitter:title" content="Iker Martínez — Desarrollador Full Stack" />
     <meta name="twitter:description" content="Desarrollador Full Stack especializado en React, TypeScript y Spring Boot." />
     <meta name="twitter:image" content="https://ikermartinezdev.com/img/1760052219751.jpg" />
+    <meta name="twitter:image:alt" content="Iker Martínez — Desarrollador Full Stack" />
 
+    <!-- JSON-LD: Person Schema (Google Rich Results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Iker Martínez",
+      "url": "https://ikermartinezdev.com",
+      "image": "https://ikermartinezdev.com/img/1760052219751.jpg",
+      "jobTitle": "Desarrollador Full Stack",
+      "description": "Desarrollador Full Stack especializado en React, TypeScript y Spring Boot. 4 años de práctica autodidacta orientado a entornos profesionales.",
+      "email": "moimenta267@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Vergel",
+        "addressRegion": "Alicante",
+        "addressCountry": "ES"
+      },
+      "knowsAbout": ["React", "TypeScript", "Spring Boot", "Node.js", "Express", "SQLite", "REST API", "CI/CD", "Docker", "Git"],
+      "sameAs": [
+        "https://github.com/moimenta84",
+        "https://linkedin.com/in/iker-martinez-dev"
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD: WebSite Schema (sitelinks searchbox ready) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Iker Martínez · Dev",
+      "url": "https://ikermartinezdev.com",
+      "inLanguage": "es",
+      "author": {
+        "@type": "Person",
+        "name": "Iker Martínez"
+      }
+    }
+    </script>
+
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />

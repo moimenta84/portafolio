@@ -21,13 +21,15 @@ const Introduction = () => {
           <span className="block min-h-[1.6em]">
             <TypeAnimation
               sequence={[
-                "React & Spring Boot",
+                "React & TypeScript",
+                1500,
+                "Spring Boot & Java",
+                1500,
+                "Laravel & PHP",
                 1500,
                 "APIs REST robustas",
                 1500,
                 "arquitecturas limpias",
-                1500,
-                "entornos de producción",
                 1500,
               ]}
               speed={50}
@@ -41,11 +43,23 @@ const Introduction = () => {
           Creo aplicaciones web modernas, escalables y listas para producción, con arquitecturas limpias y buenas prácticas desde el primer commit.
         </p>
 
+        {/* Stack de tecnologías */}
+        <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
+          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker"].map((tech) => (
+            <span
+              key={tech}
+              className="px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
         {/* Microcredenciales */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1.5 mb-4">
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            React · TypeScript · Spring Boot
+            Frontend React · Backend Spring Boot · Laravel
           </span>
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
@@ -53,7 +67,7 @@ const Introduction = () => {
           </span>
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            Scrum · código limpio · testing
+            APIs REST · código limpio · testing
           </span>
         </div>
 
