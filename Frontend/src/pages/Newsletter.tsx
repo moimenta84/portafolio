@@ -151,7 +151,7 @@ const Newsletter = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-3 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-3 items-start">
 
             {/* MAIN CONTENT */}
             <div className="flex flex-col gap-3">

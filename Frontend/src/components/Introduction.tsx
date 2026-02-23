@@ -40,25 +40,13 @@ const Introduction = () => {
         </h1>
 
 
-        {/* Stack de tecnologías — fila superior */}
-        <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
-          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker"].map((tech) => (
-            <span
-              key={tech}
-              className="px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-
         <p className="mx-auto mb-3 text-sm md:mx-0 text-white/70 text-center md:text-left leading-relaxed">
           Convierto ideas en productos web reales — del diseño al deploy en producción, sin rodeos.
         </p>
 
-        {/* Stack de tecnologías — fila inferior */}
+        {/* Stack de tecnologías */}
         <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
-          {["Git", "PostgreSQL", "MySQL", "CI/CD", "Nginx", "REST API"].map((tech) => (
+          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker", "Git", "PostgreSQL", "MySQL", "CI/CD", "Nginx", "REST API"].map((tech) => (
             <span
               key={tech}
               className="px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium"

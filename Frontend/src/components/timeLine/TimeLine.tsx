@@ -8,10 +8,11 @@ const TimeLine = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {dataAboutPage.map((data, i) => {
         const Icon = icons[i] || Code2;
+        const isLast = i === dataAboutPage.length - 1 && dataAboutPage.length % 2 !== 0;
         return (
           <div
             key={data.id}
-            className="group relative bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400/30 transition-all duration-300"
+            className={`group relative bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400/30 transition-all duration-300 ${isLast ? "sm:col-span-2" : ""}`}
           >
             {/* Gradient accent top */}
             <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
