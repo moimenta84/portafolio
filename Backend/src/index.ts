@@ -9,7 +9,7 @@ import { dispatchToAll } from "./services/newsletter.js";
 import { runBackup } from "./services/backup.js";
 import { sendWeeklyDigest } from "./services/digest.js";
 import { getIp } from "./middleware/getIp.js";
-import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter, eventsLimiter } from "./middleware/rateLimits.js";
+import { authLimiter, contactLimiter, subscriptionLimiter, reviewLimiter, eventsLimiter, chatLimiter } from "./middleware/rateLimits.js";
 import authRouter from "./routes/auth.js";
 import sitemapRouter from "./routes/sitemap.js";
 import eventsRouter from "./routes/events.js";
@@ -24,6 +24,7 @@ import contactRouter from "./routes/contact.js";
 import subscribersRouter from "./routes/subscribers.js";
 import auditRouter from "./routes/audit.js";
 import trackRouter from "./routes/track.js";
+import chatRouter from "./routes/chat.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/subscribers", subscriptionLimiter, subscribersRouter);
 app.use("/api/events",     eventsLimiter,       eventsRouter);
 app.use("/api/audit",                          auditRouter);
 app.use("/api/track",                          trackRouter);
+app.use("/api/chat",        chatLimiter,        chatRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

@@ -50,3 +50,13 @@ export const eventsLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Chat: 15 mensajes por hora (el admin no aplica)
+export const chatLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 15,
+  message: { error: "Demasiados mensajes, espera un momento" },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipIfAdmin,
+});

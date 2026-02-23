@@ -126,3 +126,13 @@ export const getConversionStats = () =>
     last_week: { visitors: number; cv_downloads: number; project_clicks: number; contact_submits: number; follows: number };
     top_projects: { title: string; clicks: number }[];
   }>("/events/stats");
+
+// Chat
+export const sendChat = (message: string, history: { role: string; content: string }[]) =>
+  fetchJson<{ reply: string }>("/chat", {
+    method: "POST",
+    body: JSON.stringify({ message, history }),
+  });
+
+export const getChatLogs = () =>
+  fetchJson<{ id: number; ip: string; message: string; reply: string; created_at: string }[]>("/chat");

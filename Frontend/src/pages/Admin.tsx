@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield, MessageCircle } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -18,12 +18,13 @@ import {
   getNewsletterHistory,
   getConversionStats,
   getAuditLog,
+  getChatLogs,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
 // ─── Tipos internos ───────────────────────────────────────────────────────────
 
-type Tab = "reviews" | "projects" | "stats" | "subscribers" | "security";
+type Tab = "reviews" | "projects" | "stats" | "subscribers" | "security" | "chat";
 
 interface ProjectForm {
   title: string;
@@ -108,6 +109,10 @@ const Admin = () => {
   // ── Audit log state ──
   const [auditLog, setAuditLog] = useState<{ id: number; action: string; details: string; ip: string; created_at: string }[]>([]);
 
+  // ── Chat logs state ──
+  const [chatLogs, setChatLogs] = useState<{ id: number; ip: string; message: string; reply: string; created_at: string }[]>([]);
+  const [chatLoading, setChatLoading] = useState(false);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,6 +177,12 @@ const Admin = () => {
       .then(setAuditLog)
       .catch(() => {});
   }, [authed]);
+
+  useEffect(() => {
+    if (!authed || tab !== "chat") return;
+    setChatLoading(true);
+    getChatLogs().then(setChatLogs).catch(() => {}).finally(() => setChatLoading(false));
+  }, [authed, tab]);
 
   // ── Reviews ──
   const handleDeleteReview = async (id: number) => {
@@ -333,10 +344,10 @@ const Admin = () => {
         </div>
 
         {/* Pestañas */}
-        <div className="flex gap-1 mb-6 bg-white/5 border border-white/10 rounded-xl p-1">
+        <div className="grid grid-cols-3 gap-1 mb-6 bg-white/5 border border-white/10 rounded-xl p-1">
           <button
             onClick={() => setTab("reviews")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
               tab === "reviews"
                 ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
                 : "text-white/40 hover:text-white/70"
@@ -352,7 +363,7 @@ const Admin = () => {
           </button>
           <button
             onClick={() => setTab("projects")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
               tab === "projects"
                 ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
                 : "text-white/40 hover:text-white/70"
@@ -368,7 +379,7 @@ const Admin = () => {
           </button>
           <button
             onClick={() => setTab("stats")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
               tab === "stats"
                 ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
                 : "text-white/40 hover:text-white/70"
@@ -379,7 +390,7 @@ const Admin = () => {
           </button>
           <button
             onClick={() => setTab("subscribers")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
               tab === "subscribers"
                 ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
                 : "text-white/40 hover:text-white/70"
@@ -395,7 +406,7 @@ const Admin = () => {
           </button>
           <button
             onClick={() => setTab("security")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
               tab === "security"
                 ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
                 : "text-white/40 hover:text-white/70"
@@ -403,6 +414,22 @@ const Admin = () => {
           >
             <Shield size={14} />
             Seguridad
+          </button>
+          <button
+            onClick={() => setTab("chat")}
+            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
+              tab === "chat"
+                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <MessageCircle size={14} />
+            Chat
+            {chatLogs.length > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
+                {chatLogs.length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -961,6 +988,61 @@ const Admin = () => {
             </div>
           );
         })()}
+
+        {/* ── TAB: CHAT ── */}
+        {tab === "chat" && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-white/40">
+              Últimas {chatLogs.length} conversaciones registradas
+            </p>
+            <button
+              onClick={() => { setChatLoading(true); getChatLogs().then(setChatLogs).catch(() => {}).finally(() => setChatLoading(false)); }}
+              className="text-xs text-white/30 hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              Actualizar
+            </button>
+          </div>
+
+          {chatLoading && <Spinner />}
+
+          {!chatLoading && chatLogs.length === 0 && (
+            <p className="text-white/30 text-sm text-center py-12">
+              Todavía no hay conversaciones registradas.
+            </p>
+          )}
+
+          {!chatLoading && chatLogs.length > 0 && (
+            <div className="flex flex-col gap-3">
+              {chatLogs.map((log) => (
+                <div key={log.id} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <MessageCircle size={12} className="text-cyan-400 shrink-0" />
+                      <span className="text-[10px] font-mono text-white/30">{log.ip}</span>
+                    </div>
+                    <span className="text-[10px] text-white/30">
+                      {new Date(log.created_at).toLocaleString("es-ES", {
+                        day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="bg-white/5 rounded-lg px-3 py-2">
+                      <p className="text-[10px] text-cyan-400/70 font-semibold uppercase tracking-wider mb-1">Usuario</p>
+                      <p className="text-xs text-white/80 leading-relaxed">{log.message}</p>
+                    </div>
+                    <div className="bg-cyan-400/5 border border-cyan-400/10 rounded-lg px-3 py-2">
+                      <p className="text-[10px] text-cyan-400/70 font-semibold uppercase tracking-wider mb-1">Bot</p>
+                      <p className="text-xs text-white/60 leading-relaxed">{log.reply}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       </div>
 
       {/* ── TAB: SEGURIDAD ── */}
