@@ -72,7 +72,7 @@ const Introduction = () => {
           </span>
         </div>
 
-        <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+        <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap pr-14 md:pr-0">
           <Link
             to="/projects"
             className="px-4 py-2 rounded-full bg-secondary text-main font-semibold text-xs

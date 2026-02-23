@@ -74,7 +74,7 @@ const Newsletter = () => {
   const trendingArticles = articles.slice(5, 10);
 
   return (
-    <section className="relative flex-1 flex flex-col py-10">
+    <section className="relative flex-1 flex flex-col py-10 overflow-x-hidden">
       <SEO
         title="Newsletter · Noticias Dev"
         description="Feed de noticias y tendencias de desarrollo web curado para Iker Martínez. React, TypeScript, Spring Boot, DevOps y más. Suscríbete para recibir lo más relevante cada semana."
