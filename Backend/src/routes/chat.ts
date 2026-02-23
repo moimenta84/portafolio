@@ -7,7 +7,7 @@ const router = Router();
 
 const client = new OpenAI({
   baseURL: "https://router.huggingface.co/v1",
-  apiKey: process.env.HF_TOKEN,
+  apiKey: process.env.HF_TOKEN || "missing",
 });
 
 const SYSTEM_PROMPT = `Eres el asistente virtual de Iker Martínez, desarrollador Full Stack con 4 años de experiencia autodidacta. Tu objetivo es responder preguntas Y, cuando detectes que el visitante es un reclutador, empresa o cliente potencial, posicionar a Iker como el candidato/freelance ideal e invitarles a contactar o descargar el CV.
