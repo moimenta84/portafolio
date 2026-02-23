@@ -6,15 +6,15 @@ import { MotionTransition } from "../animations/transition-components";
 const Header = () => {
   return (
     <MotionTransition position="bottom" className="w-full">
-      <header className="w-full relative z-10 bg-transparent backdrop-blur-sm">
+      <div className="w-full relative z-10 bg-transparent backdrop-blur-sm">
         <div className="flex items-center h-16 max-w-6xl mx-auto px-4">
-          <Link to="/">
-            <h1 className="text-xl sm:text-2xl font-mono text-white">
+          <Link to="/" aria-label="Ir al inicio">
+            <span className="text-xl sm:text-2xl font-mono text-white">
               <span className="text-cyan-400">&lt;</span>iker.martinez<span className="text-cyan-400"> /&gt;</span>
-            </h1>
+            </span>
           </Link>
         </div>
-      </header>
+      </div>
     </MotionTransition>
   );
 };
