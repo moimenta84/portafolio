@@ -13,6 +13,7 @@ import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import Privacy from "./pages/Privacy";
 import IntroAnimation from "./components/animations/intro-animations";
+import { ChatWidget } from "./components/chat/ChatWidget";
 import { registerVisit } from "./services/api";
 
 // Componente invisible que registra cada visita de página en el backend.
@@ -113,6 +114,8 @@ function App() {
           </Route>
           <Route path="/admin" element={<Admin />} />
         </Routes>
+        {/* Widget de chat persistente — fuera del layout para sobrevivir a la navegación */}
+        <ChatWidget />
       </BrowserRouter>
     </>
   );
