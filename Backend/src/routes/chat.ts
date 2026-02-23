@@ -6,8 +6,8 @@ import { requireAuth } from "../middleware/requireAuth.js";
 const router = Router();
 
 const client = new OpenAI({
-  baseURL: "https://router.huggingface.co/v1",
-  apiKey: process.env.HF_TOKEN || "missing",
+  baseURL: "https://api.groq.com/openai/v1",
+  apiKey: process.env.GROQ_API_KEY || "missing",
 });
 
 const SYSTEM_PROMPT = `Eres el asistente virtual de Iker Martínez, desarrollador Full Stack con 4 años de experiencia autodidacta. Tu objetivo es responder preguntas Y, cuando detectes que el visitante es un reclutador, empresa o cliente potencial, posicionar a Iker como el candidato/freelance ideal e invitarles a contactar o descargar el CV.
@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
 
   try {
     const completion = await client.chat.completions.create({
-      model: "Qwen/Qwen2.5-72B-Instruct",
+      model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         ...history.slice(-6), // últimos 3 intercambios para contexto
