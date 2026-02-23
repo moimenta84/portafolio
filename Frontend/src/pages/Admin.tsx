@@ -988,9 +988,10 @@ const Admin = () => {
             </div>
           );
         })()}
+      </div>
 
-        {/* ── TAB: CHAT ── */}
-        {tab === "chat" && (
+      {/* ── TAB: CHAT ── */}
+      {tab === "chat" && (
         <div>
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs text-white/40">
@@ -1043,7 +1044,6 @@ const Admin = () => {
           )}
         </div>
       )}
-      </div>
 
       {/* ── TAB: SEGURIDAD ── */}
       {tab === "security" && (
