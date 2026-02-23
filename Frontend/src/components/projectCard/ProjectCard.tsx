@@ -12,12 +12,12 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
     project;
 
   return (
-    <article className="group relative bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400/30 hover:bg-white/[0.08] transition-all duration-300 flex flex-col h-full">
+    <div className="group relative bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-cyan-400/30 hover:bg-white/[0.08] transition-all duration-300 flex flex-col h-full">
       {/* Image with overlay */}
       <div className="relative h-36 sm:h-44 overflow-hidden">
         <img
           src={image}
-          alt=""
+          alt={`Imagen del proyecto ${title}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
@@ -83,7 +83,7 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
           Ver proyecto
         </a>
       </div>
-    </article>
+    </div>
   );
 };
 
