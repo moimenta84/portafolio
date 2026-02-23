@@ -3,7 +3,7 @@ import { socialNetworks } from "../../data/social";
 
 const Footer = () => {
   return (
-    <footer className="w-full py-3 px-4 bg-transparent backdrop-blur-sm">
+    <footer className="w-full py-3 px-4 bg-transparent">
       <div className="flex items-center justify-between gap-4 max-w-6xl mx-auto">
         <p className="text-slate-300 text-xs flex items-center gap-2">
           © {new Date().getFullYear()} iker.martinez

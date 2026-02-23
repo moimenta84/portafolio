@@ -24,11 +24,11 @@ const Home = () => {
               <img
                 src="/img/1760052219751.jpg"
                 alt="Iker Martinez — Desarrollador Web"
-                className="relative w-44 h-44 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover rounded-full border-2 border-secondary/30 shadow-2xl shadow-secondary/10 grayscale-[30%] group-hover:grayscale-0 contrast-[1.08] transition-all duration-500"
+                className="relative w-44 h-44 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover object-top rounded-full border-2 border-secondary/30 shadow-2xl shadow-secondary/10 grayscale-[30%] group-hover:grayscale-0 contrast-[1.08] transition-all duration-500"
               />
               <span className="absolute bottom-2 right-2 md:bottom-4 md:right-4 flex items-center gap-1.5 bg-main/90 backdrop-blur px-2.5 py-1 rounded-full border border-secondary/30 text-xs text-white/80">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                Disponible
+                Disponible · 24h
               </span>
             </div>
           </div>
