@@ -988,7 +988,6 @@ const Admin = () => {
             </div>
           );
         })()}
-      </div>
 
       {/* ── TAB: CHAT ── */}
       {tab === "chat" && (
@@ -1097,6 +1096,8 @@ const Admin = () => {
           </div>
         </div>
       )}
+
+      </div>
 
       {/* ── MODAL: Crear / Editar proyecto ── */}
       {modalOpen && (
