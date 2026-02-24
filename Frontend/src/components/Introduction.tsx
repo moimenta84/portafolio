@@ -44,20 +44,20 @@ const Introduction = () => {
           Convierto ideas en productos web reales — del diseño al deploy en producción, sin rodeos.
         </p>
 
-        {/* Stack de tecnologías */}
+        {/* Stack de tecnologías — móvil: 6 bubbles, escritorio: todas */}
         <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
-          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker", "Git", "PostgreSQL", "MySQL", "CI/CD", "Nginx", "REST API"].map((tech) => (
+          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker", "Git", "PostgreSQL", "MySQL", "CI/CD", "Nginx", "REST API"].map((tech, i) => (
             <span
               key={tech}
-              className="px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium"
+              className={`px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium${i >= 6 ? " hidden md:inline-flex" : ""}`}
             >
               {tech}
             </span>
           ))}
         </div>
 
-        {/* Microcredenciales */}
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1.5 mb-4">
+        {/* Microcredenciales — solo escritorio */}
+        <div className="hidden md:flex flex-wrap items-center justify-start gap-x-4 gap-y-1.5 mb-4">
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
             Frontend React · Backend Spring Boot · Laravel
@@ -72,7 +72,7 @@ const Introduction = () => {
           </span>
         </div>
 
-        <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap pr-14 md:pr-0">
+        <div className="flex items-center justify-center md:justify-start gap-2">
           <Link
             to="/projects"
             className="px-4 py-2 rounded-full bg-secondary text-main font-semibold text-xs

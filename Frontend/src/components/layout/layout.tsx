@@ -21,8 +21,8 @@ const Layout = () => {
           <Header />
         </header>
 
-        <main className="flex-1 relative z-10 flex flex-col">
-          <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 md:px-8">
+        <main className="flex-1 relative z-10 flex flex-col overflow-x-hidden">
+          <div className="flex-1 flex flex-col w-full max-w-[1400px] mx-auto px-4 md:px-10">
             <Outlet />
           </div>
         </main>

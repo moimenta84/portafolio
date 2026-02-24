@@ -103,7 +103,7 @@ const Newsletter = () => {
         </div>
 
         {/* TABS */}
-        <div className="flex items-center gap-1 mb-3 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="flex items-center gap-1 mb-6 overflow-x-auto pb-1 scrollbar-hide">
           <button
             onClick={() => handleSourceChange("all")}
             className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${

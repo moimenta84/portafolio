@@ -64,7 +64,7 @@ const ReviewSection = () => {
     });
 
   return (
-    <div className="mt-3 max-w-6xl mx-auto w-full shrink-0">
+    <div className="mt-3 max-w-6xl mx-auto w-full shrink-0 overflow-x-hidden">
       {/* Header + Form en una fila */}
       <div className="grid md:grid-cols-[auto_1fr] gap-4 items-start">
         {/* Header */}
