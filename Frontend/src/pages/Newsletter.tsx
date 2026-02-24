@@ -74,7 +74,7 @@ const Newsletter = () => {
   const trendingArticles = articles.slice(5, 10);
 
   return (
-    <section className="relative flex-1 flex flex-col py-10 overflow-x-hidden">
+    <section className="relative flex-1 flex flex-col pt-4 pb-10 md:pt-10 overflow-x-hidden">
       <SEO
         title="Newsletter · Noticias Dev"
         description="Feed de noticias y tendencias de desarrollo web curado para Iker Martínez. React, TypeScript, Spring Boot, DevOps y más. Suscríbete para recibir lo más relevante cada semana."
@@ -94,10 +94,11 @@ const Newsletter = () => {
           {!following && (
             <button
               onClick={openModal}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border border-cyan-400/20 bg-cyan-400/5 text-cyan-400 text-[11px] hover:bg-cyan-400/15 hover:border-cyan-400/40 transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-cyan-400/20 bg-cyan-400/5 text-cyan-400 text-[11px] hover:bg-cyan-400/15 hover:border-cyan-400/40 transition-all group"
             >
               <Bell size={11} className="group-hover:animate-bounce" />
-              Recibir noticias por email
+              <span className="hidden sm:inline">Recibir noticias por email</span>
+              <span className="sm:hidden">Suscribirse</span>
             </button>
           )}
         </div>
