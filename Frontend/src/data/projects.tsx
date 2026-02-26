@@ -35,13 +35,4 @@ export const projects = [
     tech: ["React", "TypeScript", "Chart.js"],
     link: "https://github.com/moimenta84/Crm-platform",
   },
-  {
-    id: 5,
-    title: "PolyCe API – REST con Laravel",
-    image: "/img/home-4.png",
-    description:
-      "API REST para una plataforma de películas con autenticación por token, control de roles (admin/user), sistema de votos, favoritas y premios. Desplegada en VPS con Nginx, PHP 8.3 y HTTPS.",
-    tech: ["Laravel 12", "Sanctum", "MySQL"],
-    link: "https://api.ikermartinezdev.com/api/peliculas",
-  },
 ];
