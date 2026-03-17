@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield, MessageCircle } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield, MessageCircle, ChevronDown } from "lucide-react";
 import {
   login,
   getAllReviews,
@@ -51,7 +51,11 @@ const Admin = () => {
   );
   const [input, setInput] = useState("");
   const [loginError, setLoginError] = useState(false);
-  const [tab, setTab] = useState<Tab>("reviews");
+  const [openSections, setOpenSections] = useState<Record<Tab, boolean>>({
+    reviews: true, projects: false, stats: false, subscribers: false, security: false, chat: false,
+  });
+  const toggleSection = (t: Tab) =>
+    setOpenSections(prev => ({ ...prev, [t]: !prev[t] }));
 
   // ── Reviews state ──
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -187,10 +191,10 @@ const Admin = () => {
   }, [authed]);
 
   useEffect(() => {
-    if (!authed || tab !== "chat") return;
+    if (!authed || !openSections.chat) return;
     setChatLoading(true);
     getChatLogs().then(setChatLogs).catch(() => {}).finally(() => setChatLoading(false));
-  }, [authed, tab]);
+  }, [authed, openSections.chat]);
 
   // ── Reviews ──
   const handleDeleteReview = async (id: number) => {
@@ -351,99 +355,15 @@ const Admin = () => {
           </button>
         </div>
 
-        {/* Pestañas */}
-        <div className="grid grid-cols-3 gap-1 mb-6 bg-white/5 border border-white/10 rounded-xl p-1">
-          <button
-            onClick={() => setTab("reviews")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "reviews"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <Star size={14} />
-            Reseñas
-            {reviews.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
-                {reviews.length}
-              </span>
-            )}
+        {/* ── SECCIÓN: RESEÑAS ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("reviews")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["reviews"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <Star size={14} /><span>Reseñas</span>
+            {reviews.length > 0 && <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/60">{reviews.length}</span>}
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["reviews"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
           </button>
-          <button
-            onClick={() => setTab("projects")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "projects"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <FolderGit2 size={14} />
-            Proyectos
-            {projects.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
-                {projects.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setTab("stats")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "stats"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <BarChart2 size={14} />
-            Estadísticas
-          </button>
-          <button
-            onClick={() => setTab("subscribers")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "subscribers"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <Mail size={14} />
-            Suscriptores
-            {subscribers.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
-                {subscribers.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setTab("security")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "security"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <Shield size={14} />
-            Seguridad
-          </button>
-          <button
-            onClick={() => setTab("chat")}
-            className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
-              tab === "chat"
-                ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/20"
-                : "text-white/40 hover:text-white/70"
-            }`}
-          >
-            <MessageCircle size={14} />
-            Chat
-            {chatLogs.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.5 bg-white/10 rounded-full text-[10px]">
-                {chatLogs.length}
-              </span>
-            )}
-          </button>
-        </div>
-
-        {/* ── TAB: RESEÑAS ── */}
-        {tab === "reviews" && (
-          <div>
+        {openSections["reviews"] && (
+          <div className="border-t border-white/10 p-4">
             {reviews.length > 0 && (
               <p className="text-xs text-white/40 mb-4">
                 {reviews.length} reseña{reviews.length !== 1 ? "s" : ""} · media{" "}
@@ -506,9 +426,17 @@ const Admin = () => {
           </div>
         )}
 
-        {/* ── TAB: PROYECTOS ── */}
-        {tab === "projects" && (
-          <div>
+        </div>
+
+        {/* ── SECCIÓN: PROYECTOS ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("projects")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["projects"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <FolderGit2 size={14} /><span>Proyectos</span>
+            {projects.length > 0 && <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/60">{projects.length}</span>}
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["projects"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
+          </button>
+        {openSections["projects"] && (
+          <div className="border-t border-white/10 p-4">
             <div className="flex items-center justify-between mb-4">
               <p className="text-xs text-white/40">
                 {projects.length} proyecto{projects.length !== 1 ? "s" : ""}
@@ -612,9 +540,16 @@ const Admin = () => {
           </div>
         )}
 
-        {/* ── TAB: ESTADÍSTICAS ── */}
-        {tab === "stats" && (
-          <div>
+        </div>
+
+        {/* ── SECCIÓN: ESTADÍSTICAS ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("stats")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["stats"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <BarChart2 size={14} /><span>Estadísticas</span>
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["stats"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
+          </button>
+        {openSections["stats"] && (
+          <div className="border-t border-white/10 p-4">
             {statsLoading && <Spinner />}
 
             {/* Gráfica de visitas diarias */}
@@ -864,8 +799,16 @@ const Admin = () => {
           </div>
         )}
 
-        {/* ── TAB: SUSCRIPTORES ── */}
-        {tab === "subscribers" && (() => {
+        </div>
+
+        {/* ── SECCIÓN: SUSCRIPTORES ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("subscribers")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["subscribers"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <Mail size={14} /><span>Suscriptores</span>
+            {subscribers.length > 0 && <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/60">{subscribers.length}</span>}
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["subscribers"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
+          </button>
+        {openSections["subscribers"] && (() => {
           const followSubs = subscribers.filter((s) => s.source === "follow");
           const newsletterSubs = subscribers.filter((s) => s.source !== "follow");
 
@@ -1026,9 +969,17 @@ const Admin = () => {
           );
         })()}
 
-      {/* ── TAB: CHAT ── */}
-      {tab === "chat" && (
-        <div>
+        </div>
+
+        {/* ── SECCIÓN: CHAT ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("chat")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["chat"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <MessageCircle size={14} /><span>Chat</span>
+            {chatLogs.length > 0 && <span className="px-1.5 py-0.5 bg-white/10 rounded-full text-[10px] text-white/60">{chatLogs.length}</span>}
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["chat"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
+          </button>
+        {openSections["chat"] && (
+        <div className="border-t border-white/10 p-4">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs text-white/40">
               Últimas {chatLogs.length} conversaciones registradas
@@ -1081,9 +1032,16 @@ const Admin = () => {
         </div>
       )}
 
-      {/* ── TAB: SEGURIDAD ── */}
-      {tab === "security" && (
-        <div>
+        </div>
+
+        {/* ── SECCIÓN: SEGURIDAD ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("security")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["security"] ? "text-cyan-400" : "text-white/60 hover:text-white"}`}>
+            <Shield size={14} /><span>Seguridad</span>
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["security"] ? "rotate-180 text-cyan-400" : "text-white/30"}`} />
+          </button>
+        {openSections["security"] && (
+        <div className="border-t border-white/10 p-4">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs text-white/40">
               Últimas {auditLog.length} acciones registradas
@@ -1132,7 +1090,8 @@ const Admin = () => {
             })}
           </div>
         </div>
-      )}
+        )}
+        </div>
 
       </div>
 
