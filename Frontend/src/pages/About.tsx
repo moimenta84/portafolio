@@ -1,4 +1,5 @@
 import TimeLine from "../components/timeLine/TimeLine";
+import Certifications from "../components/certifications/Certifications";
 import CounterServices from "../services/CounterServices";
 import SEO from "../components/SEO";
 
@@ -7,7 +8,7 @@ const About = () => {
     <section className="relative flex-1 flex flex-col justify-center py-6">
       <SEO
         title="Trayectoria"
-        description="Conoce la trayectoria de Iker Martínez: desarrollador con 4 años de experiencia práctica en frontend y backend, actualmente cursando el Ciclo Superior de DAW y listo para incorporarse a un equipo profesional."
+        description="Desarrollador Backend Java especializado en Spring Boot, Spring Security, microservicios, Docker y Kubernetes. CFGS DAW con experiencia real en entorno enterprise. APIs REST, JPA, Hibernate, JUnit, Mockito, CI/CD, Maven, SOLID, arquitectura limpia."
         path="/about"
       />
       <div className="text-white flex flex-col gap-6">
@@ -21,7 +22,7 @@ const About = () => {
             </span>
           </h2>
           <p className="text-sm text-white mt-2 max-w-xl leading-relaxed">
-            Desarrollador con 4 años construyendo proyectos reales en frontend y backend. Actualmente cursando el Ciclo Superior de DAW, con experiencia en entornos de producción y preparado para trabajar en equipo desde el primer día.
+            Desarrollador Backend Java especializado en Spring Boot, Spring Security, microservicios, Docker y Kubernetes, cursando el CFGS de DAW. Experiencia real en entorno enterprise con arquitectura por capas, APIs REST, JPA & Hibernate, testing con JUnit y Mockito, y pipelines CI/CD. Capacidad para trabajar en equipo bajo metodologías Agile/Scrum.
           </p>
         </header>
 
@@ -32,6 +33,9 @@ const About = () => {
 
         {/* JOURNEY CARDS */}
         <TimeLine />
+
+        {/* CERTIFICATIONS */}
+        <Certifications />
 
       </div>
     </section>

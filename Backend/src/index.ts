@@ -25,6 +25,7 @@ import subscribersRouter from "./routes/subscribers.js";
 import auditRouter from "./routes/audit.js";
 import trackRouter from "./routes/track.js";
 import chatRouter from "./routes/chat.js";
+import certsRouter from "./routes/certs.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -54,6 +55,7 @@ app.use("/api/events",     eventsLimiter,       eventsRouter);
 app.use("/api/audit",                          auditRouter);
 app.use("/api/track",                          trackRouter);
 app.use("/api/chat",        chatLimiter,        chatRouter);
+app.use("/api/certs",                          certsRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

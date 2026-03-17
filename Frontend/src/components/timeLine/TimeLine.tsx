@@ -1,7 +1,7 @@
-import { Code2, Layers, Server, Rocket } from "lucide-react";
+import { Code2, Layers, Server, Rocket, GraduationCap, Briefcase } from "lucide-react";
 import { dataAboutPage } from "../../data/dataAboutPage";
 
-const icons = [Code2, Layers, Server, Rocket];
+const icons = [Code2, Layers, Server, Rocket, GraduationCap, Briefcase];
 
 const TimeLine = () => {
   return (

@@ -138,6 +138,13 @@ export function initDatabase() {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
   migrate("CREATE INDEX IF NOT EXISTS idx_chat_created ON chat_logs(created_at DESC)");
+  migrate(`CREATE TABLE IF NOT EXISTS cert_views (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cert_name TEXT NOT NULL,
+    ip TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+  migrate("CREATE INDEX IF NOT EXISTS idx_cert_views_name ON cert_views(cert_name)");
 
   // Eliminar proyectos placeholder con links falsos (github.com/iker/*)
   try {

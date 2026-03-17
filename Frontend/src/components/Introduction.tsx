@@ -12,7 +12,7 @@ const Introduction = () => {
     <div className="z-20 w-full">
       <div className="flex flex-col justify-center max-w-md rounded-2xl bg-darkBg/40 backdrop-blur-[2px] p-4 md:p-6 -m-4 md:-m-6">
         <p className="text-secondary font-mono text-xs mb-1.5 text-center md:text-left tracking-wide">
-          Desarrollador Full Stack
+          Desarrollador Backend
         </p>
 
         <h1 className="mb-3 text-lg leading-tight text-center md:text-left md:text-2xl text-white">
@@ -21,15 +21,15 @@ const Introduction = () => {
           <span className="block min-h-[1.6em]">
             <TypeAnimation
               sequence={[
-                "React & TypeScript",
-                1500,
                 "Spring Boot & Java",
                 1500,
-                "Laravel & PHP",
+                "Microservicios",
+                1500,
+                "Docker & Kubernetes",
                 1500,
                 "APIs REST robustas",
                 1500,
-                "arquitecturas limpias",
+                "arquitecturas escalables",
                 1500,
               ]}
               speed={50}
@@ -41,12 +41,12 @@ const Introduction = () => {
 
 
         <p className="mx-auto mb-3 text-sm md:mx-0 text-white/70 text-center md:text-left leading-relaxed">
-          Convierto ideas en productos web reales — del diseño al deploy en producción, sin rodeos.
+          Desarrollo microservicios y APIs REST con Spring Boot y Java en entornos enterprise. Contenerización con Docker, orquestación con Kubernetes y pipelines CI/CD. Testing con JUnit y Mockito, principios SOLID y arquitectura limpia.
         </p>
 
         {/* Stack de tecnologías — móvil: 6 bubbles, escritorio: todas */}
         <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
-          {["React", "TypeScript", "Spring Boot", "Laravel", "Node.js", "Docker", "Git", "PostgreSQL", "MySQL", "CI/CD", "Nginx", "REST API"].map((tech, i) => (
+          {["Spring Boot", "Java", "Spring Security", "Docker", "Kubernetes", "Microservicios", "REST API", "JPA", "Hibernate", "MySQL", "PostgreSQL", "CI/CD", "React"].map((tech, i) => (
             <span
               key={tech}
               className={`px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium${i >= 6 ? " hidden md:inline-flex" : ""}`}
@@ -60,15 +60,15 @@ const Introduction = () => {
         <div className="hidden md:flex flex-wrap items-center justify-start gap-x-4 gap-y-1.5 mb-4">
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            Frontend React · Backend Spring Boot · Laravel
+            Spring Boot · Spring Security · Java · Microservicios · JPA & Hibernate
           </span>
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            Docker · CI/CD · despliegue en VPS
+            Docker · Kubernetes · CI/CD · Maven · Git
           </span>
           <span className="flex items-center gap-1 text-white/70 text-xs">
             <CheckCircle size={11} className="text-secondary" />
-            APIs REST · código limpio · testing
+            APIs REST · JUnit · Mockito · SOLID · arquitectura limpia
           </span>
         </div>
 

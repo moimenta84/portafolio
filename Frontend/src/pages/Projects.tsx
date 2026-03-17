@@ -15,10 +15,14 @@ const Projects = () => {
     getProjects()
       .then((apiProjects) =>
         setProjects(
-          apiProjects.map((p) => ({
-            ...p,
-            image: p.image || localProjects.find((lp) => lp.id === p.id)?.image || "",
-          }))
+          apiProjects.map((p) => {
+            const local = localProjects.find((lp) => lp.id === p.id);
+            return {
+              ...p,
+              image: p.image || local?.image || "",
+              gif: local?.gif,
+            };
+          })
         )
       )
       .catch(() => {

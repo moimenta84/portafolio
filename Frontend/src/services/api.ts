@@ -136,3 +136,14 @@ export const sendChat = (message: string, history: { role: string; content: stri
 
 export const getChatLogs = () =>
   fetchJson<{ id: number; ip: string; message: string; reply: string; created_at: string }[]>("/chat");
+
+// Certs
+export const trackCertView = (name: string) =>
+  fetch("/api/certs/view", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  }).catch(() => {});
+
+export const getCertStats = () =>
+  fetchJson<{ cert_name: string; views: number; unique_views: number; last_view: string }[]>("/certs/stats");

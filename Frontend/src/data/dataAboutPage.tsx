@@ -24,15 +24,15 @@ export const dataAboutPage: AboutItem[] = [
   {
     id: 3,
     title: "Backend con Spring Boot",
-    subtitle: "APIs REST y arquitectura",
-    description: "Creación de APIs REST con Spring Boot en proyectos de práctica: autenticación básica, conexión a bases de datos relacionales y arquitectura por capas.",
+    subtitle: "Microservicios · JPA · APIs REST",
+    description: "Diseño de APIs REST con Spring Boot, arquitectura por capas, JPA & Hibernate, testing con JUnit y Mockito. Patrones de microservicios y comunicación entre servicios.",
     date: "2024",
   },
   {
     id: 4,
     title: "Arquitectura y despliegue",
-    subtitle: "DevOps & Producción",
-    description: "Despliegues en entornos reales con Docker, CI/CD y VPS. Foco en buenas prácticas, testing básico y preparación para trabajar en equipos de desarrollo profesional.",
+    subtitle: "Docker · Kubernetes · CI/CD",
+    description: "Contenedores Docker, orquestación con Kubernetes y pipelines CI/CD en entornos reales. Despliegue en VPS, Nginx como proxy inverso y gestión de procesos con PM2.",
     date: "2025",
   },
   {
@@ -41,5 +41,12 @@ export const dataAboutPage: AboutItem[] = [
     subtitle: "Formación oficial · En curso",
     description: "Cursando el Ciclo Superior de Desarrollo de Aplicaciones Web, consolidando fundamentos técnicos con formación oficial mientras aplico lo aprendido en proyectos reales.",
     date: "2026",
+  },
+  {
+    id: 6,
+    title: "Prácticas en UST",
+    subtitle: "Backend · Spring Boot · Docker · Kubernetes",
+    description: "Desarrollo de microservicios con Spring Boot en un entorno empresarial real. Orquestación de contenedores con Kubernetes y despliegue con Docker dentro de un equipo de desarrollo profesional.",
+    date: "Mar – Jun 2026",
   },
 ]

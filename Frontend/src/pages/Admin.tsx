@@ -19,6 +19,7 @@ import {
   getConversionStats,
   getAuditLog,
   getChatLogs,
+  getCertStats,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -113,6 +114,9 @@ const Admin = () => {
   const [chatLogs, setChatLogs] = useState<{ id: number; ip: string; message: string; reply: string; created_at: string }[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
 
+  // ── Cert stats state ──
+  const [certStats, setCertStats] = useState<{ cert_name: string; views: number; unique_views: number; last_view: string }[]>([]);
+
   // ── Login ──
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +179,10 @@ const Admin = () => {
 
     getAuditLog()
       .then(setAuditLog)
+      .catch(() => {});
+
+    getCertStats()
+      .then(setCertStats)
       .catch(() => {});
   }, [authed]);
 
@@ -823,6 +831,33 @@ const Admin = () => {
               <p className="text-white/30 text-sm text-center py-12">
                 No hay datos de visitas todavía.
               </p>
+            )}
+
+            {/* ── Certificaciones más vistas ── */}
+            {certStats.length > 0 && (
+              <>
+                <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Certificaciones más vistas</p>
+                <div className="flex flex-col gap-2 mb-6">
+                  {certStats.map((c) => {
+                    const max = certStats[0].views;
+                    const pct = Math.round((c.views / max) * 100);
+                    return (
+                      <div key={c.cert_name} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-sm font-medium text-white truncate max-w-[70%]">{c.cert_name}</span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-xs text-white/40">{c.unique_views} únicos</span>
+                            <span className="text-sm font-bold text-cyan-400">{c.views}</span>
+                          </div>
+                        </div>
+                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-cyan-400/60 rounded-full" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         )}
