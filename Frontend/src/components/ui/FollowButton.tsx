@@ -1,5 +1,5 @@
 import { UserPlus, UserCheck } from "lucide-react";
-import { useFollow } from "../../contexts/FollowContext";
+import { useFollow } from "../../contexts/useFollow";
 
 interface FollowButtonProps {
   size?: "sm" | "lg";

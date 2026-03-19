@@ -10,7 +10,7 @@ import {
   Newspaper,
   Bell,
 } from "lucide-react";
-import { useFollow } from "../contexts/FollowContext";
+import { useFollow } from "../contexts/useFollow";
 
 interface NewsArticle {
   id: string;

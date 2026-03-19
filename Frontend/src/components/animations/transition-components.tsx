@@ -13,7 +13,6 @@ interface MotionTransitionProps {
 
 export const MotionTransition = ({
   children,
-  position: _position = "bottom",
   className = "",
 }: MotionTransitionProps) => {
   return (
