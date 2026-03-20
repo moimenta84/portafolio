@@ -1,11 +1,11 @@
 {
-  "name": "Iker Martínez — Desarrollador Full Stack",
-  "short_name": "Iker Dev",
-  "description": "Portfolio de Iker Martínez, desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales, APIs REST y arquitecturas limpias.",
+  "name": "Iker Martínez Velasco — Backend Java Developer",
+  "short_name": "Iker.dev",
+  "description": "Desarrollador Backend Java especializado en Spring Boot, Kubernetes y microservicios. Trabajando en UST para BBVA.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
+  "background_color": "#030712",
   "theme_color": "#22d3ee",
   "orientation": "portrait-primary",
   "lang": "es",
@@ -16,6 +16,14 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img/1760052219751.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "label": "Iker Martínez — Portfolio"
     }
   ]
 }

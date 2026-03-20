@@ -3,6 +3,7 @@ export interface Project {
   title: string;
   description: string;
   image: string;
+  gif?: string;
   tech: string[];
   link: string;
   likes_count: number;

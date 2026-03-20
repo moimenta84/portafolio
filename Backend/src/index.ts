@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import compression from "compression";
 import cron from "node-cron";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -43,9 +44,11 @@ const PORT = process.env.PORT || 3001;
 // Confiar en el proxy de Nginx (necesario para que express-rate-limit lea la IP real)
 app.set("trust proxy", 1);
 
-// Middleware
+// ─── Middleware ───────────────────────────────────────────────
 const allowedOrigins = process.env.CORS_ORIGIN || "http://localhost:5173";
 app.use(cors({ origin: allowedOrigins.split(",") }));
+// Compresión gzip/brotli para todos los responses
+app.use(compression({ threshold: 1024 }));
 app.use(express.json());
 app.use(getIp);
 
@@ -84,12 +87,29 @@ app.use("/api", (_req, res, next) => {
 const frontendDist = path.join(__dirname, "..", "..", "Frontend", "dist");
 app.use(
   express.static(frontendDist, {
+    // Habilitar ETag para revalidación condicional
+    etag: true,
+    lastModified: true,
     setHeaders(res, filePath) {
-      // Assets con hash en el nombre → caché agresiva (1 año)
-      if (/\.(js|css|woff2?|ttf|otf|eot)$/.test(filePath) && filePath.includes("-")) {
+      // Seguridad básica
+      res.setHeader("X-Content-Type-Options", "nosniff");
+      res.setHeader("X-Frame-Options", "DENY");
+      res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+
+      // Assets con hash en el nombre → cache inmutable 1 año
+      if (/assets\/.*\.(js|css|woff2?|ttf|otf|eot)$/.test(filePath)) {
         res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-      } else {
-        // HTML y otros → sin caché para reflejar deploys al instante
+      }
+      // Imágenes y SVG → 30 días con revalidación
+      else if (/\.(jpg|jpeg|png|gif|webp|svg|avif|ico)$/.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=86400");
+      }
+      // PDFs → 7 días
+      else if (/\.pdf$/.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=604800");
+      }
+      // HTML y manifest → sin caché
+      else {
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       }
     },

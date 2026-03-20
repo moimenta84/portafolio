@@ -1,13 +1,18 @@
 // Introduction.tsx — Componente de texto principal del Hero.
-// Mensaje específico sobre servicios de desarrollo web,
-// microcredenciales de confianza y CTAs orientados a conversión.
 
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import { CheckCircle } from "lucide-react";
-import FollowButton from "./ui/FollowButton";
+import { useMotion } from "../hooks/useMotion";
+
+const TECH_STACK = [
+  "Spring Boot", "Java", "Spring Security", "Docker", "Kubernetes", "Microservicios",
+  "REST API", "JPA", "Hibernate", "MySQL", "PostgreSQL", "CI/CD", "React",
+];
 
 const Introduction = () => {
+  const motion_ = useMotion();
+
   return (
     <div className="z-20 w-full">
       <div className="flex flex-col justify-center max-w-md rounded-2xl bg-darkBg/40 backdrop-blur-[2px] p-4 md:p-6 -m-4 md:-m-6">
@@ -17,36 +22,35 @@ const Introduction = () => {
 
         <h1 className="mb-3 text-lg leading-tight text-center md:text-left md:text-2xl text-white">
           Especializado en{" "}
-          {/* min-h fija evita el salto de layout al cambiar el texto */}
           <span className="block min-h-[1.6em]">
-            <TypeAnimation
-              sequence={[
-                "Spring Boot & Java",
-                1500,
-                "Microservicios",
-                1500,
-                "Docker & Kubernetes",
-                1500,
-                "APIs REST robustas",
-                1500,
-                "arquitecturas escalables",
-                1500,
-              ]}
-              speed={50}
-              repeat={Infinity}
-              className="font-bold text-secondary text-xl md:text-3xl drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]"
-            />
+            {motion_.reducedMotion ? (
+              <span className="font-bold text-secondary text-xl md:text-3xl drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">
+                Spring Boot & Java
+              </span>
+            ) : (
+              <TypeAnimation
+                sequence={[
+                  "Spring Boot & Java", 1500,
+                  "Microservicios", 1500,
+                  "Docker & Kubernetes", 1500,
+                  "APIs REST robustas", 1500,
+                  "arquitecturas escalables", 1500,
+                ]}
+                speed={50}
+                repeat={Infinity}
+                className="font-bold text-secondary text-xl md:text-3xl drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]"
+              />
+            )}
           </span>
         </h1>
-
 
         <p className="mx-auto mb-3 text-sm md:mx-0 text-white/70 text-center md:text-left leading-relaxed">
           Desarrollo microservicios y APIs REST con Spring Boot y Java en entornos enterprise. Contenerización con Docker, orquestación con Kubernetes y pipelines CI/CD. Testing con JUnit y Mockito, principios SOLID y arquitectura limpia.
         </p>
 
-        {/* Stack de tecnologías — móvil: 6 bubbles, escritorio: todas */}
+        {/* Tech stack pills */}
         <div className="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
-          {["Spring Boot", "Java", "Spring Security", "Docker", "Kubernetes", "Microservicios", "REST API", "JPA", "Hibernate", "MySQL", "PostgreSQL", "CI/CD", "React"].map((tech, i) => (
+          {TECH_STACK.map((tech, i) => (
             <span
               key={tech}
               className={`px-2 py-0.5 rounded-full border border-secondary/25 bg-secondary/8 text-secondary text-[11px] font-mono font-medium${i >= 6 ? " hidden md:inline-flex" : ""}`}
@@ -90,7 +94,6 @@ const Introduction = () => {
           >
             Contactar
           </Link>
-          <FollowButton size="sm" />
         </div>
       </div>
     </div>

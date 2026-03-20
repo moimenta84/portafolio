@@ -44,7 +44,7 @@ export const dataAboutPage: AboutItem[] = [
   },
   {
     id: 6,
-    title: "Prácticas en UST",
+    title: "Prácticas profesionales",
     subtitle: "Backend · Spring Boot · Docker · Kubernetes",
     description: "Desarrollo de microservicios con Spring Boot en un entorno empresarial real. Orquestación de contenedores con Kubernetes y despliegue con Docker dentro de un equipo de desarrollo profesional.",
     date: "Mar – Jun 2026",

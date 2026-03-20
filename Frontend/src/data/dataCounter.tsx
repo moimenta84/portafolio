@@ -9,15 +9,15 @@ export interface CounterItem {
 export const dataCounter: CounterItem[] = [
   {
     id: 1,
-    endCounter: 4,
-    text: "años de experiencia",
+    endCounter: 17,
+    text: "certificaciones UST",
     lineRight: true,
     lineRightMobile: true,
   },
   {
     id: 2,
-    endCounter: 12,
-    text: "proyectos completados",
+    endCounter: 270,
+    text: "horas React · Adecco",
     lineRight: true,
     lineRightMobile: false,
   },

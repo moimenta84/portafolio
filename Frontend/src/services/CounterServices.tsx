@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { dataCounter } from "../data/dataCounter";
 
 const CounterServices = () => {
@@ -12,13 +13,14 @@ const CounterServices = () => {
 
   return (
     <>
-      {allItems.map((item) => (
+      {allItems.map((item, i) => (
         <CounterCard
           key={item.id}
           value={item.value}
           label={item.label}
           lineRight={item.lineRight}
           animated={item.animated}
+          index={i}
         />
       ))}
     </>
@@ -30,21 +32,27 @@ interface CounterCardProps {
   label: string;
   lineRight: boolean;
   animated: boolean;
+  index: number;
 }
 
-function CounterCard({ value, label, lineRight, animated }: CounterCardProps) {
+function CounterCard({ value, label, lineRight, animated, index }: CounterCardProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
   useEffect(() => {
     if (!animated || value === null) return;
+
+    // Respeta prefers-reduced-motion
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) { setCount(value); return; }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
           started.current = true;
-          const duration = 1500;
-          const steps = 40;
+          const duration = 1800;
+          const steps = 50;
           const increment = value / steps;
           let current = 0;
           const interval = setInterval(() => {
@@ -58,7 +66,7 @@ function CounterCard({ value, label, lineRight, animated }: CounterCardProps) {
           }, duration / steps);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.4 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -67,18 +75,24 @@ function CounterCard({ value, label, lineRight, animated }: CounterCardProps) {
   const displayValue = animated ? count : (value ?? "—");
 
   return (
-    <div
+    <motion.div
       ref={ref}
-      className={`flex flex-col items-center justify-center text-center px-2 py-4 ${
-        lineRight ? "border-r border-white/10" : ""
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className={`flex flex-col items-center justify-center text-center px-4 py-5 ${
+        lineRight ? "border-r border-white/8" : ""
       }`}
     >
-      <span className="text-3xl md:text-4xl font-black text-cyan-400 tabular-nums">
+      <span className="text-3xl md:text-4xl font-black text-secondary tabular-nums text-glow-cyan">
         {typeof displayValue === "number" ? displayValue.toLocaleString() : displayValue}
-        {value !== null && <span className="text-cyan-300">+</span>}
+        {value !== null && <span className="text-secondary/60 text-2xl">+</span>}
       </span>
-      <p className="text-white/60 text-xs mt-1 leading-snug">{label}</p>
-    </div>
+      <p className="text-white/50 text-[11px] font-medium mt-1 leading-snug max-w-[80px]">
+        {label}
+      </p>
+    </motion.div>
   );
 }
 

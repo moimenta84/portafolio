@@ -4,49 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Favicon -->
+    <!-- ─── Favicon & PWA ─────────────────────────────────── -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#22d3ee" />
     <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <!-- SEO básico (fallback global; cada página lo sobreescribe vía React 19) -->
-    <title>Iker Martínez — Desarrollador Full Stack</title>
-    <meta name="description" content="Portfolio de Iker Martínez, desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales, APIs REST y arquitecturas limpias." />
-    <meta name="author" content="Iker Martínez" />
-    <meta name="keywords" content="desarrollador full stack, React, TypeScript, Spring Boot, portfolio, Iker Martínez, desarrollo web, API REST, frontend, backend" />
+    <!-- ─── SEO base (React 19 sobreescribe por página) ───── -->
+    <title>Iker Martínez — Desarrollador Full Stack · Spring Boot · Kubernetes · React</title>
+    <meta name="description" content="Desarrollador Full Stack especializado en Spring Boot, Kubernetes, Docker y microservicios. APIs REST, CI/CD y arquitecturas limpias. CFGS DAW." />
+    <meta name="author" content="Iker Martínez Velasco" />
+    <meta name="keywords" content="desarrollador backend java, spring boot, kubernetes, docker, microservicios, REST API, BBVA, UST, Iker Martínez, portfolio, React, TypeScript, JUnit, Mockito, CI/CD" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://ikermartinezdev.com" />
 
-    <!-- Open Graph (LinkedIn, WhatsApp, Slack…) -->
+    <!-- ─── Open Graph (LinkedIn, WhatsApp, Slack…) ────────── -->
     <meta property="og:site_name" content="Iker Martínez · Dev" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://ikermartinezdev.com" />
-    <meta property="og:title" content="Iker Martínez — Desarrollador Full Stack" />
-    <meta property="og:description" content="Desarrollador Full Stack especializado en React, TypeScript y Spring Boot. Proyectos reales desplegados en producción con CI/CD." />
+    <meta property="og:title" content="Iker Martínez — Full Stack Developer · Spring Boot · Kubernetes" />
+    <meta property="og:description" content="Desarrollador Full Stack especializado en Spring Boot, Kubernetes, Docker y microservicios. Proyectos reales con APIs REST y CI/CD." />
     <meta property="og:image" content="https://ikermartinezdev.com/img/1760052219751.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Iker Martínez — Desarrollador Full Stack" />
+    <meta property="og:image:alt" content="Iker Martínez Velasco — Desarrollador Backend Java" />
     <meta property="og:locale" content="es_ES" />
+    <meta property="profile:first_name" content="Iker" />
+    <meta property="profile:last_name" content="Martínez Velasco" />
 
-    <!-- Twitter Card -->
+    <!-- ─── Twitter / X Card ─────────────────────────────────── -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Iker Martínez — Desarrollador Full Stack" />
-    <meta name="twitter:description" content="Desarrollador Full Stack especializado en React, TypeScript y Spring Boot." />
+    <meta name="twitter:title" content="Iker Martínez — Full Stack Developer · Spring Boot · Kubernetes" />
+    <meta name="twitter:description" content="Desarrollador Full Stack especializado en Spring Boot, Kubernetes, Docker y microservicios." />
     <meta name="twitter:image" content="https://ikermartinezdev.com/img/1760052219751.jpg" />
-    <meta name="twitter:image:alt" content="Iker Martínez — Desarrollador Full Stack" />
+    <meta name="twitter:image:alt" content="Iker Martínez Velasco — Desarrollador Backend Java" />
 
-    <!-- JSON-LD: Person Schema (Google Rich Results) -->
+    <!-- ─── JSON-LD: Person Schema ──────────────────────────── -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
-      "name": "Iker Martínez",
+      "name": "Iker Martínez Velasco",
+      "givenName": "Iker",
+      "familyName": "Martínez Velasco",
       "url": "https://ikermartinezdev.com",
       "image": "https://ikermartinezdev.com/img/1760052219751.jpg",
-      "jobTitle": "Desarrollador Full Stack",
-      "description": "Desarrollador Full Stack especializado en React, TypeScript y Spring Boot. 4 años de práctica autodidacta orientado a entornos profesionales.",
+      "jobTitle": "Desarrollador Backend Java",
+      "description": "Desarrollador Backend Java especializado en Spring Boot, Kubernetes y microservicios. Actualmente en UST trabajando en un proyecto enterprise para BBVA. 17 certificaciones UST. Formación React 270h (Fundación Adecco). Cursando CFGS DAW.",
       "email": "moimenta267@gmail.com",
       "address": {
         "@type": "PostalAddress",
@@ -54,7 +61,28 @@
         "addressRegion": "Alicante",
         "addressCountry": "ES"
       },
-      "knowsAbout": ["React", "TypeScript", "Spring Boot", "Node.js", "Express", "SQLite", "REST API", "CI/CD", "Docker", "Git"],
+      "knowsAbout": [
+        "Java", "Spring Boot", "Spring Security", "Kubernetes", "Docker",
+        "Microservicios", "REST API", "JPA", "Hibernate", "JUnit", "Mockito",
+        "CI/CD", "React", "TypeScript", "Maven", "Git", "SOLID"
+      ],
+      "hasCredential": [
+        {
+          "@type": "EducationalOccupationalCredential",
+          "name": "React — Fundación Adecco",
+          "credentialCategory": "certificate"
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "name": "Java Fundamentals — UST",
+          "credentialCategory": "certificate"
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "name": "Spring Boot Microservices — UST",
+          "credentialCategory": "certificate"
+        }
+      ],
       "sameAs": [
         "https://github.com/moimenta84",
         "https://linkedin.com/in/iker-martinez-dev"
@@ -62,7 +90,7 @@
     }
     </script>
 
-    <!-- JSON-LD: WebSite Schema (sitelinks searchbox ready) -->
+    <!-- ─── JSON-LD: WebSite Schema ─────────────────────────── -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -70,20 +98,84 @@
       "name": "Iker Martínez · Dev",
       "url": "https://ikermartinezdev.com",
       "inLanguage": "es",
+      "description": "Portfolio profesional de Iker Martínez Velasco, desarrollador Backend Java.",
       "author": {
         "@type": "Person",
-        "name": "Iker Martínez"
+        "name": "Iker Martínez Velasco"
       }
     }
     </script>
 
-    <!-- Fuentes -->
+    <!-- ─── Fuentes: preconnect + preload crítico ───────────── -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Preload del subset más crítico: Inter 400 y 700 -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    </noscript>
+
+    <!-- ─── Preload imagen hero (LCP) ─────────────────────── -->
+    <link rel="preload" as="image" href="/img/1760052219751.jpg" fetchpriority="high" />
+
+    <!-- ─── Critical CSS inline: previene FOUT / CLS ──────── -->
+    <style>
+      /* font-display swap fallback para evitar FOIT */
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: local("Inter");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: local("JetBrains Mono");
+      }
+      /* Evita CLS en el root mientras React hidrata */
+      html, body, #root {
+        min-height: 100dvh;
+        background-color: #030712;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+      }
+      /* Animaciones desactivadas si el usuario lo prefiere */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <div id="root"></div>
+    <!-- Skip to main content (accesibilidad teclado / lectores de pantalla) -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-cyan-400 focus:text-gray-900 focus:font-bold focus:text-sm"
+    >
+      Saltar al contenido principal
+    </a>
+
+    <div id="root" role="application" aria-label="Portfolio de Iker Martínez Velasco"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

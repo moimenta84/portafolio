@@ -27,7 +27,7 @@ const StarField = () => {
     if (!ctx) return;
 
     const isMobile = window.innerWidth < 768;
-    const starCount = isMobile ? 40 : 200;
+    const starCount = isMobile ? 80 : 350;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -38,8 +38,8 @@ const StarField = () => {
       starsRef.current = Array.from({ length: starCount }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        radius: Math.random() * 1.5 + 0.3,
-        opacity: Math.random() * 0.45 + 0.1,
+        radius: Math.random() * 1.8 + 0.3,
+        opacity: Math.random() * 0.42 + 0.14,
         twinkleSpeed: Math.random() * 0.015 + 0.003,
         twinkleOffset: Math.random() * Math.PI * 2,
         depth: Math.random(),
@@ -75,14 +75,14 @@ const StarField = () => {
 
         ctx.beginPath();
         ctx.arc(star.x, drawY, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.05, Math.min(alpha, 0.9))})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.05, Math.min(alpha * 0.7, 0.75))})`;
         ctx.fill();
 
-        // Brillo sutil para estrellas grandes
-        if (star.radius > 1.2) {
+        // Halo muy suave para estrellas grandes — sin neón
+        if (star.radius > 1.0) {
           ctx.beginPath();
           ctx.arc(star.x, drawY, star.radius * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(180, 220, 255, ${Math.max(0, alpha * 0.15)})`;
+          ctx.fillStyle = `rgba(200, 220, 255, ${Math.max(0, alpha * 0.10)})`;
           ctx.fill();
         }
       }
@@ -118,8 +118,16 @@ const StarField = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
+      aria-hidden="true"
+      className="pointer-events-none"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 0,
+      }}
     />
   );
 };

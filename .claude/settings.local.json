@@ -1,7 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(netstat:*ect y newslleter se pegan arriba)"
-    ]
+    "allow": []
   }
 }

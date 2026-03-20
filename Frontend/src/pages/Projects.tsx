@@ -1,11 +1,39 @@
 import { useState, useEffect } from "react";
-import { FolderGit2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { FolderGit2, Github } from "lucide-react";
 import SEO from "../components/SEO";
 import ProjectCard from "../components/projectCard/ProjectCard";
 import ReviewSection from "../components/reviews/ReviewSection";
 import { getProjects, toggleLike } from "../services/api";
 import { projects as localProjects } from "../data/projects";
 import type { Project } from "../types";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
+// Skeleton card mientras carga
+const SkeletonCard = () => (
+  <div className="bg-white/[0.03] border border-white/8 rounded-2xl overflow-hidden animate-pulse">
+    <div className="h-32 sm:h-48 bg-white/5" />
+    <div className="p-3 flex flex-col gap-2.5">
+      <div className="h-3 bg-white/8 rounded-full w-3/4" />
+      <div className="h-2.5 bg-white/5 rounded-full w-full" />
+      <div className="h-2.5 bg-white/5 rounded-full w-2/3" />
+      <div className="flex gap-1">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-5 w-14 bg-white/5 rounded-full" />
+        ))}
+      </div>
+      <div className="h-8 bg-white/5 rounded-xl mt-auto" />
+    </div>
+  </div>
+);
 
 const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -17,18 +45,12 @@ const Projects = () => {
         setProjects(
           apiProjects.map((p) => {
             const local = localProjects.find((lp) => lp.id === p.id);
-            return {
-              ...p,
-              image: p.image || local?.image || "",
-              gif: local?.gif,
-            };
+            return { ...p, image: p.image || local?.image || "", gif: local?.gif };
           })
         )
       )
       .catch(() => {
-        setProjects(
-          localProjects.map((p) => ({ ...p, likes_count: 0, liked: false }))
-        );
+        setProjects(localProjects.map((p) => ({ ...p, likes_count: 0, liked: false })));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -38,9 +60,7 @@ const Projects = () => {
       const result = await toggleLike(id);
       setProjects((prev) =>
         prev.map((p) =>
-          p.id === id
-            ? { ...p, likes_count: result.likes_count, liked: result.liked }
-            : p
+          p.id === id ? { ...p, likes_count: result.likes_count, liked: result.liked } : p
         )
       );
     } catch (err) {
@@ -49,48 +69,84 @@ const Projects = () => {
   };
 
   return (
-    <section className="relative flex-1 flex flex-col pt-14 pb-6">
+    <section className="relative flex-1 flex flex-col pt-8 pb-8">
       <SEO
-        title="Proyectos"
-        description="Proyectos full stack de Iker Martínez: aplicaciones con React, TypeScript y Spring Boot desplegadas en producción. APIs REST, CI/CD y arquitecturas orientadas a empresa."
+        title="Proyectos — Iker Martínez"
+        description="Proyectos full stack de Iker Martínez: microservicios Spring Boot, APIs REST, React + TypeScript. Aplicaciones desplegadas con Docker y CI/CD."
         path="/projects"
       />
-      <div className="flex flex-col gap-4">
+
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.1 } } }}
+        className="flex flex-col gap-8"
+      >
 
         {/* HEADER */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-full text-xs text-cyan-400 font-medium">
-              <FolderGit2 size={12} />
-              Proyectos
-            </div>
-            <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="section-divider flex-1 max-w-[60px]" />
+            <span className="text-secondary font-mono text-[11px] font-semibold tracking-widest uppercase">
+              Portfolio
+            </span>
           </div>
-          <p className="text-sm text-white/80 leading-relaxed max-w-2xl font-light">
-            Proyectos personales orientados a entornos reales de empresa. Apps full stack y APIs REST para practicar arquitectura, buenas prácticas y flujos de trabajo de consultoría.
-          </p>
-        </div>
+
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-2">
+                Proyectos{" "}
+                <span className="gradient-text">reales</span>
+              </h1>
+              <p className="text-sm md:text-[15px] text-white/60 max-w-2xl leading-relaxed">
+                Aplicaciones full stack orientadas a entornos enterprise. APIs REST, microservicios, autenticación JWT, CI/CD y arquitectura limpia aplicada desde el primer commit.
+              </p>
+            </div>
+
+            <a
+              href="https://github.com/moimenta84"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 text-white/70 text-xs font-semibold hover:border-secondary hover:text-secondary transition-all duration-200 shrink-0"
+            >
+              <Github size={14} />
+              Ver en GitHub
+            </a>
+          </div>
+        </motion.div>
 
         {/* PROJECTS GRID */}
         {loading ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {projects.slice(0, 4).map((project) => (
-              <ProjectCard
+            {projects.slice(0, 4).map((project, i) => (
+              <motion.div
                 key={project.id}
-                project={project}
-                onToggleLike={handleToggleLike}
-              />
+                custom={i}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+              >
+                <ProjectCard project={project} onToggleLike={handleToggleLike} />
+              </motion.div>
             ))}
           </div>
         )}
 
         {/* REVIEWS */}
-        <ReviewSection />
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <ReviewSection />
+        </motion.div>
+
+      </motion.div>
     </section>
   );
 };
