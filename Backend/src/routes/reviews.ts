@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { logAudit } from "../utils/audit.js";
+import { validate, reviewSchema } from "../middleware/validate.js";
 
 const router = Router();
 
@@ -24,24 +25,13 @@ router.get("/all", requireAuth, (_req, res) => {
 });
 
 // POST /api/reviews - Create a review
-router.post("/", (req, res) => {
+router.post("/", validate(reviewSchema), (req, res) => {
   const { name, comment, rating } = req.body;
   const ip = req.clientIp || "";
 
-  if (!name || !comment || !rating) {
-    res.status(400).json({ error: "Nombre, comentario y valoración son obligatorios" });
-    return;
-  }
-
-  const numRating = Number(rating);
-  if (numRating < 1 || numRating > 5) {
-    res.status(400).json({ error: "La valoración debe ser entre 1 y 5" });
-    return;
-  }
-
   const result = db
     .prepare("INSERT INTO reviews (name, comment, rating, ip) VALUES (?, ?, ?, ?)")
-    .run(name.trim(), comment.trim(), numRating, ip);
+    .run(name, comment, rating, ip);
 
   const review = db.prepare("SELECT id, name, comment, rating, created_at FROM reviews WHERE id = ?").get(result.lastInsertRowid);
 

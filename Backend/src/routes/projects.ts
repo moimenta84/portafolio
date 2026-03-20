@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { logAudit } from "../utils/audit.js";
+import { validate, projectSchema, projectUpdateSchema } from "../middleware/validate.js";
 
 const router = Router();
 
@@ -52,18 +53,13 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/projects - Create project
-router.post("/", requireAuth, (req, res) => {
+router.post("/", requireAuth, validate(projectSchema), (req, res) => {
   const { title, description, image, tech, link } = req.body;
   const ip = req.clientIp || "";
 
-  if (!title) {
-    res.status(400).json({ error: "El título es obligatorio" });
-    return;
-  }
-
   const result = db.prepare(
     "INSERT INTO projects (title, description, image, tech, link) VALUES (?, ?, ?, ?, ?)"
-  ).run(title, description || "", image || "", JSON.stringify(tech || []), link || "");
+  ).run(title, description, image, JSON.stringify(tech), link);
 
   logAudit("PROJECT_CREATE", `Proyecto creado: "${title}"`, ip);
 
@@ -78,7 +74,7 @@ router.post("/", requireAuth, (req, res) => {
 });
 
 // PUT /api/projects/:id - Update project
-router.put("/:id", requireAuth, (req, res) => {
+router.put("/:id", requireAuth, validate(projectUpdateSchema), (req, res) => {
   const { id } = req.params;
   const { title, description, image, tech, link } = req.body;
   const ip = req.clientIp || "";

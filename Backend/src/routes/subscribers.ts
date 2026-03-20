@@ -5,17 +5,13 @@ import { requireAuth } from "../middleware/requireAuth.js";
 import { getGeoData, isPrivateIp } from "../utils/geo.js";
 import { dispatchToAll, dispatchToOne } from "../services/newsletter.js";
 import { logAudit } from "../utils/audit.js";
+import { validate, subscriberSchema } from "../middleware/validate.js";
 
 const router = Router();
 
 // POST /api/subscribers - Suscribirse al newsletter
-router.post("/", async (req, res) => {
+router.post("/", validate(subscriberSchema), async (req, res) => {
   const { email } = req.body;
-
-  if (!email || !email.includes("@")) {
-    res.status(400).json({ error: "Email no válido" });
-    return;
-  }
 
   const existing = db.prepare("SELECT id FROM subscribers WHERE email = ?").get(email);
   if (existing) {
