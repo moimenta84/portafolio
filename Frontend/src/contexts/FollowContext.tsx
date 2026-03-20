@@ -2,24 +2,10 @@
 // Gestiona: contador, estado following, modal y llamadas a la API.
 // El modal se renderiza aquí (una sola instancia en todo el DOM).
 
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { X, Send } from "lucide-react";
 import { getFollowers, toggleFollow } from "../services/api";
-
-interface FollowContextType {
-  followersCount: number;
-  following: boolean;
-  openModal: () => void;
-  handleUnfollow: () => void;
-}
-
-const FollowContext = createContext<FollowContextType | null>(null);
-
-export function useFollow() {
-  const ctx = useContext(FollowContext);
-  if (!ctx) throw new Error("useFollow must be used inside FollowProvider");
-  return ctx;
-}
+import { FollowContext } from "./FollowContextCore";
 
 export function FollowProvider({ children }: { children: ReactNode }) {
   const [followersCount, setFollowersCount] = useState(0);

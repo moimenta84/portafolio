@@ -77,16 +77,11 @@ function VisitTracker() {
 }
 
 function App() {
-  const [showIntro, setShowIntro] = useState(true);
-
-  // Al montar, comprobamos si el usuario ya vio la intro en esta sesión.
-  // Si ya la vio (guardado en sessionStorage), la ocultamos directamente.
-  useEffect(() => {
-    const seen = sessionStorage.getItem("hasSeenIntro");
-    if (seen) {
-      setShowIntro(false);
-    }
-  }, []);
+  // Inicialización perezosa: evita un re-render extra al leer sessionStorage
+  // directamente en el inicializador del estado en lugar de un useEffect.
+  const [showIntro, setShowIntro] = useState(
+    () => !sessionStorage.getItem("hasSeenIntro")
+  );
 
   // Cuando termina la animación de intro, la ocultamos y
   // guardamos en sessionStorage para no volver a mostrarla.

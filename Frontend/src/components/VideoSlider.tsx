@@ -1,5 +1,5 @@
 // components/VideoSlider/VideoSlider.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Video {
@@ -10,64 +10,47 @@ interface Video {
   publishedAt: string;
 }
 
+const PREDEFINED_VIDEOS: Video[] = [
+  {
+    id: "SqcY0GlETPk",
+    title: "React Tutorial for Beginners",
+    thumbnail: "https://img.youtube.com/vi/SqcY0GlETPk/maxresdefault.jpg",
+    channelTitle: "Programming with Mosh",
+    publishedAt: "2023",
+  },
+  {
+    id: "W6NZfCO5SIk",
+    title: "JavaScript Tutorial Full Course",
+    thumbnail: "https://img.youtube.com/vi/W6NZfCO5SIk/maxresdefault.jpg",
+    channelTitle: "freeCodeCamp",
+    publishedAt: "2023",
+  },
+  {
+    id: "fYq5PXgSsbE",
+    title: "Git and GitHub for Beginners",
+    thumbnail: "https://img.youtube.com/vi/fYq5PXgSsbE/maxresdefault.jpg",
+    channelTitle: "Kevin Stratvert",
+    publishedAt: "2023",
+  },
+  {
+    id: "RGOj5yH7evk",
+    title: "Git and GitHub for Beginners - Crash Course",
+    thumbnail: "https://img.youtube.com/vi/RGOj5yH7evk/maxresdefault.jpg",
+    channelTitle: "freeCodeCamp",
+    publishedAt: "2023",
+  },
+  {
+    id: "Oe421EPjeBE",
+    title: "100+ Web Development Things you Should Know",
+    thumbnail: "https://img.youtube.com/vi/Oe421EPjeBE/maxresdefault.jpg",
+    channelTitle: "Fireship",
+    publishedAt: "2023",
+  },
+];
+
 const VideoSlider = () => {
-
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos] = useState<Video[]>(PREDEFINED_VIDEOS);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  const fetchVideos = async () => {
-    try {
-      setLoading(true);
-
-      const predefinedVideos = [
-        {
-          id: "SqcY0GlETPk",
-          title: "React Tutorial for Beginners",
-          thumbnail: "https://img.youtube.com/vi/SqcY0GlETPk/maxresdefault.jpg",
-          channelTitle: "Programming with Mosh",
-          publishedAt: "2023",
-        },
-        {
-          id: "W6NZfCO5SIk",
-          title: "JavaScript Tutorial Full Course",
-          thumbnail: "https://img.youtube.com/vi/W6NZfCO5SIk/maxresdefault.jpg",
-          channelTitle: "freeCodeCamp",
-          publishedAt: "2023",
-        },
-        {
-          id: "fYq5PXgSsbE",
-          title: "Git and GitHub for Beginners",
-          thumbnail: "https://img.youtube.com/vi/fYq5PXgSsbE/maxresdefault.jpg",
-          channelTitle: "Kevin Stratvert",
-          publishedAt: "2023",
-        },
-        {
-          id: "RGOj5yH7evk",
-          title: "Git and GitHub for Beginners - Crash Course",
-          thumbnail: "https://img.youtube.com/vi/RGOj5yH7evk/maxresdefault.jpg",
-          channelTitle: "freeCodeCamp",
-          publishedAt: "2023",
-        },
-        {
-          id: "Oe421EPjeBE",
-          title: "100+ Web Development Things you Should Know",
-          thumbnail: "https://img.youtube.com/vi/Oe421EPjeBE/maxresdefault.jpg",
-          channelTitle: "Fireship",
-          publishedAt: "2023",
-        },
-      ];
-
-      setVideos(predefinedVideos);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
-      useEffect(() => {
-    fetchVideos();
-  }, []);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % videos.length);
@@ -80,14 +63,6 @@ const VideoSlider = () => {
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
-
-  if (loading) {
-    return (
-      <div className="w-full h-96 bg-white/10 backdrop-blur-sm rounded-2xl animate-pulse flex items-center justify-center">
-        <p className="text-white">Cargando videos...</p>
-      </div>
-    );
-  }
 
   if (videos.length === 0) {
     return null;
@@ -107,9 +82,12 @@ const VideoSlider = () => {
           >
             {videos.map((video) => (
               <div key={video.id} className="min-w-full">
-                href={`https://www.youtube.com/watch?v=${video.id}`}
-                target="_blank" rel="noopener noreferrer" className="block"
-                <a>
+                <a
+                  href={`https://www.youtube.com/watch?v=${video.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
                   <div className="relative aspect-video">
                     <img
                       src={video.thumbnail}
