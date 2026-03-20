@@ -28,6 +28,15 @@ import chatRouter from "./routes/chat.js";
 import certsRouter from "./routes/certs.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Validar variables de entorno críticas antes de arrancar
+const REQUIRED_ENV = ["JWT_SECRET", "ADMIN_PASSWORD_HASH"];
+const missing = REQUIRED_ENV.filter((k) => !process.env[k]);
+if (missing.length > 0) {
+  console.error(`[startup] Variables de entorno obligatorias no definidas: ${missing.join(", ")}`);
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
