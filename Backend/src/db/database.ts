@@ -145,6 +145,9 @@ export function initDatabase() {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
   migrate("CREATE INDEX IF NOT EXISTS idx_cert_views_name ON cert_views(cert_name)");
+  migrate("CREATE INDEX IF NOT EXISTS idx_visits_ip ON visits(ip)");
+  migrate("CREATE INDEX IF NOT EXISTS idx_visits_page ON visits(page)");
+  migrate("CREATE INDEX IF NOT EXISTS idx_likes_project ON likes(project_id)");
 
   // Eliminar proyectos placeholder con links falsos (github.com/iker/*)
   try {
