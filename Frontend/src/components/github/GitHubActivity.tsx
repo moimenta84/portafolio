@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GitCommitHorizontal, Github, Flame, Star, BookOpen, Users, ExternalLink } from "lucide-react";
+import { GitCommitHorizontal, Github, Flame, Star, BookOpen, Users, ExternalLink, GitPullRequest, GitMerge, GitFork } from "lucide-react";
 
 const GH_USER = "moimenta84";
 const GH_URL  = `https://github.com/${GH_USER}`;
@@ -18,6 +18,16 @@ interface GHEvent {
   payload: { commits?: { message: string }[]; size?: number };
 }
 interface GHRepo { language: string | null; }
+interface GHPR {
+  title: string;
+  html_url: string;
+  state: "open" | "closed";
+  pull_request: { merged_at: string | null };
+  number: number;
+  repository_url: string;
+  created_at: string;
+}
+interface GHSearchResult { items: GHPR[]; }
 
 // ─── Colores cyan por nivel ────────────────────────────────────────────────
 const CELL_STYLE: Record<number, string> = {
@@ -269,6 +279,7 @@ const GitHubActivity = () => {
   const [events, setEvents] = useState<GHEvent[]>([]);
   const [languages, setLanguages] = useState<{ lang: string; pct: number; color: string }[]>([]);
   const [streak, setStreak] = useState(0);
+  const [prs, setPrs] = useState<GHPR[]>([]);
   const [loading, setLoading] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -293,7 +304,9 @@ const GitHubActivity = () => {
       fetch(`${base}`).then(r => r.json() as Promise<GHProfile>),
       fetch(`${base}/events?per_page=100`).then(r => r.json() as Promise<GHEvent[]>),
       fetch(`${base}/repos?per_page=100`).then(r => r.json() as Promise<GHRepo[]>),
-    ]).then(([contribs, prof, evs, repos]) => {
+      fetch(`https://api.github.com/search/issues?q=author:${GH_USER}+type:pr+is:merged&sort=created&order=desc&per_page=12`)
+        .then(r => r.json() as Promise<GHSearchResult>),
+    ]).then(([contribs, prof, evs, repos, prSearch]) => {
       setContributions(contribs.contributions);
       setTotalContribs(contribs.total.lastYear);
       setStreak(computeStreak(contribs.contributions));
@@ -302,6 +315,9 @@ const GitHubActivity = () => {
       // Commits del feed
       const pushes = evs.filter(e => e.type === "PushEvent").slice(0, 6);
       setEvents(pushes);
+
+      // Pull Requests
+      if (prSearch?.items) setPrs(prSearch.items);
 
       // Lenguajes
       const LANG_COLORS: Record<string, string> = {
@@ -470,6 +486,86 @@ const GitHubActivity = () => {
           <StatCard icon={Users}               label="Seguidores"         value={profile.followers}     color="text-purple-400" />
           <StatCard icon={Star}                label="Lang. principal"    value="Java"                  color="text-amber-400" />
         </motion.div>
+      )}
+
+      {/* ── Pull Requests ─────────────────────────────────────── */}
+      {prs.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          aria-label="Pull Requests"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <GitPullRequest size={14} className="text-green-400" />
+            <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider">Pull Requests</p>
+            <span className="ml-auto text-[10px] text-white/30 font-mono">{prs.length} PRs</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            {prs.map(pr => {
+              const repoName = pr.repository_url.replace("https://api.github.com/repos/", "");
+              const isOwn    = repoName.startsWith(`${GH_USER}/`);
+              const shortRepo = repoName.replace(`${GH_USER}/`, "");
+              const isMerged  = !!pr.pull_request?.merged_at;
+              const isOpen    = pr.state === "open";
+
+              return (
+                <motion.a
+                  key={pr.number}
+                  href={pr.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  whileHover={{ x: 3 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]
+                             hover:border-white/15 hover:bg-white/[0.04] transition-colors group"
+                >
+                  {/* Estado */}
+                  <div className="mt-0.5 shrink-0">
+                    {isMerged
+                      ? <GitMerge  size={14} className="text-purple-400" />
+                      : isOpen
+                        ? <GitPullRequest size={14} className="text-green-400" />
+                        : <GitPullRequest size={14} className="text-red-400/70" />
+                    }
+                  </div>
+
+                  {/* Contenido */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-white/80 group-hover:text-white transition-colors truncate leading-snug">
+                      {pr.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      <span className={`text-[10px] font-mono ${isOwn ? "text-cyan-400/60" : "text-amber-400/70"}`}>
+                        {isOwn ? shortRepo : repoName}
+                      </span>
+                      {!isOwn && (
+                        <span className="flex items-center gap-0.5 text-[10px] text-amber-400/50">
+                          <GitFork size={9} /> colaboración
+                        </span>
+                      )}
+                      <span className="text-[10px] text-white/25">
+                        {new Date(pr.created_at).toLocaleDateString("es-ES", { day:"numeric", month:"short", year:"2-digit" })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Badge estado */}
+                  <span className={`shrink-0 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border
+                    ${isMerged
+                      ? "bg-purple-500/10 border-purple-500/30 text-purple-400"
+                      : isOpen
+                        ? "bg-green-500/10 border-green-500/30 text-green-400"
+                        : "bg-red-500/10 border-red-500/25 text-red-400/70"
+                    }`}>
+                    {isMerged ? "merged" : isOpen ? "open" : "closed"}
+                  </span>
+                </motion.a>
+              );
+            })}
+          </div>
+        </motion.section>
       )}
 
       {/* ── Lenguajes ─────────────────────────────────────────── */}
