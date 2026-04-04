@@ -1,10 +1,18 @@
 // Home.tsx — Página principal / Hero del portfolio.
 
+import { useEffect, useState } from "react";
 import Introduction from "../components/Introduction";
 import SEO from "../components/SEO";
 import FollowButton from "../components/ui/FollowButton";
+import { getVisitCount } from "../services/api";
 
 const Home = () => {
+  const [visitors, setVisitors] = useState<number | null>(null);
+
+  useEffect(() => {
+    getVisitCount().then(d => setVisitors(d.unique_visitors)).catch(() => {});
+  }, []);
+
   return (
     <section className="relative flex-1 flex flex-col">
       <SEO
@@ -41,8 +49,14 @@ const Home = () => {
           {/* COLUMNA TEXTO */}
           <div className="flex flex-col justify-center gap-6">
             <Introduction />
-            <div className="flex justify-center md:justify-start">
+            <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
               <FollowButton size="lg" />
+              {visitors !== null && visitors > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-white/50">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  {visitors.toLocaleString("es-ES")} visitas únicas
+                </div>
+              )}
             </div>
           </div>
         </div>
