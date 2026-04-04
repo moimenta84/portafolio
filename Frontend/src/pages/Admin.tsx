@@ -574,6 +574,56 @@ const Admin = () => {
               <DeviceBreakdown data={stats.by_device} />
             )}
 
+            {/* Browser y OS */}
+            {stats && (stats.by_browser?.length > 0 || stats.by_os?.length > 0) && (
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {stats.by_browser?.length > 0 && (
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4">
+                    <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Navegador</p>
+                    <div className="flex flex-col gap-2">
+                      {stats.by_browser.map(b => {
+                        const total = stats.by_browser.reduce((a, x) => a + x.visitors, 0) || 1;
+                        const pct = Math.round(b.visitors / total * 100);
+                        return (
+                          <div key={b.browser}>
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/60">{b.browser}</span>
+                              <span className="text-white/40">{pct}%</span>
+                            </div>
+                            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                              <div className="h-full bg-cyan-400/60 rounded-full" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {stats.by_os?.length > 0 && (
+                  <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4">
+                    <p className="text-xs text-white/30 uppercase tracking-wider mb-3">Sistema Operativo</p>
+                    <div className="flex flex-col gap-2">
+                      {stats.by_os.map(o => {
+                        const total = stats.by_os.reduce((a, x) => a + x.visitors, 0) || 1;
+                        const pct = Math.round(o.visitors / total * 100);
+                        return (
+                          <div key={o.os}>
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/60">{o.os}</span>
+                              <span className="text-white/40">{pct}%</span>
+                            </div>
+                            <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                              <div className="h-full bg-purple-400/60 rounded-full" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Esta semana vs semana anterior */}
             {convStats && (
               <WeekComparison data={convStats} />
