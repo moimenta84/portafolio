@@ -17,7 +17,8 @@ interface GHEvent {
   created_at: string;
   payload: { commits?: { message: string }[]; size?: number };
 }
-interface GHRepo { language: string | null; }
+interface GHRepo { name: string; language: string | null; pushed_at: string; }
+interface GHCommit { commit: { message: string; author: { date: string } }; }
 interface GHPR {
   title: string;
   html_url: string;
@@ -28,6 +29,7 @@ interface GHPR {
   created_at: string;
 }
 interface GHSearchResult { items: GHPR[]; }
+interface CommitEntry { message: string; repo: string; created_at: string; }
 
 // ─── Colores cyan por nivel ────────────────────────────────────────────────
 const CELL_STYLE: Record<number, string> = {
@@ -70,52 +72,78 @@ function computeStreak(contributions: Contribution[]): number {
 }
 
 // ─── Snippet Java decorativo ───────────────────────────────────────────────
-const JAVA_SNIPPET = `@RestController
-@RequestMapping("/api/users")
-public class UserController {
+const JAVA_SNIPPET = `@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
 
     @Autowired
-    private UserService userService;
+    private JwtAuthFilter jwtAuthFilter;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(
-            @PathVariable Long id) {
-        return userService
-            .findById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity
-                .notFound().build());
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity http) throws Exception {
+        return http
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(s -> s
+                .sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/api/auth/**").permitAll()
+                .requestMatchers(
+                    "/api/admin/**")
+                    .hasRole("ADMIN")
+                .anyRequest().authenticated())
+            .addFilterBefore(
+                jwtAuthFilter,
+                UsernamePasswordAuthenticationFilter
+                    .class)
+            .build();
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(
-            @Valid @RequestBody
-            CreateUserRequest req) {
-        return userService.create(req);
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(
-            @PathVariable Long id) {
-        userService.delete(id);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
 
-@Service
-@Transactional
-public class UserServiceImpl
-        implements UserService {
+@Component
+@RequiredArgsConstructor
+public class JwtAuthFilter
+        extends OncePerRequestFilter {
 
-    @Autowired
-    private UserRepository repo;
+    private final JwtService jwtService;
+    private final UserDetailsService uds;
 
     @Override
-    public Optional<UserDTO> findById(
-            Long id) {
-        return repo.findById(id)
-            .map(UserMapper::toDTO);
+    protected void doFilterInternal(
+            HttpServletRequest req,
+            HttpServletResponse res,
+            FilterChain chain)
+            throws ServletException, IOException {
+        final String header =
+            req.getHeader("Authorization");
+        if (header == null
+                || !header.startsWith("Bearer ")) {
+            chain.doFilter(req, res); return;
+        }
+        final String token = header.substring(7);
+        final String username =
+            jwtService.extractUsername(token);
+        if (username != null && SecurityContextHolder
+                .getContext()
+                .getAuthentication() == null) {
+            var ud = uds.loadUserByUsername(username);
+            if (jwtService.isTokenValid(token, ud)) {
+                var auth =
+                    new UsernamePasswordAuthenticationToken(
+                        ud, null, ud.getAuthorities());
+                SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(auth);
+            }
+        }
+        chain.doFilter(req, res);
     }
 }`;
 
@@ -136,19 +164,19 @@ function highlight(code: string) {
 }
 
 // ─── Componente: Terminal de commits ───────────────────────────────────────
-function CommitTerminal({ events }: { events: GHEvent[] }) {
+function CommitTerminal({ commits }: { commits: CommitEntry[] }) {
   const [visible, setVisible] = useState(0);
 
   useEffect(() => {
-    if (events.length === 0) return;
+    if (commits.length === 0) return;
     const id = setInterval(() => {
-      setVisible(v => (v < events.length ? v + 1 : v));
-    }, 600);
+      setVisible(v => (v < commits.length ? v + 1 : v));
+    }, 500);
     return () => clearInterval(id);
-  }, [events.length]);
+  }, [commits.length]);
 
   return (
-    <div className="h-full bg-[#0d1117] border border-white/10 rounded-xl overflow-hidden font-mono text-xs flex flex-col">
+    <div className="flex-1 bg-[#0d1117] border border-white/10 rounded-xl overflow-hidden font-mono text-xs flex flex-col">
       {/* Terminal bar */}
       <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/[0.07] bg-white/[0.02]">
         <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
@@ -157,43 +185,39 @@ function CommitTerminal({ events }: { events: GHEvent[] }) {
         <span className="ml-2 text-white/30 text-[10px]">~/actividad — bash</span>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col gap-3 overflow-hidden">
+      <div className="p-3 flex-1 flex flex-col gap-3 overflow-y-auto">
         <AnimatePresence>
-          {events.slice(0, visible).map((ev, i) => {
-            const msg = ev.payload.commits?.[0]?.message ?? "update";
-            const repo = ev.repo.name.replace(`${GH_USER}/`, "");
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-col gap-0.5"
-              >
-                <div className="flex items-start gap-1.5">
-                  <span className="text-cyan-400 shrink-0">$</span>
-                  <span className="text-white/80">
-                    git commit -m{" "}
-                    <span className="text-green-400">
-                      "{msg.length > 55 ? msg.slice(0, 55) + "…" : msg}"
-                    </span>
+          {commits.slice(0, visible).map((commit, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col gap-0.5"
+            >
+              <div className="flex items-start gap-1.5">
+                <span className="text-cyan-400 shrink-0">$</span>
+                <span className="text-white/80 break-all">
+                  git commit -m{" "}
+                  <span className="text-green-400">
+                    "{commit.message.length > 60 ? commit.message.slice(0, 60) + "…" : commit.message}"
                   </span>
-                </div>
-                <div className="flex items-center gap-2 pl-4">
-                  <a
-                    href={`${GH_URL}/${repo}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-cyan-400/70 hover:text-cyan-400 transition-colors"
-                  >
-                    {repo}
-                  </a>
-                  <span className="text-white/25">·</span>
-                  <span className="text-white/35">{relativeDate(ev.created_at)}</span>
-                </div>
-              </motion.div>
-            );
-          })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pl-4">
+                <a
+                  href={`${GH_URL}/${commit.repo}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cyan-400/70 hover:text-cyan-400 transition-colors"
+                >
+                  {commit.repo}
+                </a>
+                <span className="text-white/25">·</span>
+                <span className="text-white/35">{relativeDate(commit.created_at)}</span>
+              </div>
+            </motion.div>
+          ))}
         </AnimatePresence>
 
         {/* Cursor parpadeante */}
@@ -276,7 +300,7 @@ const GitHubActivity = () => {
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [totalContribs, setTotalContribs] = useState(0);
   const [profile, setProfile] = useState<GHProfile | null>(null);
-  const [events, setEvents] = useState<GHEvent[]>([]);
+  const [events, setEvents] = useState<CommitEntry[]>([]);
   const [languages, setLanguages] = useState<{ lang: string; pct: number; color: string }[]>([]);
   const [streak, setStreak] = useState(0);
   const [prs, setPrs] = useState<GHPR[]>([]);
@@ -302,24 +326,17 @@ const GitHubActivity = () => {
     Promise.all([
       fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`).then(r => r.json() as Promise<ContribAPI>),
       fetch(`${base}`).then(r => r.json() as Promise<GHProfile>),
-      fetch(`${base}/events?per_page=100`).then(r => r.json() as Promise<GHEvent[]>),
-      fetch(`${base}/repos?per_page=100`).then(r => r.json() as Promise<GHRepo[]>),
+      fetch(`${base}/repos?per_page=100&sort=pushed`).then(r => r.json() as Promise<GHRepo[]>),
       fetch(`https://api.github.com/search/issues?q=author:${GH_USER}+type:pr+is:merged&sort=created&order=desc&per_page=12`)
         .then(r => r.json() as Promise<GHSearchResult>),
-    ]).then(([contribs, prof, evs, repos, prSearch]) => {
+    ]).then(async ([contribs, prof, repos, prSearch]) => {
       setContributions(contribs.contributions);
       setTotalContribs(contribs.total.lastYear);
       setStreak(computeStreak(contribs.contributions));
       setProfile(prof);
 
-      // Commits del feed
-      const pushes = evs.filter(e => e.type === "PushEvent").slice(0, 6);
-      setEvents(pushes);
-
-      // Pull Requests
       if (prSearch?.items) setPrs(prSearch.items);
 
-      // Lenguajes
       const LANG_COLORS: Record<string, string> = {
         Java:"#b07219", TypeScript:"#3178c6", JavaScript:"#f1e05a",
         PHP:"#4F5D95", HTML:"#e34c26", CSS:"#563d7c", SCSS:"#c6538c",
@@ -331,6 +348,26 @@ const GitHubActivity = () => {
         Object.entries(cnt).sort(([,a],[,b])=>b-a).slice(0,5)
           .map(([lang,c])=>({ lang, pct: Math.round(c/tot*100), color: LANG_COLORS[lang]||"#8b8b8b" }))
       );
+
+      // Commits reales desde los repos más activos
+      const topRepos = repos.slice(0, 8).map(r => r.name);
+      const commitArrays = await Promise.all(
+        topRepos.map(repo =>
+          fetch(`https://api.github.com/repos/${GH_USER}/${repo}/commits?per_page=10&author=${GH_USER}`)
+            .then(r => r.json() as Promise<GHCommit[]>)
+            .then(list => Array.isArray(list) ? list.map(c => ({
+              message: c.commit.message.split("\n")[0].trim(),
+              repo,
+              created_at: c.commit.author.date,
+            })) : [])
+            .catch(() => [])
+        )
+      );
+      const allCommits = commitArrays
+        .flat()
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 30);
+      setEvents(allCommits);
     }).catch(()=>{}).finally(()=>setLoading(false));
   }, []);
 
@@ -450,15 +487,15 @@ const GitHubActivity = () => {
           {loading ? (
             <div className="flex-1 min-h-[200px] bg-[#0d1117] border border-white/10 rounded-xl animate-pulse" />
           ) : (
-            <div className="flex-1 overflow-hidden">
-              <CommitTerminal events={events} />
+            <div className="flex-1 flex flex-col min-h-[280px]">
+              <CommitTerminal commits={events} />
             </div>
           )}
         </div>
 
         {/* Código Java decorativo */}
         <div className="flex flex-col">
-          <p className="text-[11px] text-white/40 font-mono uppercase tracking-wider mb-2">Snippet real — Spring Boot</p>
+          <p className="text-[11px] text-white/40 font-mono uppercase tracking-wider mb-2">Snippet real — Spring Security + JWT</p>
           <div
             ref={codeRef}
             className="flex-1 min-h-[200px] bg-[#0d1117] border border-white/10 rounded-xl p-3 overflow-hidden select-none"
@@ -486,6 +523,25 @@ const GitHubActivity = () => {
           <StatCard icon={Users}               label="Seguidores"         value={profile.followers}     color="text-purple-400" />
           <StatCard icon={Star}                label="Lang. principal"    value="Java"                  color="text-amber-400" />
         </motion.div>
+      )}
+
+      {/* ── Botón GitHub — junto a los stats ── */}
+      {!loading && (
+        <div className="flex justify-start">
+          <a
+            href={GH_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group flex items-center gap-2 px-4 py-2 rounded-full border border-white/15
+                       text-white/60 text-xs font-semibold
+                       hover:border-secondary hover:text-secondary hover:shadow-lg hover:shadow-secondary/15
+                       transition-all duration-200"
+          >
+            <Github size={13} className="group-hover:rotate-12 transition-transform duration-200" />
+            Ver perfil completo en GitHub
+            <ExternalLink size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+        </div>
       )}
 
       {/* ── Pull Requests ─────────────────────────────────────── */}
@@ -629,28 +685,6 @@ const GitHubActivity = () => {
           ))}
         </div>
       </motion.section>
-
-      {/* ── Botón GitHub ──────────────────────────────────────── */}
-      <div className="flex justify-center">
-        <a
-          href={GH_URL}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="group flex items-center gap-2.5 px-6 py-2.5 rounded-full border border-white/15
-                     text-white/60 text-sm font-semibold
-                     hover:border-secondary hover:text-secondary hover:shadow-lg hover:shadow-secondary/15
-                     transition-all duration-200"
-        >
-          <Github size={15} className="group-hover:rotate-12 transition-transform duration-200" />
-          Ver mi GitHub completo
-          <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-        </a>
-      </div>
-
-      {/* ── Frase ─────────────────────────────────────────────── */}
-      <p className="text-center text-sm italic text-cyan-400/55 leading-relaxed max-w-lg mx-auto">
-        "El código limpio no solo funciona, también se entiende y se mantiene."
-      </p>
 
     </div>
   );

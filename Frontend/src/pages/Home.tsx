@@ -2,6 +2,7 @@
 
 import Introduction from "../components/Introduction";
 import SEO from "../components/SEO";
+import FollowButton from "../components/ui/FollowButton";
 
 const Home = () => {
   return (
@@ -38,8 +39,11 @@ const Home = () => {
           </div>
 
           {/* COLUMNA TEXTO */}
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center gap-6">
             <Introduction />
+            <div>
+              <FollowButton size="lg" />
+            </div>
           </div>
         </div>
       </div>

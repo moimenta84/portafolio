@@ -5,6 +5,7 @@
 import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react";
 import { X, Send } from "lucide-react";
 import { getFollowers, toggleFollow } from "../services/api";
+import confetti from "canvas-confetti";
 
 interface FollowContextType {
   followersCount: number;
@@ -74,7 +75,21 @@ export function FollowProvider({ children }: { children: ReactNode }) {
       setFollowersCount(data.followers_count);
       setFollowing(true);
       setStatus("ok");
-      setTimeout(() => setShowModal(false), 2000);
+
+      // Efecto confetti en colores del portfolio
+      const burst = () => confetti({
+        particleCount: 80,
+        spread: 90,
+        origin: { y: 0.55 },
+        colors: ["#22d3ee", "#06b6d4", "#ffffff", "#a5f3fc", "#0e7490"],
+        scalar: 1.1,
+        gravity: 0.9,
+        ticks: 200,
+      });
+      burst();
+      setTimeout(burst, 180);
+
+      setTimeout(() => setShowModal(false), 2500);
     } catch {
       setStatus("error");
     } finally {

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MotionTransition } from "../animations/transition-components";
-import ThemeToggle from "../ui/ThemeToggle";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -40,7 +39,6 @@ const Header = () => {
               <span className="text-cyan-400">&lt;</span>iker.martinez<span className="text-cyan-400"> /&gt;</span>
             </span>
           </Link>
-          <ThemeToggle />
         </div>
       </div>
     </MotionTransition>

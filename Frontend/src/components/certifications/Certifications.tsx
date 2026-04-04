@@ -46,7 +46,7 @@ const CERTS: Cert[] = [
 
 const Certifications = () => {
   const [active, setActive] = useState<Category>("Todos");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const filtered = active === "Todos" ? CERTS : CERTS.filter(c => c.category === active);
   const countFor = (cat: Category) =>

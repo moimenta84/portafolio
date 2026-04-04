@@ -1,7 +1,10 @@
+// About.tsx — Página de trayectoria del portfolio.
+
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import GitHubActivity from "../components/github/GitHubActivity";
 import Certifications from "../components/certifications/Certifications";
+import Timeline from "../components/about/Timeline";
 import SEO from "../components/SEO";
 
 const fadeUp = {
@@ -51,31 +54,18 @@ function AnimatedCounter({ target, suffix = "", label }: {
   );
 }
 
-// ─── Contadores dinámicos desde GitHub ───────────────────────────────────────
+// ─── Contadores ──────────────────────────────────────────────────────────────
 function GHCounters() {
-  const [commits, setCommits] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch("https://api.github.com/users/moimenta84/events?per_page=100")
-      .then(r => r.json())
-      .then((events: { type: string; payload: { commits?: unknown[]; size?: number } }[]) => {
-        // Usamos el total real de la API de contribuciones (442+)
-        void events; // events disponibles pero usamos valor real
-        setCommits(442);
-      })
-      .catch(() => setCommits(442)); // fallback — valor real
-  }, []);
-
   return (
     <div className="grid grid-cols-3 gap-0 bg-white/[0.03] border border-white/8 rounded-2xl overflow-hidden">
       <div className="border-r border-white/8">
-        <AnimatedCounter target={commits ?? 0} suffix="+" label="commits recientes" />
+        <AnimatedCounter target={442} suffix="+" label="commits recientes" />
       </div>
       <div className="border-r border-white/8">
-        <AnimatedCounter target={5} suffix="+" label="tecnologías dominadas" />
+        <AnimatedCounter target={20} suffix="+" label="tecnologías en stack" />
       </div>
       <div>
-        <AnimatedCounter target={4} suffix="+" label="años de experiencia" />
+        <AnimatedCounter target={18} label="certificaciones" />
       </div>
     </div>
   );
@@ -107,9 +97,25 @@ const About = () => {
           </p>
         </motion.header>
 
+        {/* SOBRE MÍ */}
+        <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 flex flex-col gap-3">
+          <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider">Sobre mí</p>
+          <p className="text-sm text-white/70 leading-relaxed">
+            Soy Iker, desarrollador con foco en el <span className="text-white font-medium">backend Java</span>. Me apasiona construir APIs limpias, sistemas escalables y arquitecturas bien pensadas. Aprendo rápido y aplico directamente — cada certificación, cada proyecto y cada commit es parte del proceso.
+          </p>
+          <p className="text-sm text-white/70 leading-relaxed">
+            Cuando no estoy programando, estoy estudiando microservicios, explorando Docker y Kubernetes, o mejorando este mismo portfolio. Busco un entorno donde seguir creciendo y aportar desde el primer día.
+          </p>
+        </motion.div>
+
         {/* STATS */}
         <motion.div variants={fadeUp}>
           <GHCounters />
+        </motion.div>
+
+        {/* TIMELINE */}
+        <motion.div variants={fadeUp}>
+          <Timeline />
         </motion.div>
 
         {/* GITHUB ACTIVITY + TECH STACK */}
