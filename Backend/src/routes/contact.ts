@@ -1,12 +1,18 @@
-import { Router } from "express";
+import { Router, type Request } from "express";
 import { sendEmail, sendTelegram, contactEmailHtml } from "../services/notifications.js";
 import { validate, contactSchema } from "../middleware/validate.js";
+import db from "../db/database.js";
 
 const router = Router();
 
 // POST /api/contact - Recibir formulario de contacto
-router.post("/", validate(contactSchema), async (req, res) => {
+router.post("/", validate(contactSchema), async (req: Request, res) => {
   const { name, email, subject, message } = req.body;
+  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ?? req.ip ?? "";
+
+  // Guardar en DB siempre
+  db.prepare("INSERT INTO contacts (name, email, subject, message, ip) VALUES (?, ?, ?, ?, ?)")
+    .run(name, email, subject, message, ip);
 
   // Email al admin
   await sendEmail(
