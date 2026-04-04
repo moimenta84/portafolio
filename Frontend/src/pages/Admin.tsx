@@ -688,6 +688,42 @@ const Admin = () => {
                   </>
                 )}
 
+                {/* Nuevos vs Recurrentes */}
+                {(stats.new_visitors > 0 || stats.returning_visitors > 0) && (
+                  <>
+                    <p className="text-xs text-white/30 mb-3 uppercase tracking-wider">Nuevos vs Recurrentes</p>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <UserPlus size={13} />
+                          Primera visita
+                        </div>
+                        <span className="text-2xl font-bold text-green-400">{stats.new_visitors}</span>
+                        <span className="text-[11px] text-white/30">
+                          {Math.round(stats.new_visitors / (stats.new_visitors + stats.returning_visitors) * 100)}%
+                        </span>
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                          <TrendingUp size={13} />
+                          Vuelven
+                        </div>
+                        <span className="text-2xl font-bold text-cyan-400">{stats.returning_visitors}</span>
+                        <span className="text-[11px] text-white/30">
+                          {Math.round(stats.returning_visitors / (stats.new_visitors + stats.returning_visitors) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-2 rounded-full overflow-hidden bg-white/5 mb-6 flex">
+                      <div
+                        className="h-full bg-green-400/70 transition-all"
+                        style={{ width: `${Math.round(stats.new_visitors / (stats.new_visitors + stats.returning_visitors) * 100)}%` }}
+                      />
+                      <div className="h-full bg-cyan-400/70 flex-1" />
+                    </div>
+                  </>
+                )}
+
                 {/* Desglose por provincia */}
                 {stats.by_region.length > 0 && (
                   <>
