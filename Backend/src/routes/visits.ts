@@ -5,7 +5,6 @@ import { getGeoData, isPrivateIp } from "../utils/geo.js";
 
 const router = Router();
 
-// Detecta el tipo de dispositivo a partir del User-Agent
 function detectDevice(ua: string): "mobile" | "tablet" | "desktop" {
   const u = ua.toLowerCase();
   if (/tablet|ipad|playbook|silk/.test(u)) return "tablet";
@@ -13,7 +12,24 @@ function detectDevice(ua: string): "mobile" | "tablet" | "desktop" {
   return "desktop";
 }
 
-// Anonimiza la IP: guarda solo los primeros 3 octetos (IPv4) para cumplir con RGPD
+function detectBrowser(ua: string): string {
+  if (/edg\//i.test(ua)) return "Edge";
+  if (/opr\//i.test(ua)) return "Opera";
+  if (/chrome/i.test(ua)) return "Chrome";
+  if (/firefox/i.test(ua)) return "Firefox";
+  if (/safari/i.test(ua)) return "Safari";
+  return "Otro";
+}
+
+function detectOS(ua: string): string {
+  if (/windows/i.test(ua)) return "Windows";
+  if (/android/i.test(ua)) return "Android";
+  if (/iphone|ipad/i.test(ua)) return "iOS";
+  if (/mac os/i.test(ua)) return "macOS";
+  if (/linux/i.test(ua)) return "Linux";
+  return "Otro";
+}
+
 function anonymizeIp(ip: string): string {
   const ipv4 = ip.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\.\d{1,3}$/);
   if (ipv4) return `${ipv4[1]}.0`;
@@ -21,11 +37,14 @@ function anonymizeIp(ip: string): string {
   return ip;
 }
 
-// POST /api/visits - Registrar visita
+// POST /api/visits
 router.post("/", async (req, res) => {
   const ip = req.clientIp || "";
   const { page, referrer } = req.body;
-  const device = detectDevice(req.headers["user-agent"] || "");
+  const ua = req.headers["user-agent"] || "";
+  const device = detectDevice(ua);
+  const browser = detectBrowser(ua);
+  const os = detectOS(ua);
 
   let city = "", region = "", country = "", org = "", is_company = 0;
   let timezone = "", isp = "", as_number = "";
@@ -37,10 +56,13 @@ router.post("/", async (req, res) => {
 
   const anonIp = anonymizeIp(ip);
 
+  // New vs returning
+  const existing = db.prepare("SELECT id FROM visits WHERE ip = ?").get(anonIp);
+  const is_new = existing ? 0 : 1;
+
   let cleanReferrer = "directo";
   try {
     if (referrer) {
-      // UTM source enviado desde el frontend (p.ej. utm:linkedin)
       if (referrer.startsWith("utm:")) {
         cleanReferrer = referrer.slice(4);
       } else {
@@ -50,15 +72,26 @@ router.post("/", async (req, res) => {
   } catch {}
 
   db.prepare(`
-    INSERT INTO visits (ip, page, city, region, country, org, is_company, timezone, isp, as_number, referrer, device)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(anonIp, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer, device);
+    INSERT INTO visits (ip, page, city, region, country, org, is_company, timezone, isp, as_number, referrer, device, browser, os, is_new)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(anonIp, page || "/", city, region, country, org, is_company, timezone, isp, as_number, cleanReferrer, device, browser, os, is_new);
+
+  // Guardar IP completa en ip_log (se borra automáticamente después de 30 días)
+  if (!isPrivateIp(ip)) {
+    db.prepare(`
+      INSERT INTO ip_log (ip, city, region, country, org, isp, browser, os, device, page)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(ip, city, region, country, org, isp, browser, os, device, page || "/");
+
+    // Limpiar entradas de más de 30 días
+    db.prepare("DELETE FROM ip_log WHERE created_at < datetime('now', '-30 days')").run();
+  }
 
   const total = db.prepare("SELECT COUNT(DISTINCT ip) as c FROM visits").get() as { c: number };
   res.json({ total_visits: total.c });
 });
 
-// POST /api/visits/duration - Actualizar duración de la última visita de esta IP
+// POST /api/visits/duration
 router.post("/duration", (req, res) => {
   const ip = anonymizeIp(req.clientIp || "");
   const { seconds } = req.body;
@@ -120,10 +153,27 @@ router.get("/stats", requireAuth, (_req, res) => {
 
   const byDevice = db.prepare(`
     SELECT COALESCE(device, 'desktop') as device, COUNT(DISTINCT ip) as visitors
-    FROM visits
-    GROUP BY COALESCE(device, 'desktop')
-    ORDER BY visitors DESC
+    FROM visits GROUP BY COALESCE(device, 'desktop') ORDER BY visitors DESC
   `).all() as { device: string; visitors: number }[];
+
+  const byBrowser = db.prepare(`
+    SELECT COALESCE(browser, 'Otro') as browser, COUNT(DISTINCT ip) as visitors
+    FROM visits WHERE browser IS NOT NULL
+    GROUP BY browser ORDER BY visitors DESC
+  `).all() as { browser: string; visitors: number }[];
+
+  const byOS = db.prepare(`
+    SELECT COALESCE(os, 'Otro') as os, COUNT(DISTINCT ip) as visitors
+    FROM visits WHERE os IS NOT NULL
+    GROUP BY os ORDER BY visitors DESC
+  `).all() as { os: string; visitors: number }[];
+
+  const newVsReturning = db.prepare(`
+    SELECT
+      SUM(CASE WHEN is_new = 1 THEN 1 ELSE 0 END) as new_visitors,
+      SUM(CASE WHEN is_new = 0 THEN 1 ELSE 0 END) as returning_visitors
+    FROM (SELECT ip, MIN(is_new) as is_new FROM visits GROUP BY ip)
+  `).get() as { new_visitors: number; returning_visitors: number };
 
   res.json({
     unique_visitors: total.unique_visitors,
@@ -134,19 +184,21 @@ router.get("/stats", requireAuth, (_req, res) => {
     by_region: byRegion,
     by_referrer: byReferrer,
     by_device: byDevice,
+    by_browser: byBrowser,
+    by_os: byOS,
     empresa_visitors: empresaCount.c,
     usuario_visitors: usuarioCount.c,
+    new_visitors: newVsReturning.new_visitors ?? 0,
+    returning_visitors: newVsReturning.returning_visitors ?? 0,
   });
 });
 
-// GET /api/visits/history - Visitas diarias últimos 30 días (admin)
+// GET /api/visits/history (admin)
 router.get("/history", requireAuth, (_req, res) => {
   const rows = db.prepare(`
     SELECT date(created_at) as date, COUNT(DISTINCT ip) as visitors
-    FROM visits
-    WHERE created_at >= date('now', '-29 days')
-    GROUP BY date(created_at)
-    ORDER BY date ASC
+    FROM visits WHERE created_at >= date('now', '-29 days')
+    GROUP BY date(created_at) ORDER BY date ASC
   `).all() as { date: string; visitors: number }[];
 
   const result = [];
@@ -159,6 +211,17 @@ router.get("/history", requireAuth, (_req, res) => {
   }
 
   res.json(result);
+});
+
+// GET /api/visits/ip-log (admin)
+router.get("/ip-log", requireAuth, (_req, res) => {
+  const rows = db.prepare(`
+    SELECT id, ip, city, region, country, org, isp, browser, os, device, page, created_at
+    FROM ip_log
+    ORDER BY created_at DESC
+    LIMIT 200
+  `).all();
+  res.json(rows);
 });
 
 export default router;

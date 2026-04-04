@@ -169,6 +169,24 @@ export function initDatabase() {
     ip TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+  migrate(`CREATE TABLE IF NOT EXISTS ip_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip TEXT NOT NULL,
+    city TEXT,
+    region TEXT,
+    country TEXT,
+    org TEXT,
+    isp TEXT,
+    browser TEXT,
+    os TEXT,
+    device TEXT,
+    page TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+  migrate("CREATE INDEX IF NOT EXISTS idx_ip_log_created ON ip_log(created_at DESC)");
+  migrate("ALTER TABLE visits ADD COLUMN browser TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN os TEXT");
+  migrate("ALTER TABLE visits ADD COLUMN is_new INTEGER DEFAULT 1");
 
   seedProjects();
   seedReviews();

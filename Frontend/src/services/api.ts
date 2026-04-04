@@ -73,8 +73,12 @@ export const getVisitStats = () =>
     by_region: { region: string; visitors: number }[];
     by_referrer: { referrer: string; visitors: number }[];
     by_device: { device: string; visitors: number }[];
+    by_browser: { browser: string; visitors: number }[];
+    by_os: { os: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
+    new_visitors: number;
+    returning_visitors: number;
   }>("/visits/stats");
 
 // CV Downloads
@@ -147,3 +151,7 @@ export const trackCertView = (name: string) =>
 
 export const getCertStats = () =>
   fetchJson<{ cert_name: string; views: number; unique_views: number; last_view: string }[]>("/certs/stats");
+
+// IP Log (admin)
+export const getIpLog = () =>
+  fetchJson<{ id: number; ip: string; city: string; region: string; country: string; org: string; isp: string; browser: string; os: string; device: string; page: string; created_at: string }[]>("/visits/ip-log");

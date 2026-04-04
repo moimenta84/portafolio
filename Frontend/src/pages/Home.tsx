@@ -41,7 +41,7 @@ const Home = () => {
           {/* COLUMNA TEXTO */}
           <div className="flex flex-col justify-center gap-6">
             <Introduction />
-            <div>
+            <div className="flex justify-center md:justify-start">
               <FollowButton size="lg" />
             </div>
           </div>

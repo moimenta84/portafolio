@@ -20,6 +20,7 @@ import {
   getAuditLog,
   getChatLogs,
   getCertStats,
+  getIpLog,
 } from "../services/api";
 import type { Project, Review } from "../types";
 
@@ -80,8 +81,12 @@ const Admin = () => {
     by_region: { region: string; visitors: number }[];
     by_referrer: { referrer: string; visitors: number }[];
     by_device: { device: string; visitors: number }[];
+    by_browser: { browser: string; visitors: number }[];
+    by_os: { os: string; visitors: number }[];
     empresa_visitors: number;
     usuario_visitors: number;
+    new_visitors: number;
+    returning_visitors: number;
   } | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
 
@@ -117,6 +122,10 @@ const Admin = () => {
   // ── Chat logs state ──
   const [chatLogs, setChatLogs] = useState<{ id: number; ip: string; message: string; reply: string; created_at: string }[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
+
+  // ── IP Log state ──
+  const [ipLog, setIpLog] = useState<{ id: number; ip: string; city: string; region: string; country: string; org: string; isp: string; browser: string; os: string; device: string; page: string; created_at: string }[]>([]);
+  const [ipLogLoading, setIpLogLoading] = useState(false);
 
   // ── Cert stats state ──
   const [certStats, setCertStats] = useState<{ cert_name: string; views: number; unique_views: number; last_view: string }[]>([]);
@@ -188,6 +197,9 @@ const Admin = () => {
     getCertStats()
       .then(setCertStats)
       .catch(() => {});
+
+    setIpLogLoading(true);
+    getIpLog().then(setIpLog).catch(() => {}).finally(() => setIpLogLoading(false));
   }, [authed]);
 
   useEffect(() => {
@@ -1089,6 +1101,61 @@ const Admin = () => {
               );
             })}
           </div>
+
+              {/* IP Log */}
+              <div className="mt-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield size={14} className="text-cyan-400" />
+                  <p className="text-xs font-bold text-white/60 uppercase tracking-wider">Registro de IPs — últimas 200 visitas (se borran a los 30 días)</p>
+                </div>
+                {ipLogLoading ? (
+                  <div className="h-20 bg-white/5 rounded-xl animate-pulse" />
+                ) : (
+                  <div className="overflow-x-auto rounded-xl border border-white/8">
+                    <table className="w-full text-xs font-mono">
+                      <thead>
+                        <tr className="border-b border-white/8 text-white/40">
+                          <th className="text-left px-3 py-2">IP</th>
+                          <th className="text-left px-3 py-2">Ciudad</th>
+                          <th className="text-left px-3 py-2">País</th>
+                          <th className="text-left px-3 py-2">ISP</th>
+                          <th className="text-left px-3 py-2">Browser</th>
+                          <th className="text-left px-3 py-2">OS</th>
+                          <th className="text-left px-3 py-2">Página</th>
+                          <th className="text-left px-3 py-2">Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {ipLog.map((entry) => {
+                          const isVerin = entry.city?.toLowerCase().includes("verín") || entry.city?.toLowerCase().includes("verin");
+                          return (
+                            <tr
+                              key={entry.id}
+                              className={`border-b border-white/[0.04] transition-colors ${
+                                isVerin
+                                  ? "bg-cyan-400/10 text-cyan-300"
+                                  : "text-white/60 hover:bg-white/[0.03]"
+                              }`}
+                            >
+                              <td className="px-3 py-1.5 font-bold">{isVerin ? "🏠 " : ""}{entry.ip}</td>
+                              <td className="px-3 py-1.5">{entry.city || "—"}</td>
+                              <td className="px-3 py-1.5">{entry.country || "—"}</td>
+                              <td className="px-3 py-1.5 text-white/40 max-w-[120px] truncate">{entry.isp || "—"}</td>
+                              <td className="px-3 py-1.5">{entry.browser || "—"}</td>
+                              <td className="px-3 py-1.5">{entry.os || "—"}</td>
+                              <td className="px-3 py-1.5 text-white/40">{entry.page}</td>
+                              <td className="px-3 py-1.5 text-white/30">{new Date(entry.created_at).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</td>
+                            </tr>
+                          );
+                        })}
+                        {ipLog.length === 0 && (
+                          <tr><td colSpan={8} className="px-3 py-6 text-center text-white/30">Sin registros aún</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
         </div>
         )}
         </div>
