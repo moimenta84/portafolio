@@ -3,7 +3,7 @@ import crypto from "crypto";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { getGeoData, isPrivateIp } from "../utils/geo.js";
-import { dispatchToAll, dispatchToOne } from "../services/newsletter.js";
+import { dispatchToAll, dispatchToOne, dispatchProjectsUpdate } from "../services/newsletter.js";
 import { logAudit } from "../utils/audit.js";
 import { validate, subscriberSchema } from "../middleware/validate.js";
 
@@ -50,6 +50,21 @@ router.post("/send-newsletter", requireAuth, async (req, res) => {
   const ip = req.clientIp || "";
   const result = await dispatchToAll();
   logAudit("NEWSLETTER_SEND", `Newsletter enviado: ${result.sent}/${result.total} (${result.errors} errores)`, ip);
+  res.json({ ok: true, ...result });
+});
+
+// POST /api/subscribers/send-projects - Enviar email de nuevos proyectos (admin)
+router.post("/send-projects", requireAuth, async (req, res) => {
+  const ip = req.clientIp || "";
+  const projects = db.prepare(`
+    SELECT title, description, tech, link FROM projects
+    WHERE link NOT LIKE '%github.com%'
+    ORDER BY id DESC LIMIT 4
+  `).all() as any[];
+
+  const parsed = projects.map((p) => ({ ...p, tech: JSON.parse(p.tech || "[]") }));
+  const result = await dispatchProjectsUpdate(parsed);
+  logAudit("PROJECTS_EMAIL_SEND", `Email proyectos enviado: ${result.sent}/${result.total}`, ip);
   res.json({ ok: true, ...result });
 });
 

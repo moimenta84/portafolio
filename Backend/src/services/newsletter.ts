@@ -86,6 +86,39 @@ export async function dispatchToAll(): Promise<{ sent: number; errors: number; t
   return { sent, errors, total: subscribers.length };
 }
 
+// Envía email de nuevos proyectos a todos los suscriptores
+export async function dispatchProjectsUpdate(
+  projects: { title: string; description: string; tech: string[]; link: string }[]
+): Promise<{ sent: number; errors: number; total: number }> {
+  const { projectsUpdateEmailHtml } = await import("./notifications.js");
+  const subscribers = db
+    .prepare("SELECT id, email, unsubscribe_token FROM subscribers")
+    .all() as { id: number; email: string; unsubscribe_token: string }[];
+
+  if (!subscribers.length) return { sent: 0, errors: 0, total: 0 };
+
+  const sendRecord = db
+    .prepare("INSERT INTO newsletter_sends (total, sent, errors) VALUES (?, ?, ?)")
+    .run(subscribers.length, 0, 0);
+  const sendId = sendRecord.lastInsertRowid;
+
+  let sent = 0, errors = 0;
+  for (const sub of subscribers) {
+    const pixelUrl = `${BASE_URL}/api/track/open/${sendId}/${sub.id}`;
+    try {
+      await sendEmail(
+        sub.email,
+        "🚀 Nuevos proyectos desplegados — Iker Martínez Dev",
+        projectsUpdateEmailHtml(projects, sub.unsubscribe_token, pixelUrl)
+      );
+      sent++;
+    } catch { errors++; }
+  }
+
+  db.prepare("UPDATE newsletter_sends SET sent = ?, errors = ? WHERE id = ?").run(sent, errors, sendId);
+  return { sent, errors, total: subscribers.length };
+}
+
 // Envía el newsletter a un único suscriptor (al registrarse)
 export async function dispatchToOne(email: string, unsubscribeToken: string): Promise<void> {
   const articles = await fetchArticles();

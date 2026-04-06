@@ -184,6 +184,62 @@ export function welcomeEmailHtml(articles: { title: string; url: string; source:
   `, unsubscribeToken);
 }
 
+export function projectsUpdateEmailHtml(
+  projects: { title: string; description: string; tech: string[]; link: string }[],
+  unsubscribeToken: string,
+  trackingPixelUrl?: string
+) {
+  const projectsHtml = projects.map((p) => {
+    const techTags = p.tech.slice(0, 4).map((t) =>
+      `<span style="display:inline-block;background:#0d2233;border:1px solid #1e3a4a;border-radius:20px;padding:2px 9px;font-size:11px;font-family:ui-monospace,monospace;color:#22d3ee;margin:0 4px 4px 0">${t}</span>`
+    ).join("");
+    return `
+    <tr>
+      <td style="padding:16px 0;border-bottom:1px solid #1e293b">
+        <p style="margin:0 0 4px 0;font-size:15px;font-weight:700;color:#f1f5f9">${p.title}</p>
+        <p style="margin:0 0 10px 0;font-size:13px;color:#64748b;line-height:1.6">${p.description}</p>
+        <div style="margin-bottom:12px">${techTags}</div>
+        <a href="${p.link}" style="display:inline-block;padding:8px 18px;background:#22d3ee;color:#0f172a;border-radius:7px;text-decoration:none;font-size:12px;font-weight:700">
+          Ver proyecto →
+        </a>
+      </td>
+    </tr>`;
+  }).join("");
+
+  return emailWrapper(`
+    <!-- PERFIL -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #1e293b">
+      <tr>
+        <td style="width:56px;vertical-align:middle">
+          <img src="${BASE_URL}/img/1760052219751.jpg" alt="Iker Martínez" width="48" height="48"
+               style="display:block;width:48px;height:48px;object-fit:cover;border-radius:8px;border:2px solid #1e3a4a" />
+        </td>
+        <td style="padding-left:12px;vertical-align:middle">
+          <p style="margin:0;font-size:14px;font-weight:700;color:#f1f5f9">Iker Martínez</p>
+          <p style="margin:0;font-size:12px;color:#475569">Desarrollador Full Stack</p>
+        </td>
+      </tr>
+    </table>
+
+    <h2 style="margin:0 0 6px 0;font-size:20px;font-weight:700;color:#f1f5f9">🚀 Nuevos proyectos desplegados</h2>
+    <p style="margin:0 0 22px 0;color:#64748b;font-size:13px;line-height:1.6">
+      Acabo de publicar nuevos proyectos en mi portafolio. Échales un vistazo:
+    </p>
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+      ${projectsHtml}
+    </table>
+
+    <div style="margin-top:24px;text-align:center">
+      <a href="${BASE_URL}/projects"
+         style="display:inline-block;padding:11px 28px;background:#22d3ee;color:#0f172a;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700">
+        Ver todos los proyectos →
+      </a>
+    </div>
+    ${trackingPixelUrl ? `<img src="${trackingPixelUrl}" width="1" height="1" border="0" alt="" style="display:block;width:1px;height:1px;overflow:hidden;opacity:0" />` : ""}
+  `, unsubscribeToken);
+}
+
 export function followWelcomeEmailHtml(unsubscribeToken: string) {
   return emailWrapper(`
     <!-- PERFIL -->
