@@ -15,6 +15,7 @@ import {
   getSubscribers,
   deleteSubscriber,
   sendNewsletter,
+  sendProjectsEmail,
   getNewsletterHistory,
   getConversionStats,
   getAuditLog,
@@ -105,6 +106,8 @@ const Admin = () => {
   const [subDeleteConfirm, setSubDeleteConfirm] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
+  const [sendingProjects, setSendingProjects] = useState(false);
+  const [sendProjectsResult, setSendProjectsResult] = useState<{ sent: number; errors: number; total: number } | null>(null);
 
   // ── Conversion stats state ──
   type ConversionStats = Awaited<ReturnType<typeof getConversionStats>>;
@@ -291,6 +294,20 @@ const Admin = () => {
       setSendResult({ sent: 0, errors: -1, total: 0 });
     } finally {
       setSending(false);
+    }
+  };
+
+  // ── Subscribers: enviar email de proyectos ──
+  const handleSendProjects = async () => {
+    setSendingProjects(true);
+    setSendProjectsResult(null);
+    try {
+      const result = await sendProjectsEmail();
+      setSendProjectsResult({ sent: result.sent, errors: result.errors, total: result.total });
+    } catch {
+      setSendProjectsResult({ sent: 0, errors: -1, total: 0 });
+    } finally {
+      setSendingProjects(false);
     }
   };
 
@@ -961,19 +978,37 @@ const Admin = () => {
           return (
             <div>
               {/* Cabecera con botón enviar */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <p className="text-xs text-white/40">
                   {subscribers.length} email{subscribers.length !== 1 ? "s" : ""} en total
                 </p>
-                <button
-                  onClick={handleSendNewsletter}
-                  disabled={sending || subscribers.length === 0}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/20 rounded-lg text-xs text-cyan-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Mail size={13} />
-                  {sending ? "Enviando…" : "Enviar newsletter"}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSendProjects}
+                    disabled={sendingProjects || subscribers.length === 0}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-400/10 hover:bg-violet-400/20 border border-violet-400/20 rounded-lg text-xs text-violet-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <FolderGit2 size={13} />
+                    {sendingProjects ? "Enviando…" : "Enviar proyectos"}
+                  </button>
+                  <button
+                    onClick={handleSendNewsletter}
+                    disabled={sending || subscribers.length === 0}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/20 rounded-lg text-xs text-cyan-400 font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Mail size={13} />
+                    {sending ? "Enviando…" : "Enviar newsletter"}
+                  </button>
+                </div>
               </div>
+
+              {sendProjectsResult && (
+                <div className={`mb-4 px-4 py-3 rounded-xl border text-xs ${sendProjectsResult.errors === -1 ? "bg-red-400/10 border-red-400/20 text-red-400" : "bg-violet-400/10 border-violet-400/20 text-violet-300"}`}>
+                  {sendProjectsResult.errors === -1
+                    ? "Error al enviar. Comprueba GMAIL_APP_PASSWORD en el .env."
+                    : `✓ Proyectos enviados a ${sendProjectsResult.sent} de ${sendProjectsResult.total} suscriptores${sendProjectsResult.errors > 0 ? ` (${sendProjectsResult.errors} errores)` : ""}.`}
+                </div>
+              )}
 
               {sendResult && (
                 <div className={`mb-4 px-4 py-3 rounded-xl border text-xs ${sendResult.errors === -1 ? "bg-red-400/10 border-red-400/20 text-red-400" : "bg-cyan-400/10 border-cyan-400/20 text-cyan-300"}`}>
