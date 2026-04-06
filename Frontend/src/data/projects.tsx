@@ -16,7 +16,7 @@ export const projects = [
     // gif: "/img/gifs/petclinic.gif",
     description:
       "Sitio web completo para clínica veterinaria. Presenta servicios, información del centro y sistema de atención al cliente con chat integrado. Desplegado en producción.",
-    tech: ["HTML", "CSS", "JavaScript"],
+    tech: ["Spring Boot", "Angular", "Docker", "Eureka"],
     link: "https://petclinic.ikermartinezdev.com",
   },
   {
@@ -36,7 +36,7 @@ export const projects = [
     // gif: "/img/gifs/crm.gif",
     description:
       "Plataforma empresarial desplegada con Angular y Metronic. Backend en Laravel con API REST para gestión de clientes, recursos y procesos internos. Arquitectura modular orientada a entornos enterprise.",
-    tech: ["Angular", "Laravel", "REST API", "MySQL"],
+    tech: ["Spring Boot", "Angular", "REST API", "MySQL"],
     link: "https://crm.ikermartinezdev.com",
   },
 ];
