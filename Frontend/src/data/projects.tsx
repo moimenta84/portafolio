@@ -11,13 +11,13 @@ export const projects = [
   },
   {
     id: 2,
-    title: "Kanban Board",
-    image: "/img/kanba.webp",
-    // gif: "/img/gifs/kanban.gif",
+    title: "VetCare – Clínica Veterinaria",
+    image: "/img/projects/petclinic.png",
+    // gif: "/img/gifs/petclinic.gif",
     description:
-      "Tablero Kanban para gestión de tareas con flujo visual de columnas. Orientado a practicar lógica de interfaz, drag & drop y organización de proyectos.",
+      "Sitio web completo para clínica veterinaria. Presenta servicios, información del centro y sistema de atención al cliente con chat integrado. Desplegado en producción.",
     tech: ["HTML", "CSS", "JavaScript"],
-    link: "https://69a81521b1413a15a111a915--beautiful-mochi-e3cc90.netlify.app/",
+    link: "https://petclinic.ikermartinezdev.com",
   },
   {
     id: 3,
@@ -31,12 +31,12 @@ export const projects = [
   },
   {
     id: 4,
-    title: "CRM / ERP – Backend API",
+    title: "CRM / ERP – Plataforma",
     image: "/img/projects/users-dashboard.png",
     // gif: "/img/gifs/crm.gif",
     description:
-      "Backend con Laravel para gestión de clientes y recursos empresariales. API REST consumida desde Angular, arquitectura modular y separación clara de responsabilidades.",
-    tech: ["Laravel", "REST API", "Angular", "MySQL"],
-    link: "https://github.com/moimenta84/Crm-platform",
+      "Plataforma empresarial desplegada con Angular y Metronic. Backend en Laravel con API REST para gestión de clientes, recursos y procesos internos. Arquitectura modular orientada a entornos enterprise.",
+    tech: ["Angular", "Laravel", "REST API", "MySQL"],
+    link: "https://crm.ikermartinezdev.com",
   },
 ];
