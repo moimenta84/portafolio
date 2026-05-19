@@ -187,6 +187,25 @@ export function initDatabase() {
   migrate("ALTER TABLE visits ADD COLUMN browser TEXT");
   migrate("ALTER TABLE visits ADD COLUMN os TEXT");
   migrate("ALTER TABLE visits ADD COLUMN is_new INTEGER DEFAULT 1");
+  migrate(`CREATE TABLE IF NOT EXISTS job_offers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    company TEXT NOT NULL,
+    url TEXT,
+    location TEXT,
+    salary TEXT,
+    description TEXT,
+    tech TEXT,
+    status TEXT DEFAULT 'nueva',
+    notes TEXT,
+    source TEXT DEFAULT 'manual',
+    match_score INTEGER DEFAULT 0,
+    cover_letter TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    applied_at DATETIME
+  )`);
+  migrate("CREATE INDEX IF NOT EXISTS idx_jobs_status ON job_offers(status)");
+  migrate("CREATE INDEX IF NOT EXISTS idx_jobs_score ON job_offers(match_score DESC)");
 
   seedProjects();
   seedReviews();

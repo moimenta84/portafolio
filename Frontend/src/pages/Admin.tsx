@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield, MessageCircle, ChevronDown } from "lucide-react";
+import { Star, Trash2, Lock, FolderGit2, Plus, Pencil, X, ExternalLink, BarChart2, Users, Eye, TrendingUp, MapPin, Building2, FileDown, Clock, Globe, UserPlus, Mail, Smartphone, Monitor, Tablet, Shield, MessageCircle, ChevronDown, Briefcase } from "lucide-react";
+import JobKanban from "../components/admin/JobKanban";
 import {
   login,
   getAllReviews,
@@ -27,7 +28,7 @@ import type { Project, Review } from "../types";
 
 // ─── Tipos internos ───────────────────────────────────────────────────────────
 
-type Tab = "reviews" | "projects" | "stats" | "subscribers" | "security" | "chat";
+type Tab = "reviews" | "projects" | "stats" | "subscribers" | "security" | "chat" | "jobs";
 
 interface ProjectForm {
   title: string;
@@ -54,7 +55,7 @@ const Admin = () => {
   const [input, setInput] = useState("");
   const [loginError, setLoginError] = useState(false);
   const [openSections, setOpenSections] = useState<Record<Tab, boolean>>({
-    reviews: true, projects: false, stats: false, subscribers: false, security: false, chat: false,
+    reviews: true, projects: false, stats: false, subscribers: false, security: false, chat: false, jobs: false,
   });
   const toggleSection = (t: Tab) =>
     setOpenSections(prev => ({ ...prev, [t]: !prev[t] }));
@@ -1165,6 +1166,19 @@ const Admin = () => {
         </div>
       )}
 
+        </div>
+
+        {/* ── SECCIÓN: OFERTAS DE EMPLEO ── */}
+        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-2">
+          <button onClick={() => toggleSection("jobs")} className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-medium transition cursor-pointer ${openSections["jobs"] ? "text-secondary" : "text-white/60 hover:text-white"}`}>
+            <Briefcase size={14} /><span>Ofertas de Empleo</span>
+            <ChevronDown size={14} className={`ml-auto transition-transform duration-200 ${openSections["jobs"] ? "rotate-180 text-secondary" : "text-white/30"}`} />
+          </button>
+          {openSections["jobs"] && (
+            <div className="border-t border-white/10 p-4">
+              <JobKanban />
+            </div>
+          )}
         </div>
 
         {/* ── SECCIÓN: SEGURIDAD ── */}

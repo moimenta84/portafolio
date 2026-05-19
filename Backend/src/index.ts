@@ -27,6 +27,8 @@ import auditRouter from "./routes/audit.js";
 import trackRouter from "./routes/track.js";
 import chatRouter from "./routes/chat.js";
 import certsRouter from "./routes/certs.js";
+import jobsRouter from "./routes/jobs.js";
+import { scrapeAndProcess } from "./services/jobScraper.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -68,6 +70,7 @@ app.use("/api/audit",                          auditRouter);
 app.use("/api/track",                          trackRouter);
 app.use("/api/chat",        chatLimiter,        chatRouter);
 app.use("/api/certs",                          certsRouter);
+app.use("/api/jobs",                           jobsRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {
@@ -132,6 +135,12 @@ cron.schedule("0 9 * * 1", () => {
 // Backup diario de la BD — cada día a las 3:00 (Madrid)
 cron.schedule("0 3 * * *", () => {
   runBackup().catch((err) => console.error("[cron] Error backup:", err));
+}, { timezone: "Europe/Madrid" });
+
+// Scraping de ofertas de empleo — cada día a las 8:00 (Madrid)
+cron.schedule("0 8 * * *", () => {
+  console.log("[cron] Iniciando scraping de ofertas de empleo...");
+  scrapeAndProcess().catch((err) => console.error("[cron] Error scraping jobs:", err));
 }, { timezone: "Europe/Madrid" });
 
 // Resumen semanal en Telegram — domingos a las 20:00 (Madrid)
