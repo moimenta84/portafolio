@@ -20,7 +20,7 @@ const ProjectCard = ({ project, onToggleLike }: ProjectCardProps) => {
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative bg-white/[0.03] border border-white/8 rounded-2xl overflow-hidden hover:border-secondary/30 hover:bg-white/[0.06] transition-colors duration-300 flex flex-col h-full"
+      className="group relative bg-white/[0.03] border border-white/8 rounded-lg overflow-hidden hover:border-secondary/30 hover:bg-white/[0.06] transition-colors duration-300 flex flex-col h-full"
       style={{
         boxShadow: hovered
           ? "0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(34,211,238,0.07)"

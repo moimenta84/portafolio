@@ -8,6 +8,7 @@ export interface Project {
   link: string;
   likes_count: number;
   liked: boolean;
+  category?: "backend" | "fullstack" | "frontend";
   created_at?: string;
 }
 
