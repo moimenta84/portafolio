@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import * as cheerio from "cheerio";
 import path from "path";
 import { fileURLToPath } from "url";
+import { isGreenhouse, applyGreenhouse } from "./jobApplier.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CV_PATH = process.env.CV_PATH ?? "/var/www/html/Pdf/curriculumIkerMartinez.pdf";
@@ -175,18 +176,32 @@ async function scrapeRemotive(): Promise<number> {
       coverLetter = await generateCoverLetter(job.title, job.company_name, job.description, isDisability);
       appliedAt = new Date().toISOString();
 
-      // Intentar apply por email si hay contacto en la descripción
-      const contactEmail = extractEmail(job.description);
-      if (contactEmail) {
-        applied = await applyByEmail(contactEmail, job.title, job.company_name, coverLetter);
+      // 1. Intentar Greenhouse (auto-submit via Puppeteer)
+      if (isGreenhouse(job.url)) {
+        const result = await applyGreenhouse(job.url, coverLetter);
+        applied = result.success;
         if (applied) {
-          await notify(`📧 <b>Email enviado</b>\n<b>${job.title}</b> en ${job.company_name}\n📩 ${contactEmail}\n🎯 Score: ${score}% — ${reason}`);
+          await notify(`🤖 <b>Auto-aplicado (Greenhouse)</b>\n<b>${job.title}</b> en ${job.company_name}\n🎯 Score: ${score}%\n🔗 ${job.url}`);
+        } else {
+          await notify(`⚠️ <b>Greenhouse falló</b>: ${result.reason}\n${job.title} — ${job.url}`);
         }
       }
 
+      // 2. Si no es Greenhouse o falló, intentar por email
       if (!applied) {
-        status = "pre-aplicada"; // Carta lista, pendiente de envío manual
-        await notify(`💼 <b>Alta prioridad — postular manualmente</b>\n<b>${job.title}</b> en ${job.company_name}\n📍 ${job.candidate_required_location || "Remote"}\n🎯 Score: ${score}% — ${reason}\n🔗 ${job.url}`);
+        const contactEmail = extractEmail(job.description);
+        if (contactEmail) {
+          applied = await applyByEmail(contactEmail, job.title, job.company_name, coverLetter);
+          if (applied) {
+            await notify(`📧 <b>Email enviado</b>\n<b>${job.title}</b> en ${job.company_name}\n📩 ${contactEmail}\n🎯 Score: ${score}%`);
+          }
+        }
+      }
+
+      // 3. Si nada funcionó → pre-aplicada para postulación manual
+      if (!applied) {
+        status = "pre-aplicada";
+        await notify(`💼 <b>Alta prioridad — postular manualmente</b>\n<b>${job.title}</b> en ${job.company_name}\n📍 ${job.candidate_required_location || "Remote"}\n🎯 Score: ${score}%\n🔗 ${job.url}`);
       }
     }
 

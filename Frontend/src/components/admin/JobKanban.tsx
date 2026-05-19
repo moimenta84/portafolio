@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Trash2, RefreshCw, Plus, X, FileText, MapPin, Building2 } from "lucide-react";
+import { ExternalLink, Trash2, RefreshCw, Plus, X, FileText, MapPin, Building2, Send } from "lucide-react";
 
 interface Job {
   id: number;
@@ -63,6 +63,22 @@ export default function JobKanban() {
     await api(`/${id}`, { method: "DELETE" });
     setJobs(prev => prev.filter(j => j.id !== id));
     if (selected?.id === id) setSelected(null);
+  };
+
+  const [applying, setApplying] = useState(false);
+
+  const applyNow = async (id: number) => {
+    setApplying(true);
+    try {
+      const res = await api(`/${id}/apply`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Candidatura enviada correctamente");
+        await load();
+      } else {
+        alert(`⚠️ No se pudo enviar: ${data.reason}`);
+      }
+    } finally { setApplying(false); }
   };
 
   const scrapeNow = async () => {
@@ -236,12 +252,18 @@ export default function JobKanban() {
             )}
 
             {/* Actions */}
-            <div className="flex gap-2 pt-2 border-t border-white/8">
+            <div className="flex gap-2 pt-2 border-t border-white/8 flex-wrap">
               {selected.url && (
                 <a href={selected.url} target="_blank" rel="noreferrer"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/25 text-secondary text-xs font-semibold hover:bg-secondary/20 transition-all">
                   <ExternalLink size={11} /> Ver oferta
                 </a>
+              )}
+              {selected.url?.includes("greenhouse.io") && selected.cover_letter && selected.status !== "aplicada" && (
+                <button onClick={() => applyNow(selected.id)} disabled={applying}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/25 text-green-400 text-xs font-semibold hover:bg-green-500/20 transition-all disabled:opacity-50">
+                  <Send size={11} /> {applying ? "Enviando..." : "Aplicar ahora"}
+                </button>
               )}
               <button onClick={() => deleteJob(selected.id)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all ml-auto">

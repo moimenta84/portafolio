@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { scrapeAndProcess } from "../services/jobScraper.js";
+import { applyGreenhouse, isGreenhouse } from "../services/jobApplier.js";
 
 const router = Router();
 
@@ -72,6 +73,25 @@ router.put("/:id", requireAuth, (req, res) => {
 router.delete("/:id", requireAuth, (req, res) => {
   db.prepare("DELETE FROM job_offers WHERE id = ?").run(Number(req.params.id));
   res.json({ ok: true });
+});
+
+// POST /api/jobs/:id/apply — aplicar vía Puppeteer a una oferta específica (protegido)
+router.post("/:id/apply", requireAuth, async (req, res) => {
+  const job = db.prepare("SELECT * FROM job_offers WHERE id = ?").get(Number(req.params.id)) as
+    { url: string; cover_letter: string; title: string; company: string } | undefined;
+
+  if (!job) { res.status(404).json({ error: "Oferta no encontrada" }); return; }
+  if (!isGreenhouse(job.url)) { res.status(400).json({ error: "Solo soportado para Greenhouse de momento" }); return; }
+  if (!job.cover_letter) { res.status(400).json({ error: "Genera primero la carta de presentación" }); return; }
+
+  const result = await applyGreenhouse(job.url, job.cover_letter);
+
+  if (result.success) {
+    db.prepare("UPDATE job_offers SET status = 'aplicada', applied_at = ? WHERE id = ?")
+      .run(new Date().toISOString(), Number(req.params.id));
+  }
+
+  res.json(result);
 });
 
 // POST /api/jobs/scrape — lanzar scraping manual (protegido)
