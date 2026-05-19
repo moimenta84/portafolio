@@ -206,6 +206,8 @@ export function initDatabase() {
   )`);
   migrate("CREATE INDEX IF NOT EXISTS idx_jobs_status ON job_offers(status)");
   migrate("CREATE INDEX IF NOT EXISTS idx_jobs_score ON job_offers(match_score DESC)");
+  migrate("ALTER TABLE job_offers ADD COLUMN is_disability INTEGER DEFAULT 0");
+  migrate("ALTER TABLE job_offers ADD COLUMN url UNIQUE");
 
   seedProjects();
   seedReviews();
